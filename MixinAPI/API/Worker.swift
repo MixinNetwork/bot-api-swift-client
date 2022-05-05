@@ -71,7 +71,7 @@ public class Worker {
     ) -> Request? {
         request(method: .post, path: path, body: {
             if let parameters = parameters {
-                return try JSONEncoder.snakeCase.encode(parameters)
+                return try JSONEncoder.default.encode(parameters)
             } else {
                 return nil
             }
@@ -247,7 +247,7 @@ extension Worker {
                 return
             }
             do {
-                let rawResponse = try JSONDecoder.snakeCase.decode(RawResponse<Response>.self, from: data)
+                let rawResponse = try JSONDecoder.default.decode(RawResponse<Response>.self, from: data)
                 if let data = rawResponse.data {
                     completion(.success(data))
                 } else if case .unauthorized = rawResponse.error {
@@ -285,7 +285,7 @@ extension Worker {
                 } else if let error = rawResponse.error {
                     completion(.failure(.remote(error)))
                 } else {
-                    let response = try JSONDecoder.snakeCase.decode(Response.self, from: data)
+                    let response = try JSONDecoder.default.decode(Response.self, from: data)
                     completion(.success(response))
                 }
             } catch {

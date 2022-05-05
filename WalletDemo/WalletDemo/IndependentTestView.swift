@@ -28,6 +28,7 @@ struct IndependentTestView: View {
                 Text("Authorization")
             }
         }
+        .navigationTitle("Independent Test")
         .alert(isPresented: $isResultPresented, content: {
             Alert(title: Text("Response"),
                   message: Text(result),
