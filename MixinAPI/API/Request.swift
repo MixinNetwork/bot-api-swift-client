@@ -32,7 +32,7 @@ public class Request {
     func setTask(_ task: URLSessionTask) -> Bool {
         let success: Bool
         lock.lock()
-        if isCancelled {
+        if cancelled {
             success = false
         } else {
             self.task = task
