@@ -1,0 +1,23 @@
+PODS:
+  - MixinAPI (0.1.0):
+    - Sodium
+  - Sodium (0.9.1)
+
+DEPENDENCIES:
+  - MixinAPI (from `./`)
+
+SPEC REPOS:
+  trunk:
+    - Sodium
+
+EXTERNAL SOURCES:
+  MixinAPI:
+    :path: "./"
+
+SPEC CHECKSUMS:
+  MixinAPI: 966739aef5c031d782d3b0ab7c062e50f85f50c9
+  Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
+
+PODFILE CHECKSUM: 60703d9ed1c3c3e5b401d7287acb524af21ef60a
+
+COCOAPODS: 1.11.3
