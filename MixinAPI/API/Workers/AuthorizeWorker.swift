@@ -5,7 +5,7 @@
 //  Created by wuyuehyang on 2022/5/3.
 //
 
-import UIKit
+import Foundation
 
 public final class AuthorizeWorker: Worker {
     
