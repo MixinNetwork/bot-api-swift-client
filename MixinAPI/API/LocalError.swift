@@ -19,5 +19,6 @@ public enum LocalError: Error {
     case buildURLRequest(Error)
     case requestSigningTimeout
     case invalidJSON(Error)
+    case pinEncryption(Error)
     
 }

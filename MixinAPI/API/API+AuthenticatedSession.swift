@@ -19,11 +19,13 @@ extension API {
         
         let userID: String
         let sessionID: String
+        let pinEncryptor: PINEncryptor
         let privateKey: Ed25519PrivateKey
         
         public init(
             userID: String,
             sessionID: String,
+            pinToken: Data,
             privateKey: Ed25519PrivateKey,
             requestHeaders: [String: String],
             hostStorage: HostStorage,
@@ -31,6 +33,7 @@ extension API {
         ) {
             self.userID = userID
             self.sessionID = sessionID
+            self.pinEncryptor = PINEncryptor(pinToken: pinToken, analytic: analytic)
             self.privateKey = privateKey
             super.init(hostStorage: hostStorage,
                        requestHeaders: requestHeaders,

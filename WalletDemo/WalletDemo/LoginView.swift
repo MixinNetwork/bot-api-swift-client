@@ -25,15 +25,20 @@ extension Data {
 struct LoginView: View {
     
     private enum LoginError: Error {
+        case invalidPINToken
         case invalidPrivateKey
     }
     
     @State private var uid = "(None)"
     @State private var sid = "(None)"
+    @State private var pinToken = "(None)"
     @State private var key = "(None)"
     
     private var session: Result<API.Session, Error> {
         do {
+            guard let pinToken = Data(base64URLEncoded: pinToken) else {
+                throw LoginError.invalidPINToken
+            }
             guard let rawKey = Data(base64URLEncoded: key)?.prefix(32) else {
                 throw LoginError.invalidPrivateKey
             }
@@ -44,6 +49,7 @@ struct LoginView: View {
             ]
             let session = API.AuthenticatedSession(userID: uid,
                                                    sessionID: sid,
+                                                   pinToken: pinToken,
                                                    privateKey: privateKey,
                                                    requestHeaders: requestHeaders,
                                                    hostStorage: WalletHost(),

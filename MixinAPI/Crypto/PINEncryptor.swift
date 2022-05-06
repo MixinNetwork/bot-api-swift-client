@@ -1,0 +1,71 @@
+//
+//  PINEncryptor.swift
+//  MixinAPI
+//
+//  Created by wuyuehyang on 2022/5/6.
+//
+
+import Foundation
+import CommonCrypto
+
+final class PINEncryptor {
+    
+    enum Error: Swift.Error {
+        case invalidPIN
+        case missingPINToken
+        case ivGeneration
+        case encryption(Swift.Error)
+    }
+    
+    private let queue = DispatchQueue(label: "one.mixin.api.PINEncryptor")
+    private let pinToken: Data
+    private let analytic: Analytic?
+    
+    init(pinToken: Data, analytic: Analytic?) {
+        self.pinToken = pinToken
+        self.analytic = analytic
+    }
+    
+    func encrypt<Response>(
+        pin: String,
+        iterator: @escaping () -> UInt64,
+        onFailure: @escaping (API.Result<Response>) -> Void,
+        onSuccess: @escaping (String) -> Void
+    ) {
+        queue.async {
+            switch self.encrypt(pin: pin, iterator: iterator) {
+            case .success(let encrypted):
+                onSuccess(encrypted)
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    onFailure(.failure(.local(.pinEncryption(error))))
+                }
+            }
+        }
+    }
+    
+    private func encrypt(pin: String, iterator: () -> UInt64) -> Result<String, Error> {
+        guard let pinData = pin.data(using: .utf8) else {
+            return .failure(.invalidPIN)
+        }
+        guard let iv = Data(withNumberOfSecuredRandomBytes: kCCBlockSizeAES128) else {
+            return .failure(.ivGeneration)
+        }
+        
+        let time = UInt64(Date().timeIntervalSince1970)
+        let timeData = withUnsafeBytes(of: time.littleEndian, { Data($0) })
+        let iterator = iterator()
+        let iteratorData = withUnsafeBytes(of: iterator.littleEndian, { Data($0) })
+        analytic?.log(level: .info, category: "PINEncryptor", message: "Encrypt with it: \(iterator)", userInfo: nil)
+        
+        let plain = pinData + timeData + iteratorData
+        do {
+            let encrypted = try AESCryptor.encrypt(plain, with: pinToken, iv: iv, padding: .pkcs7)
+            let base64Encoded = (iv + encrypted).base64URLEncodedString()
+            return .success(base64Encoded)
+        } catch {
+            return .failure(.encryption(error))
+        }
+    }
+    
+}
