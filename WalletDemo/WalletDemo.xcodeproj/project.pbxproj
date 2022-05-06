@@ -14,6 +14,7 @@
 		94B3AA6D2819B859006B60C1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94B3AA6C2819B859006B60C1 /* Preview Assets.xcassets */; };
 		94BE7CFE2822790D00EDC789 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94BE7CFD2822790D00EDC789 /* LoginView.swift */; };
 		94BE7DBA28227D2C00EDC789 /* WalletHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94BE7DB928227D2C00EDC789 /* WalletHost.swift */; };
+		94C6F992282532810013DD54 /* PINIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C6F991282532810013DD54 /* PINIterator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		94B3AA6C2819B859006B60C1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		94BE7CFD2822790D00EDC789 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		94BE7DB928227D2C00EDC789 /* WalletHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletHost.swift; sourceTree = "<group>"; };
+		94C6F991282532810013DD54 /* PINIterator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PINIterator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +85,7 @@
 				94B3AA652819B859006B60C1 /* WalletDemoApp.swift */,
 				94BE7CFD2822790D00EDC789 /* LoginView.swift */,
 				94BE7DB928227D2C00EDC789 /* WalletHost.swift */,
+				94C6F991282532810013DD54 /* PINIterator.swift */,
 				94B3AA672819B859006B60C1 /* IndependentTestView.swift */,
 				94B3AA692819B859006B60C1 /* Assets.xcassets */,
 				94B3AA6B2819B859006B60C1 /* Preview Content */,
@@ -213,6 +216,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				94BE7CFE2822790D00EDC789 /* LoginView.swift in Sources */,
+				94C6F992282532810013DD54 /* PINIterator.swift in Sources */,
 				94B3AA682819B859006B60C1 /* IndependentTestView.swift in Sources */,
 				94BE7DBA28227D2C00EDC789 /* WalletHost.swift in Sources */,
 				94B3AA662819B859006B60C1 /* WalletDemoApp.swift in Sources */,

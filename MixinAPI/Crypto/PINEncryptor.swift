@@ -19,21 +19,22 @@ final class PINEncryptor {
     
     private let queue = DispatchQueue(label: "one.mixin.api.PINEncryptor")
     private let pinToken: Data
+    private let iterator: PINIterator
     private let analytic: Analytic?
     
-    init(pinToken: Data, analytic: Analytic?) {
+    init(pinToken: Data, iterator: PINIterator, analytic: Analytic?) {
         self.pinToken = pinToken
+        self.iterator = iterator
         self.analytic = analytic
     }
     
     func encrypt<Response>(
         pin: String,
-        iterator: @escaping () -> UInt64,
         onFailure: @escaping (API.Result<Response>) -> Void,
         onSuccess: @escaping (String) -> Void
     ) {
         queue.async {
-            switch self.encrypt(pin: pin, iterator: iterator) {
+            switch self.encrypt(pin: pin) {
             case .success(let encrypted):
                 onSuccess(encrypted)
             case .failure(let error):
@@ -44,7 +45,7 @@ final class PINEncryptor {
         }
     }
     
-    private func encrypt(pin: String, iterator: () -> UInt64) -> Result<String, Error> {
+    private func encrypt(pin: String) -> Result<String, Error> {
         guard let pinData = pin.data(using: .utf8) else {
             return .failure(.invalidPIN)
         }
@@ -54,7 +55,7 @@ final class PINEncryptor {
         
         let time = UInt64(Date().timeIntervalSince1970)
         let timeData = withUnsafeBytes(of: time.littleEndian, { Data($0) })
-        let iterator = iterator()
+        let iterator = self.iterator.value()
         let iteratorData = withUnsafeBytes(of: iterator.littleEndian, { Data($0) })
         analytic?.log(level: .info, category: "PINEncryptor", message: "Encrypt with it: \(iterator)", userInfo: nil)
         

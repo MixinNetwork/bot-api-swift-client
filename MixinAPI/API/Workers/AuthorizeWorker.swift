@@ -7,7 +7,7 @@
 
 import UIKit
 
-public class AuthorizeWorker: Worker {
+public final class AuthorizeWorker: Worker {
     
     public func authorizations(completion: @escaping (API.Result<[AuthorizationResponse]>) -> Void) {
         get(path: "/authorizations", completion: completion)

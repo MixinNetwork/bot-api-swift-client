@@ -43,16 +43,15 @@ struct LoginView: View {
                 throw LoginError.invalidPrivateKey
             }
             let privateKey = try Ed25519PrivateKey(rawRepresentation: rawKey)
-            let requestHeaders = [
-                "Accept-Language": Locale.current.languageCode ?? "en",
-                "User-Agent": "WalletDemo 0.1.0"
-            ]
+            let client = Client(userAgent: "WalletDemo 0.1.0")
+            let iterator = PINIterator()
             let session = API.AuthenticatedSession(userID: uid,
                                                    sessionID: sid,
                                                    pinToken: pinToken,
                                                    privateKey: privateKey,
-                                                   requestHeaders: requestHeaders,
+                                                   client: client,
                                                    hostStorage: WalletHost(),
+                                                   pinIterator: iterator,
                                                    analytic: nil)
             return .success(session)
         } catch {

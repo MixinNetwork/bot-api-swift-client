@@ -27,16 +27,19 @@ extension API {
             sessionID: String,
             pinToken: Data,
             privateKey: Ed25519PrivateKey,
-            requestHeaders: [String: String],
+            client: Client,
             hostStorage: HostStorage,
+            pinIterator: PINIterator,
             analytic: Analytic?
         ) {
             self.userID = userID
             self.sessionID = sessionID
-            self.pinEncryptor = PINEncryptor(pinToken: pinToken, analytic: analytic)
+            self.pinEncryptor = PINEncryptor(pinToken: pinToken,
+                                             iterator: pinIterator,
+                                             analytic: analytic)
             self.privateKey = privateKey
             super.init(hostStorage: hostStorage,
-                       requestHeaders: requestHeaders,
+                       client: client,
                        analytic: analytic)
         }
         

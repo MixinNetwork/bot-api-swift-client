@@ -22,7 +22,8 @@ public class Worker {
         
     }
     
-    private let session: API.Session
+    let session: API.Session
+    
     private let requestIDField = "x-request-id"
     
     init(session: API.Session) {
@@ -35,7 +36,7 @@ public class Worker {
         options: Options = [],
         queue: DispatchQueue = .main,
         completion: @escaping (API.Result<Response>) -> Void
-    ) -> Request? {
+    ) -> Request {
         request(method: .get,
                 path: path,
                 body: { nil },
@@ -51,7 +52,7 @@ public class Worker {
         options: Options = [],
         queue: DispatchQueue = .main,
         completion: @escaping (API.Result<Response>) -> Void
-    ) -> Request? {
+    ) -> Request {
         request(method: .post, path: path, body: {
             if let parameters = parameters {
                 return try JSONSerialization.data(withJSONObject: parameters, options: [])
@@ -68,7 +69,7 @@ public class Worker {
         options: Options = [],
         queue: DispatchQueue = .main,
         completion: @escaping (API.Result<Response>) -> Void
-    ) -> Request? {
+    ) -> Request {
         request(method: .post, path: path, body: {
             if let parameters = parameters {
                 return try JSONEncoder.default.encode(parameters)
@@ -76,6 +77,44 @@ public class Worker {
                 return nil
             }
         }, options: options, queue: queue, completion: completion)
+    }
+    
+    func get<Response>(
+        path: String,
+        options: Options = []
+    ) -> API.Result<Response> {
+        request(method: .get,
+                path: path,
+                body: { nil },
+                options: options)
+    }
+    
+    func post<Response>(
+        path: String,
+        parameters: [String: Any]? = nil,
+        options: Options = []
+    ) -> API.Result<Response> {
+        request(method: .post, path: path, body: {
+            if let parameters = parameters {
+                return try JSONSerialization.data(withJSONObject: parameters, options: [])
+            } else {
+                return nil
+            }
+        }, options: options)
+    }
+    
+    func post<Parameters: Encodable, Response>(
+        path: String,
+        parameters: Parameters? = nil,
+        options: Options = []
+    ) -> API.Result<Response> {
+        request(method: .post, path: path, body: {
+            if let parameters = parameters {
+                return try JSONEncoder.default.encode(parameters)
+            } else {
+                return nil
+            }
+        }, options: options)
     }
     
 }
@@ -132,6 +171,35 @@ extension Worker {
         return nsError.domain == NSURLErrorDomain && codes.contains(nsError.code)
     }
     
+    private func request<Response>(
+        method: HTTPMethod,
+        path: String,
+        body makeBody: @escaping () throws -> Data?,
+        options: Options = []
+    ) -> API.Result<Response> {
+        let semaphore = DispatchSemaphore(value: 0)
+        var result: API.Result<Response> = .failure(.local(.syncRequestFailed))
+        
+        request(method: method, path: path, body: makeBody) { (theResult: API.Result<Response>) in
+            result = theResult
+            semaphore.signal()
+        }
+        semaphore.wait()
+        
+        switch result {
+        case let .failure(.local(.taskFailed(error))):
+            let nsError = error as NSError
+            if nsError.domain == NSURLErrorDomain, nsError.code == NSURLErrorTimedOut {
+                fallthrough
+            }
+        case .failure(.local(.clockSkewDetected)), .failure(.local(.requestSigningTimeout)):
+            session.analytic?.log(level: .error, category: "Worker", message: "Sync request timed out with: \(result)", userInfo: nil)
+        default:
+            break
+        }
+        return result
+    }
+    
     @discardableResult
     private func request<Response>(
         request: Request = Request(),
@@ -141,7 +209,7 @@ extension Worker {
         options: Options = [],
         queue: DispatchQueue = .main,
         completion: @escaping (API.Result<Response>) -> Void
-    ) -> Request? {
+    ) -> Request {
         session.serializationQueue.async {
             let host = self.session.host.http()
             let urlString = "https://" + host.value + path

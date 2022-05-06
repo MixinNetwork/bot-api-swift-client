@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import MixinAPI
 import SwiftUI
+import MixinAPI
 
 class WalletHost {
     

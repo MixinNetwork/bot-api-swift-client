@@ -20,5 +20,7 @@ public enum LocalError: Error {
     case requestSigningTimeout
     case invalidJSON(Error)
     case pinEncryption(Error)
+    case unauthorizedSession
+    case syncRequestFailed
     
 }

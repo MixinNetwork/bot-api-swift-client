@@ -19,15 +19,14 @@ public final class API {
     
     public typealias Result<Response: Decodable> = Swift.Result<Response, Error>
     
+    public let accountWorker: AccountWorker
     public let authorize: AuthorizeWorker
     public let call: CallWorker
     
-    let session: Session
-    
     public init(session: Session) {
+        self.accountWorker = AccountWorker(session: session)
         self.authorize = AuthorizeWorker(session: session)
         self.call = CallWorker(session: session)
-        self.session = session
     }
     
 }

@@ -12,23 +12,30 @@ extension API {
     public class Session {
         
         let host: Host
-        let requestHeaders: [String: String]
+        let client: Client
         let analytic: Analytic?
         let urlSession: URLSession
+        let requestHeaders: [String: String]
         let serializationQueue = DispatchQueue(label: "one.mixin.network.api.session.serialization")
         
         public init(
             hostStorage: HostStorage,
-            requestHeaders: [String: String],
+            client: Client,
             analytic: Analytic?
         ) {
             self.host = Host(storage: hostStorage)
-            
-            var headers = requestHeaders
-            headers["Content-Type"] = "application/json"
-            self.requestHeaders = headers
-            
+            self.client = client
             self.analytic = analytic
+            
+            var headers = [
+                "Content-Type": "application/json",
+                "Accept-Language": client.acceptLanguage,
+                "User-Agent": client.userAgent,
+            ]
+            if let id = client.deviceID {
+                headers["Mixin-Device-Id"] = id
+            }
+            self.requestHeaders = headers
             
             let config = URLSessionConfiguration.default
             config.timeoutIntervalForRequest = 10
