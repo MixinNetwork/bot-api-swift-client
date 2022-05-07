@@ -46,6 +46,10 @@ extension API {
                                          delegateQueue: nil)
         }
         
+        func encryptPIN<Response>(_ pin: String, onFailure: @escaping (API.Result<Response>) -> Void, onSuccess: @escaping (String) -> Void) {
+            onFailure(.failure(.local(.unauthorizedSession)))
+        }
+        
     }
     
 }

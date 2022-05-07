@@ -90,14 +90,8 @@ public final class AccountWorker: Worker {
     }
     
     public func changePhoneNumber(verificationId: String, code: String, pin: String, completion: @escaping (API.Result<Account>) -> Void) {
-        guard let encryptor = (session as? API.AuthenticatedSession)?.pinEncryptor else {
-            completion(.failure(.local(.unauthorizedSession)))
-            return
-        }
-        encryptor.encrypt(pin: pin, onFailure: completion) { (encryptedPin) in
-            let request = AccountRequest.phone(code: code,
-                                               pin: encryptedPin,
-                                               client: self.session.client)
+        session.encryptPIN(pin, onFailure: completion) { pin in
+            let request = AccountRequest.phone(code: code, pin: pin, client: self.session.client)
             self.post(path: Path.verifications(id: verificationId),
                       parameters: request,
                       options: .disableRetryOnRequestSigningTimeout,
@@ -142,13 +136,9 @@ public final class AccountWorker: Worker {
     }
     
     public func verify(pin: String, completion: @escaping (API.Result<Empty>) -> Void) {
-        guard let encryptor = (session as? API.AuthenticatedSession)?.pinEncryptor else {
-            completion(.failure(.local(.unauthorizedSession)))
-            return
-        }
-        encryptor.encrypt(pin: pin, onFailure: completion) { (encryptedPin) in
+        session.encryptPIN(pin, onFailure: completion) { pin in
             self.post(path: "/pin/verify",
-                      parameters: ["pin_base64": encryptedPin],
+                      parameters: ["pin_base64": pin],
                       completion: completion)
         }
     }
@@ -221,12 +211,8 @@ public final class AccountWorker: Worker {
     }
     
     public func deactiveAccount(pin: String, verificationID: String, completion: @escaping (API.Result<Empty>) -> Void) {
-        guard let encryptor = (session as? API.AuthenticatedSession)?.pinEncryptor else {
-            completion(.failure(.local(.unauthorizedSession)))
-            return
-        }
-        encryptor.encrypt(pin: pin, onFailure: completion) { (encryptedPin) in
-            let parameters = ["pin_base64": encryptedPin, "verification_id": verificationID]
+        session.encryptPIN(pin, onFailure: completion) { pin in
+            let parameters = ["pin_base64": pin, "verification_id": verificationID]
             self.post(path: "/me/deactivate",
                       parameters: parameters,
                       options: .disableRetryOnRequestSigningTimeout,

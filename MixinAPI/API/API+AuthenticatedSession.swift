@@ -43,6 +43,10 @@ extension API {
                        analytic: analytic)
         }
         
+        override func encryptPIN<Response>(_ pin: String, onFailure: @escaping (API.Result<Response>) -> Void, onSuccess: @escaping (String) -> Void) {
+            pinEncryptor.encrypt(pin: pin, onFailure: onFailure, onSuccess: onSuccess)
+        }
+        
         func authorizationToken(request: URLRequest, id: String, date: Date) throws -> String {
             let sig: String = try {
                 let string = try sigString(from: request)
