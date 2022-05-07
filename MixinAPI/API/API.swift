@@ -25,6 +25,7 @@ public final class API {
     public let call: CallWorker
     public let circle: CircleWorker
     public let collectible: CollectibleWorker
+    public let conversation: ConversationWorker
     
     public init(session: Session) {
         self.accountWorker = AccountWorker(session: session)
@@ -33,6 +34,7 @@ public final class API {
         self.call = CallWorker(session: session)
         self.circle = CircleWorker(session: session)
         self.collectible = CollectibleWorker(session: session)
+        self.conversation = ConversationWorker(session: session)
     }
     
 }
