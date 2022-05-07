@@ -23,7 +23,7 @@ public struct App {
     
 }
 
-extension App: Decodable {
+extension App: Codable {
     
     public enum CodingKeys: String, CodingKey {
         case appID = "app_id"

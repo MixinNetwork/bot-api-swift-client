@@ -30,6 +30,13 @@ public final class API {
     public let external: ExternalWorker
     public let message: MessageWorker
     public let contact: ContactWorker
+    public let multisig: MultisigWorker
+    public let payment: PaymentWorker
+    public let provisioning: ProvisioningWorker
+    public let snapshot: SnapshotWorker
+    public let sticker: StickerWorker
+    public let user: UserWorker
+    public let withdrawal: WithdrawalWorker
     
     public init(session: Session) {
         self.accountWorker = AccountWorker(session: session)
@@ -43,6 +50,13 @@ public final class API {
         self.external = ExternalWorker(session: session)
         self.message = MessageWorker(session: session)
         self.contact = ContactWorker(session: session)
+        self.multisig = MultisigWorker(session: session)
+        self.payment = PaymentWorker(session: session)
+        self.provisioning = ProvisioningWorker(session: session)
+        self.snapshot = SnapshotWorker(session: session)
+        self.sticker = StickerWorker(session: session)
+        self.user = UserWorker(session: session)
+        self.withdrawal = WithdrawalWorker(session: session)
     }
     
 }

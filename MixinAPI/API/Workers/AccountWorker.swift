@@ -56,7 +56,7 @@ public final class AccountWorker: Worker {
         captchaToken: CaptchaToken?,
         purpose: VerificationPurpose,
         completion: @escaping (API.Result<VerificationResponse>) -> Void
-    ) -> Request? {
+    ) -> Request {
         var param = [
             "phone": phoneNumber,
             "purpose": purpose.rawValue

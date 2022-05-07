@@ -19,7 +19,7 @@ public struct AuthorizationResponse {
     
 }
 
-extension AuthorizationResponse: Decodable {
+extension AuthorizationResponse: Codable {
     
     enum CodingKeys: String, CodingKey {
         case authorizationID = "authorization_id"
