@@ -29,6 +29,7 @@ public final class API {
     public let emergency: EmergencyWorker
     public let external: ExternalWorker
     public let message: MessageWorker
+    public let contact: ContactWorker
     
     public init(session: Session) {
         self.accountWorker = AccountWorker(session: session)
@@ -41,6 +42,7 @@ public final class API {
         self.emergency = EmergencyWorker(session: session)
         self.external = ExternalWorker(session: session)
         self.message = MessageWorker(session: session)
+        self.contact = ContactWorker(session: session)
     }
     
 }
