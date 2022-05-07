@@ -15,7 +15,7 @@ The Mixin Network based wallet allows for the rapid construction of decentralize
 
   s.ios.deployment_target = '13.0'
 
-  s.source_files = 'MixinAPI/Foundation/*', 'MixinAPI/Crypto/*', 'MixinAPI/Model/*', 'MixinAPI/API/**/*'
+  s.source_files = 'MixinAPI/Foundation/*', 'MixinAPI/Crypto/*', 'MixinAPI/Model/**/*', 'MixinAPI/API/**/*'
 
   s.dependency 'Sodium'
 end

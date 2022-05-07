@@ -23,12 +23,14 @@ public final class API {
     public let asset: AssetWorker
     public let authorize: AuthorizeWorker
     public let call: CallWorker
+    public let circle: CircleWorker
     
     public init(session: Session) {
         self.accountWorker = AccountWorker(session: session)
         self.asset = AssetWorker(session: session)
         self.authorize = AuthorizeWorker(session: session)
         self.call = CallWorker(session: session)
+        self.circle = CircleWorker(session: session)
     }
     
 }
