@@ -28,6 +28,7 @@ public final class API {
     public let conversation: ConversationWorker
     public let emergency: EmergencyWorker
     public let external: ExternalWorker
+    public let message: MessageWorker
     
     public init(session: Session) {
         self.accountWorker = AccountWorker(session: session)
@@ -39,6 +40,7 @@ public final class API {
         self.conversation = ConversationWorker(session: session)
         self.emergency = EmergencyWorker(session: session)
         self.external = ExternalWorker(session: session)
+        self.message = MessageWorker(session: session)
     }
     
 }
