@@ -27,6 +27,7 @@ public final class API {
     public let collectible: CollectibleWorker
     public let conversation: ConversationWorker
     public let emergency: EmergencyWorker
+    public let external: ExternalWorker
     
     public init(session: Session) {
         self.accountWorker = AccountWorker(session: session)
@@ -37,6 +38,7 @@ public final class API {
         self.collectible = CollectibleWorker(session: session)
         self.conversation = ConversationWorker(session: session)
         self.emergency = EmergencyWorker(session: session)
+        self.external = ExternalWorker(session: session)
     }
     
 }
