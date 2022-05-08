@@ -32,7 +32,7 @@ extension API {
                 "Accept-Language": client.acceptLanguage,
                 "User-Agent": client.userAgent,
             ]
-            if let id = client.deviceID {
+            if let id = client.deviceId {
                 headers["Mixin-Device-Id"] = id
             }
             self.requestHeaders = headers

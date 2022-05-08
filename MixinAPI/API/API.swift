@@ -19,7 +19,7 @@ public final class API {
     
     public typealias Result<Response: Decodable> = Swift.Result<Response, Error>
     
-    public let accountWorker: AccountWorker
+    public let account: AccountWorker
     public let asset: AssetWorker
     public let authorize: AuthorizeWorker
     public let call: CallWorker
@@ -39,7 +39,7 @@ public final class API {
     public let withdrawal: WithdrawalWorker
     
     public init(session: Session) {
-        self.accountWorker = AccountWorker(session: session)
+        self.account = AccountWorker(session: session)
         self.asset = AssetWorker(session: session)
         self.authorize = AuthorizeWorker(session: session)
         self.call = CallWorker(session: session)

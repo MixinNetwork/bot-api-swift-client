@@ -220,16 +220,16 @@ extension Worker {
                 return
             }
             
-            let requestID = UUID().uuidString.lowercased()
+            let requestId = UUID().uuidString.lowercased()
             let signingDate = Date()
             var urlRequest = URLRequest(url: url)
             urlRequest.httpMethod = method.rawValue
             urlRequest.allHTTPHeaderFields = self.session.requestHeaders
-            urlRequest.setValue(requestID, forHTTPHeaderField: self.requestIDField)
+            urlRequest.setValue(requestId, forHTTPHeaderField: self.requestIDField)
             do {
                 urlRequest.httpBody = try makeBody()
                 if let session = self.session as? API.AuthenticatedSession {
-                    let token = try session.authorizationToken(request: urlRequest, id: requestID, date: signingDate)
+                    let token = try session.authorizationToken(request: urlRequest, id: requestId, date: signingDate)
                     urlRequest.setValue(token, forHTTPHeaderField: "Authorization")
                 }
             } catch {
@@ -248,7 +248,7 @@ extension Worker {
                                      queue: queue,
                                      completion: completion,
                                      hostIndex: host.index,
-                                     requestID: requestID,
+                                     requestId: requestId,
                                      requestSigningDate: Date(),
                                      data: data,
                                      response: response,
@@ -274,7 +274,7 @@ extension Worker {
         queue: DispatchQueue,
         completion: @escaping (API.Result<Response>) -> Void,
         hostIndex: Int,
-        requestID: String,
+        requestId: String,
         requestSigningDate: Date,
         data: Data?,
         response: URLResponse?,
@@ -294,7 +294,7 @@ extension Worker {
             return
         }
         if let error = error {
-            let logMessage = "Request path: \(path), id: \(requestID), failed with error: \(error)"
+            let logMessage = "Request path: \(path), id: \(requestId), failed with error: \(error)"
             self.session.analytic?.log(level: .error, category: "Worker", message: logMessage, userInfo: nil)
             if Self.shouldToggleServer(for: error) {
                 self.session.host.toggle(from: hostIndex)
@@ -304,10 +304,10 @@ extension Worker {
             }
         } else if let data = data {
             let responseRequestId = response.value(forHTTPHeaderField: requestIDField)
-            guard requestID == responseRequestId else {
+            guard requestId == responseRequestId else {
                 let userInfo: [String : Any] = [
                     "path": path,
-                    "id": requestID,
+                    "id": requestId,
                     "header": response.allHeaderFields,
                 ]
                 session.analytic?.log(level: .error, category: "Worker", message: "Mismatched request id", userInfo: userInfo)

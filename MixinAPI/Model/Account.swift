@@ -25,17 +25,17 @@ public struct Account {
         case nobody = "NOBODY"
     }
     
-    public let userID: String
-    public let sessionID: String
+    public let userId: String
+    public let sessionId: String
     public let type: String
     public let identityNumber: String
     public let fullName: String
     public let biography: String
-    public let avatarURL: String
+    public let avatarUrl: String
     public let phone: String
     public let authenticationToken: String
-    public let codeID: String
-    public let codeURL: String
+    public let codeId: String
+    public let codeUrl: String
     public let reputation: Int
     public let createdAt: String
     public let receiveMessageSource: String
@@ -53,17 +53,17 @@ public struct Account {
 extension Account: Codable {
     
     public enum CodingKeys: String, CodingKey {
-        case userID = "user_id"
-        case sessionID = "session_id"
+        case userId = "user_id"
+        case sessionId = "session_id"
         case type
         case identityNumber = "identity_number"
         case fullName = "full_name"
         case biography
-        case avatarURL = "avatar_url"
+        case avatarUrl = "avatar_url"
         case phone
         case authenticationToken = "authentication_token"
-        case codeID = "code_id"
-        case codeURL = "code_url"
+        case codeId = "code_id"
+        case codeUrl = "code_url"
         case reputation
         case createdAt = "created_at"
         case receiveMessageSource = "receive_message_source"

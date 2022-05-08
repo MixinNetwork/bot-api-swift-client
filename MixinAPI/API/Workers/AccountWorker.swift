@@ -195,8 +195,8 @@ public final class AccountWorker: Worker {
         get(path: path, completion: completion)
     }
     
-    public func logoutSession(sessionID: String, completion: @escaping (API.Result<Empty>) -> Void) {
-        post(path: "/logout", parameters: ["session_id": sessionID], completion: completion)
+    public func logoutSession(sessionId: String, completion: @escaping (API.Result<Empty>) -> Void) {
+        post(path: "/logout", parameters: ["session_id": sessionId], completion: completion)
     }
     
     public func deactiveVerification(verificationId: String, code: String, completion: @escaping (API.Result<Empty>) -> Void) {
@@ -210,9 +210,9 @@ public final class AccountWorker: Worker {
              completion: completion)
     }
     
-    public func deactiveAccount(pin: String, verificationID: String, completion: @escaping (API.Result<Empty>) -> Void) {
+    public func deactiveAccount(pin: String, verificationId: String, completion: @escaping (API.Result<Empty>) -> Void) {
         session.encryptPIN(pin, onFailure: completion) { pin in
-            let parameters = ["pin_base64": pin, "verification_id": verificationID]
+            let parameters = ["pin_base64": pin, "verification_id": verificationId]
             self.post(path: "/me/deactivate",
                       parameters: parameters,
                       options: .disableRetryOnRequestSigningTimeout,

@@ -45,8 +45,8 @@ struct LoginView: View {
             let privateKey = try Ed25519PrivateKey(rawRepresentation: rawKey)
             let client = Client(userAgent: "WalletDemo 0.1.0")
             let iterator = PINIterator()
-            let session = API.AuthenticatedSession(userID: uid,
-                                                   sessionID: sid,
+            let session = API.AuthenticatedSession(userId: uid,
+                                                   sessionId: sid,
                                                    pinToken: pinToken,
                                                    privateKey: privateKey,
                                                    client: client,

@@ -31,10 +31,10 @@ public class AccountRequest {
         self.sessionSecret = sessionSecret
     }
     
-    public static func session(code: String, registrationID: Int, sessionSecret: String, client: Client) -> AccountRequest {
+    public static func session(code: String, registrationId: Int, sessionSecret: String, client: Client) -> AccountRequest {
         AccountRequest(client: client,
                        code: code,
-                       registrationId: registrationID,
+                       registrationId: registrationId,
                        purpose: VerificationPurpose.session.rawValue,
                        pin: nil,
                        sessionSecret: sessionSecret)
