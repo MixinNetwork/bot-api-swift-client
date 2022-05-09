@@ -159,16 +159,18 @@ extension Worker {
     }
     
     private static func shouldToggleServer(for error: Swift.Error) -> Bool {
-        let codes = [
-            NSURLErrorTimedOut,
-            NSURLErrorCannotConnectToHost,
-            NSURLErrorCannotFindHost,
-            NSURLErrorDNSLookupFailed,
-            NSURLErrorResourceUnavailable,
-            NSURLErrorSecureConnectionFailed,
+        guard let error = error as? URLError else {
+            return false
+        }
+        let codes: [URLError.Code] = [
+            .timedOut,
+            .cannotConnectToHost,
+            .cannotFindHost,
+            .dnsLookupFailed,
+            .resourceUnavailable,
+            .secureConnectionFailed
         ]
-        let nsError = error as NSError
-        return nsError.domain == NSURLErrorDomain && codes.contains(nsError.code)
+        return codes.contains(error.code)
     }
     
     private func request<Response>(
@@ -178,7 +180,7 @@ extension Worker {
         options: Options = []
     ) -> API.Result<Response> {
         let semaphore = DispatchSemaphore(value: 0)
-        var result: API.Result<Response> = .failure(.local(.syncRequestFailed))
+        var result: API.Result<Response> = .failure(TransportError.syncRequestFailed)
         
         request(method: method, path: path, body: makeBody) { (theResult: API.Result<Response>) in
             result = theResult
@@ -187,12 +189,11 @@ extension Worker {
         semaphore.wait()
         
         switch result {
-        case let .failure(.local(.taskFailed(error))):
-            let nsError = error as NSError
-            if nsError.domain == NSURLErrorDomain, nsError.code == NSURLErrorTimedOut {
+        case let .failure(TransportError.taskFailed(error)):
+            if let error = error as? URLError, error.code == .timedOut {
                 fallthrough
             }
-        case .failure(.local(.clockSkewDetected)), .failure(.local(.requestSigningTimeout)):
+        case .failure(TransportError.clockSkewDetected), .failure(TransportError.requestSigningTimeout):
             session.analytic?.log(level: .error, category: "Worker", message: "Sync request timed out with: \(result)", userInfo: nil)
         default:
             break
@@ -215,7 +216,7 @@ extension Worker {
             let urlString = "https://" + host.value + path
             guard let url = URL(string: urlString) else {
                 queue.async {
-                    completion(.failure(.local(.invalidPath(path))))
+                    completion(.failure(TransportError.invalidPath(path)))
                 }
                 return
             }
@@ -234,7 +235,7 @@ extension Worker {
                 }
             } catch {
                 queue.async {
-                    completion(.failure(.local(.buildURLRequest(error))))
+                    completion(.failure(TransportError.buildURLRequest(error)))
                 }
                 return
             }
@@ -258,7 +259,7 @@ extension Worker {
                 task.resume()
             } else {
                 queue.async {
-                    completion(.failure(.local(.cancelled)))
+                    completion(.failure(TransportError.cancelled))
                 }
             }
         }
@@ -282,14 +283,14 @@ extension Worker {
     ) {
         guard let response = response as? HTTPURLResponse else {
             queue.async {
-                completion(.failure(.local(.invalidResponse(response))))
+                completion(.failure(TransportError.invalidResponse(response)))
             }
             return
         }
         guard (200...299).contains(response.statusCode) else {
             self.session.host.toggle(from: hostIndex)
             queue.async {
-                completion(.failure(.local(.invalidStatusCode(response.statusCode))))
+                completion(.failure(TransportError.invalidStatusCode(response.statusCode)))
             }
             return
         }
@@ -300,7 +301,7 @@ extension Worker {
                 self.session.host.toggle(from: hostIndex)
             }
             queue.async {
-                completion(.failure(.local(.taskFailed(error))))
+                completion(.failure(TransportError.taskFailed(error)))
             }
         } else if let data = data {
             let responseRequestId = response.value(forHTTPHeaderField: requestIDField)
@@ -311,7 +312,7 @@ extension Worker {
                     "header": response.allHeaderFields,
                 ]
                 session.analytic?.log(level: .error, category: "Worker", message: "Mismatched request id", userInfo: userInfo)
-                completion(.failure(.remote(.internalServerError)))
+                completion(.failure(TransportError.mismatchedRequestID))
                 return
             }
             do {
@@ -325,7 +326,7 @@ extension Worker {
                         DispatchQueue.main.sync {
                             NotificationCenter.default.post(name: API.clockSkewDetectedNotification, object: self)
                         }
-                        completion(.failure(.local(.clockSkewDetected)))
+                        completion(.failure(TransportError.clockSkewDetected))
                     case .requestSigningTimedOut:
                         let info: [String: Any] = [
                             "interval": requestSigningDate.timeIntervalSinceNow,
@@ -341,17 +342,17 @@ extension Worker {
                                          queue: queue,
                                          completion: completion)
                         } else {
-                            completion(.failure(.local(.requestSigningTimeout)))
+                            completion(.failure(TransportError.requestSigningTimeout))
                         }
                     case .none:
                         session.analytic?.report(error: RemoteError.unauthorized)
                         DispatchQueue.main.sync {
                             NotificationCenter.default.post(name: API.unauthorizedNotification, object: self)
                         }
-                        completion(.failure(.remote(.unauthorized)))
+                        completion(.failure(RemoteError.unauthorized))
                     }
                 } else if let error = rawResponse.error {
-                    completion(.failure(.remote(error)))
+                    completion(.failure(error))
                 } else {
                     let response = try JSONDecoder.default.decode(Response.self, from: data)
                     completion(.success(response))
@@ -364,11 +365,11 @@ extension Worker {
                                  message: "Failed to decode response: \(error)",
                                  userInfo: nil)
                 }
-                completion(.failure(.local(.invalidJSON(error))))
+                completion(.failure(TransportError.invalidJSON(error)))
             }
         } else {
             queue.async {
-                completion(.failure(.local(.noData(response))))
+                completion(.failure(TransportError.noData(response)))
             }
         }
     }

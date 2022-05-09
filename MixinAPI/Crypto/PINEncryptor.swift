@@ -39,7 +39,7 @@ final class PINEncryptor {
                 onSuccess(encrypted)
             case .failure(let error):
                 DispatchQueue.main.async {
-                    onFailure(.failure(.local(.pinEncryption(error))))
+                    onFailure(.failure(TransportError.pinEncryption(error)))
                 }
             }
         }

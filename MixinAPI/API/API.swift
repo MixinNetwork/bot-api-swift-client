@@ -12,11 +12,6 @@ public final class API {
     public static let unauthorizedNotification = Notification.Name(rawValue: "one.mixin.network.api.Unauthorized")
     public static let clockSkewDetectedNotification = Notification.Name(rawValue: "one.mixin.network.api.ClockSkewDetected")
     
-    public enum Error: Swift.Error {
-        case local(LocalError)
-        case remote(RemoteError)
-    }
-    
     public typealias Result<Response: Decodable> = Swift.Result<Response, Error>
     
     public let account: AccountWorker

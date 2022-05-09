@@ -1,5 +1,5 @@
 //
-//  LocalError.swift
+//  TransportError.swift
 //  MixinAPI
 //
 //  Created by wuyuehyang on 2022/4/28.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum LocalError: Error {
+public enum TransportError: Error {
     
     case cancelled
     case invalidPath(String)
@@ -22,5 +22,6 @@ public enum LocalError: Error {
     case pinEncryption(Error)
     case unauthorizedSession
     case syncRequestFailed
+    case mismatchedRequestID
     
 }

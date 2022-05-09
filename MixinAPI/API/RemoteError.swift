@@ -176,10 +176,6 @@ extension RemoteError: Decodable {
         let reason: String?
     }
     
-    func encode(to encoder: Encoder) throws {
-        fatalError("This func encodes nothing currently")
-    }
-    
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let status = try container.decode(Int.self, forKey: .status)

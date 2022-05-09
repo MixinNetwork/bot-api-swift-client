@@ -145,7 +145,7 @@ public final class AccountWorker: Worker {
     
     public func updatePin(old: String?, new: String, completion: @escaping (API.Result<Account>) -> Void) {
         guard let encryptor = (session as? API.AuthenticatedSession)?.pinEncryptor else {
-            completion(.failure(.local(.unauthorizedSession)))
+            completion(.failure(TransportError.unauthorizedSession))
             return
         }
         
