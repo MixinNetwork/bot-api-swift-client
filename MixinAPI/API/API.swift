@@ -37,6 +37,7 @@ public final class API {
     public let sticker: StickerWorker
     public let user: UserWorker
     public let withdrawal: WithdrawalWorker
+    public let signalKey: SignalKeyWorker
     
     public init(session: Session) {
         self.account = AccountWorker(session: session)
@@ -57,6 +58,7 @@ public final class API {
         self.sticker = StickerWorker(session: session)
         self.user = UserWorker(session: session)
         self.withdrawal = WithdrawalWorker(session: session)
+        self.signalKey = SignalKeyWorker(session: session)
     }
     
 }
