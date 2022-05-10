@@ -51,12 +51,7 @@ public final class AccountWorker: Worker {
     }
     
     @discardableResult
-    public func sendCode(
-        to phoneNumber: String,
-        captchaToken: CaptchaToken?,
-        purpose: VerificationPurpose,
-        completion: @escaping (API.Result<VerificationResponse>) -> Void
-    ) -> Request {
+    public func sendCode(to phoneNumber: String, captchaToken: CaptchaToken?, purpose: VerificationPurpose, completion: @escaping (API.Result<VerificationResponse>) -> Void) -> Request {
         var param = [
             "phone": phoneNumber,
             "purpose": purpose.rawValue
@@ -78,13 +73,13 @@ public final class AccountWorker: Worker {
                     completion: completion)
     }
     
-    public func login(
-        verificationId: String,
-        accountRequest: AccountRequest,
-        completion: @escaping (API.Result<Account>) -> Void
-    ) {
+    public func login(verificationId: String, code: String, registrationId: Int, sessionSecret: String, completion: @escaping (API.Result<Account>) -> Void) {
+        let request = AccountRequest.session(code: code,
+                                             registrationId: registrationId,
+                                             sessionSecret: sessionSecret,
+                                             client: session.client)
         post(path: Path.verifications(id: verificationId),
-             parameters: accountRequest,
+             parameters: request,
              options: .authIndependent,
              completion: completion)
     }

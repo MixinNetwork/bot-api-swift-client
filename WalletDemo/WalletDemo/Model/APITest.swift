@@ -85,6 +85,16 @@ class APITest: ObservableObject {
             }),
             Case(name: "Send Code", work: { onFinished in
                 api.account.sendCode(to: "abc", captchaToken: nil, purpose: .phone) { result in
+                    self.validate(result: result, expect: .failure(RemoteError.invalidPhoneNumber), onFinished: onFinished)
+                }
+            }),
+            Case(name: "Change Phone Number", work: { onFinished in
+                api.account.changePhoneNumber(verificationId: uuid, code: "1234", pin: self.pin) { result in
+                    self.validate(result: result, expect: .failure(RemoteError.invalidPhoneNumber), onFinished: onFinished)
+                }
+            }),
+            Case(name: "Update Profile", work: { onFinished in
+                api.account.update(fullName: "Test", biography: "Test Biography", avatarBase64: nil) { result in
                     self.validate(result: result, expect: .success, onFinished: onFinished)
                 }
             })
