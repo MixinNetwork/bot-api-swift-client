@@ -34,7 +34,7 @@ struct LoginView: View {
     @State private var pinToken = "(None)"
     @State private var key = "(None)"
     
-    private var session: Result<API.Session, Error> {
+    private var session: Result<API.AuthenticatedSession, Error> {
         do {
             guard let pinToken = Data(base64URLEncoded: pinToken) else {
                 throw LoginError.invalidPINToken
@@ -45,6 +45,7 @@ struct LoginView: View {
             let privateKey = try Ed25519PrivateKey(rawRepresentation: rawKey)
             let client = Client(userAgent: "WalletDemo 0.1.0")
             let iterator = PINIterator()
+            let consoleOutput = ConsoleOutput()
             let session = API.AuthenticatedSession(userId: uid,
                                                    sessionId: sid,
                                                    pinToken: pinToken,
@@ -52,7 +53,7 @@ struct LoginView: View {
                                                    client: client,
                                                    hostStorage: WalletHost(),
                                                    pinIterator: iterator,
-                                                   analytic: nil)
+                                                   analytic: consoleOutput)
             return .success(session)
         } catch {
             return .failure(error)
@@ -91,18 +92,30 @@ struct LoginView: View {
                     }
                 }
             } header: {
+                Text("PIN Token")
+            }
+            
+            Section {
+                Text(pinToken)
+                Button("Paste") {
+                    if let string = UIPasteboard.general.string {
+                        pinToken = string
+                    }
+                }
+            } header: {
                 Text("Private Key")
             }
             
             Section {
                 switch session {
                 case .success(let session):
-                    NavigationLink("Independent Test") {
-                        IndependentTestView(session: session)
+                    NavigationLink("API Test") {
+                        APITestView(session: session)
                     }
-                case .failure:
+                case .failure(let error):
                     Text("Invalid Session")
                         .foregroundColor(.red)
+                    Text(error.localizedDescription)
                 }
             }
         }

@@ -77,4 +77,30 @@ extension Account: Codable {
         case transferConfirmationThreshold = "transfer_confirmation_threshold"
     }
     
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        userId = try container.decode(String.self, forKey: .userId)
+        sessionId = try container.decode(String.self, forKey: .sessionId)
+        identityNumber = try container.decode(String.self, forKey: .identityNumber)
+        type = try container.decodeIfPresent(String.self, forKey: .type) ?? ""
+        fullName = try container.decodeIfPresent(String.self, forKey: .fullName) ?? ""
+        biography = try container.decodeIfPresent(String.self, forKey: .biography) ?? ""
+        avatarUrl = try container.decodeIfPresent(String.self, forKey: .avatarUrl) ?? ""
+        phone = try container.decodeIfPresent(String.self, forKey: .phone) ?? ""
+        authenticationToken = try container.decodeIfPresent(String.self, forKey: .authenticationToken) ?? ""
+        codeId = try container.decodeIfPresent(String.self, forKey: .codeId) ?? ""
+        reputation = try container.decodeIfPresent(Int.self, forKey: .reputation) ?? 0
+        createdAt = try container.decodeIfPresent(String.self, forKey: .createdAt) ?? ""
+        receiveMessageSource = try container.decodeIfPresent(String.self, forKey: .receiveMessageSource) ?? ""
+        acceptConversationSource = try container.decodeIfPresent(String.self, forKey: .acceptConversationSource) ?? ""
+        acceptSearchSource = try container.decodeIfPresent(String.self, forKey: .acceptSearchSource) ?? ""
+        hasPIN = try container.decodeIfPresent(Bool.self, forKey: .hasPIN) ?? false
+        hasEmergencyContact = try container.decodeIfPresent(Bool.self, forKey: .hasEmergencyContact) ?? false
+        codeUrl = try container.decodeIfPresent(String.self, forKey: .codeUrl) ?? ""
+        pinToken = try container.decodeIfPresent(String.self, forKey: .pinToken) ?? ""
+        fiatCurrency = try container.decodeIfPresent(String.self, forKey: .fiatCurrency) ?? ""
+        transferNotificationThreshold = try container.decodeIfPresent(Double.self, forKey: .transferNotificationThreshold) ?? 0
+        transferConfirmationThreshold = try container.decodeIfPresent(Double.self, forKey: .transferConfirmationThreshold) ?? 0
+    }
+    
 }

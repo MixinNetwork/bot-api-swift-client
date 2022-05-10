@@ -18,11 +18,7 @@ extension API {
         let requestHeaders: [String: String]
         let serializationQueue = DispatchQueue(label: "one.mixin.network.api.session.serialization")
         
-        public init(
-            hostStorage: HostStorage,
-            client: Client,
-            analytic: Analytic?
-        ) {
+        public init(hostStorage: HostStorage, client: Client, analytic: Analytic?) {
             self.host = Host(storage: hostStorage)
             self.client = client
             self.analytic = analytic

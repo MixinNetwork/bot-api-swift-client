@@ -281,6 +281,18 @@ extension Worker {
         response: URLResponse?,
         error: Swift.Error?
     ) {
+        if let error = error {
+            let logMessage = "Request path: \(path), id: \(requestId), failed with error: \(error)"
+            self.session.analytic?.log(level: .error, category: "Worker", message: logMessage, userInfo: nil)
+            if Self.shouldToggleServer(for: error) {
+                self.session.analytic?.log(level: .info, category: "Worker", message: "Toggle server from: \(hostIndex)", userInfo: nil)
+                self.session.host.toggle(from: hostIndex)
+            }
+            queue.async {
+                completion(.failure(TransportError.taskFailed(error)))
+            }
+            return
+        }
         guard let response = response as? HTTPURLResponse else {
             queue.async {
                 completion(.failure(TransportError.invalidResponse(response)))
@@ -288,88 +300,94 @@ extension Worker {
             return
         }
         guard (200...299).contains(response.statusCode) else {
+            self.session.analytic?.log(level: .info, category: "Worker", message: "Response with status code: \(response.statusCode). Toggle server from: \(hostIndex)", userInfo: nil)
             self.session.host.toggle(from: hostIndex)
             queue.async {
                 completion(.failure(TransportError.invalidStatusCode(response.statusCode)))
             }
             return
         }
-        if let error = error {
-            let logMessage = "Request path: \(path), id: \(requestId), failed with error: \(error)"
-            self.session.analytic?.log(level: .error, category: "Worker", message: logMessage, userInfo: nil)
-            if Self.shouldToggleServer(for: error) {
-                self.session.host.toggle(from: hostIndex)
-            }
-            queue.async {
-                completion(.failure(TransportError.taskFailed(error)))
-            }
-        } else if let data = data {
-            let responseRequestId = response.value(forHTTPHeaderField: requestIDField)
-            guard requestId == responseRequestId else {
-                let userInfo: [String : Any] = [
-                    "path": path,
-                    "id": requestId,
-                    "header": response.allHeaderFields,
-                ]
-                session.analytic?.log(level: .error, category: "Worker", message: "Mismatched request id", userInfo: userInfo)
-                completion(.failure(TransportError.mismatchedRequestID))
-                return
-            }
-            do {
-                let rawResponse = try JSONDecoder.default.decode(RawResponse<Response>.self, from: data)
-                if let data = rawResponse.data {
-                    completion(.success(data))
-                } else if case .unauthorized = rawResponse.error {
-                    let reason = UnauthorizedReason(requestSigningDate: requestSigningDate, response: response)
-                    switch reason {
-                    case .clockSkew:
-                        DispatchQueue.main.sync {
-                            NotificationCenter.default.post(name: API.clockSkewDetectedNotification, object: self)
-                        }
-                        completion(.failure(TransportError.clockSkewDetected))
-                    case .requestSigningTimedOut:
-                        let info: [String: Any] = [
-                            "interval": requestSigningDate.timeIntervalSinceNow,
-                            "path": path,
-                        ]
-                        session.analytic?.log(level: .warning, category: "Worker", message: "Request signing timeout", userInfo: info)
-                        if !options.contains(.disableRetryOnRequestSigningTimeout) {
-                            self.request(request: request,
-                                         method: method,
-                                         path: path,
-                                         body: { body },
-                                         options: options,
-                                         queue: queue,
-                                         completion: completion)
-                        } else {
-                            completion(.failure(TransportError.requestSigningTimeout))
-                        }
-                    case .none:
-                        session.analytic?.report(error: RemoteError.unauthorized)
-                        DispatchQueue.main.sync {
-                            NotificationCenter.default.post(name: API.unauthorizedNotification, object: self)
-                        }
-                        completion(.failure(RemoteError.unauthorized))
-                    }
-                } else if let error = rawResponse.error {
-                    completion(.failure(error))
-                } else {
-                    let response = try JSONDecoder.default.decode(Response.self, from: data)
-                    completion(.success(response))
-                }
-            } catch {
-                if let analytic = session.analytic {
-                    analytic.report(error: error)
-                    analytic.log(level: .error,
-                                 category: "Worker",
-                                 message: "Failed to decode response: \(error)",
-                                 userInfo: nil)
-                }
-                completion(.failure(TransportError.invalidJSON(error)))
-            }
-        } else {
+        guard let data = data else {
             queue.async {
                 completion(.failure(TransportError.noData(response)))
+            }
+            return
+        }
+        let responseRequestId = response.value(forHTTPHeaderField: requestIDField)
+        guard requestId == responseRequestId else {
+            let userInfo: [String : Any] = [
+                "path": path,
+                "id": requestId,
+                "header": response.allHeaderFields,
+            ]
+            session.analytic?.log(level: .error, category: "Worker", message: "Mismatched request id", userInfo: userInfo)
+            completion(.failure(TransportError.mismatchedRequestID))
+            return
+        }
+        do {
+            let rawResponse = try JSONDecoder.default.decode(RawResponse<Response>.self, from: data)
+            if let data = rawResponse.data {
+                queue.async {
+                    completion(.success(data))
+                }
+            } else if case .unauthorized = rawResponse.error {
+                let reason = UnauthorizedReason(requestSigningDate: requestSigningDate, response: response)
+                switch reason {
+                case .clockSkew:
+                    DispatchQueue.main.sync {
+                        NotificationCenter.default.post(name: API.clockSkewDetectedNotification, object: self)
+                    }
+                    queue.async {
+                        completion(.failure(TransportError.clockSkewDetected))
+                    }
+                case .requestSigningTimedOut:
+                    let info: [String: Any] = [
+                        "interval": requestSigningDate.timeIntervalSinceNow,
+                        "path": path,
+                    ]
+                    session.analytic?.log(level: .warning, category: "Worker", message: "Request signing timeout", userInfo: info)
+                    if !options.contains(.disableRetryOnRequestSigningTimeout) {
+                        self.request(request: request,
+                                     method: method,
+                                     path: path,
+                                     body: { body },
+                                     options: options,
+                                     queue: queue,
+                                     completion: completion)
+                    } else {
+                        queue.async {
+                            completion(.failure(TransportError.requestSigningTimeout))
+                        }
+                    }
+                case .none:
+                    session.analytic?.report(error: RemoteError.unauthorized)
+                    DispatchQueue.main.sync {
+                        NotificationCenter.default.post(name: API.unauthorizedNotification, object: self)
+                    }
+                    queue.async {
+                        completion(.failure(RemoteError.unauthorized))
+                    }
+                }
+            } else if let error = rawResponse.error {
+                queue.async {
+                    completion(.failure(error))
+                }
+            } else {
+                let response = try JSONDecoder.default.decode(Response.self, from: data)
+                queue.async {
+                    completion(.success(response))
+                }
+            }
+        } catch {
+            if let analytic = session.analytic {
+                analytic.report(error: error)
+                analytic.log(level: .error,
+                             category: "Worker",
+                             message: "Failed to decode response: \(error)",
+                             userInfo: nil)
+            }
+            queue.async {
+                completion(.failure(TransportError.invalidJSON(error)))
             }
         }
     }

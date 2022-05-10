@@ -31,7 +31,7 @@ public class AccountRequest {
         self.sessionSecret = sessionSecret
     }
     
-    public static func session(code: String, registrationId: Int, sessionSecret: String, client: Client) -> AccountRequest {
+    static func session(code: String, registrationId: Int, sessionSecret: String, client: Client) -> AccountRequest {
         AccountRequest(client: client,
                        code: code,
                        registrationId: registrationId,
@@ -40,7 +40,7 @@ public class AccountRequest {
                        sessionSecret: sessionSecret)
     }
     
-    public static func phone(code: String, pin: String, client: Client) -> AccountRequest {
+    static func phone(code: String, pin: String, client: Client) -> AccountRequest {
         AccountRequest(client: client,
                        code: code,
                        registrationId: nil,
