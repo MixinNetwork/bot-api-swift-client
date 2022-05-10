@@ -16,7 +16,7 @@ extension API {
         let analytic: Analytic?
         let urlSession: URLSession
         let requestHeaders: [String: String]
-        let serializationQueue = DispatchQueue(label: "one.mixin.network.api.session.serialization")
+        let serializationQueue = DispatchQueue(label: "one.mixin.api.session.serialization")
         
         public init(hostStorage: HostStorage, client: Client, analytic: Analytic?) {
             self.host = Host(storage: hostStorage)

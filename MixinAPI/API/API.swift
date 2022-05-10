@@ -9,8 +9,8 @@ import Foundation
 
 public final class API {
     
-    public static let unauthorizedNotification = Notification.Name(rawValue: "one.mixin.network.api.Unauthorized")
-    public static let clockSkewDetectedNotification = Notification.Name(rawValue: "one.mixin.network.api.ClockSkewDetected")
+    public static let unauthorizedNotification = Notification.Name(rawValue: "one.mixin.api.Unauthorized")
+    public static let clockSkewDetectedNotification = Notification.Name(rawValue: "one.mixin.api.ClockSkewDetected")
     
     public typealias Result<Response: Decodable> = Swift.Result<Response, Error>
     
