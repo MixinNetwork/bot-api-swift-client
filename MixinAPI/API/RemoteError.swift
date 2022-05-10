@@ -32,8 +32,8 @@ public enum RemoteError: Error {
     case invalidQrCode
     case groupChatIsFull
     case insufficientBalance
-    case malformedPin
-    case incorrectPin
+    case malformedPIN
+    case incorrectPIN
     case transferAmountTooSmall
     case expiredAuthorizationCode
     case phoneNumberInUse
@@ -105,9 +105,9 @@ public enum RemoteError: Error {
         case (202, 20117):
             self = .insufficientBalance
         case (202, 20118):
-            self = .malformedPin
+            self = .malformedPIN
         case (202, 20119):
-            self = .incorrectPin
+            self = .incorrectPIN
         case (202, 20120):
             self = .transferAmountTooSmall
         case (202, 20121):

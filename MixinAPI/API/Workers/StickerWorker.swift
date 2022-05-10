@@ -32,32 +32,32 @@ public final class StickerWorker: Worker {
         get(path: Path.albums, completion: completion)
     }
     
-    public func album(albumId: String) -> API.Result<Album> {
-        get(path: Path.album(id: albumId))
+    public func album(albumID: String) -> API.Result<Album> {
+        get(path: Path.album(id: albumID))
     }
     
-    public func stickers(albumId: String, completion: @escaping (API.Result<[StickerResponse]>) -> Void) {
-        get(path: Path.albums(id: albumId), completion: completion)
+    public func stickers(albumID: String, completion: @escaping (API.Result<[StickerResponse]>) -> Void) {
+        get(path: Path.albums(id: albumID), completion: completion)
     }
     
-    public func stickers(albumId: String) -> API.Result<[StickerResponse]> {
-        get(path: Path.albums(id: albumId))
+    public func stickers(albumID: String) -> API.Result<[StickerResponse]> {
+        get(path: Path.albums(id: albumID))
     }
     
     public func addSticker(stickerBase64: String, completion: @escaping (API.Result<StickerResponse>) -> Void) {
         post(path: Path.add, parameters: ["data_base64": stickerBase64], completion: completion)
     }
     
-    public func addSticker(stickerId: String, completion: @escaping (API.Result<StickerResponse>) -> Void) {
-        post(path: Path.add, parameters: ["sticker_id": stickerId], completion: completion)
+    public func addSticker(stickerID: String, completion: @escaping (API.Result<StickerResponse>) -> Void) {
+        post(path: Path.add, parameters: ["sticker_id": stickerID], completion: completion)
     }
     
-    public func sticker(stickerId: String) -> API.Result<StickerResponse> {
-        get(path: Path.stickers(id: stickerId))
+    public func sticker(stickerID: String) -> API.Result<StickerResponse> {
+        get(path: Path.stickers(id: stickerID))
     }
     
-    public func sticker(stickerId: String, completion: @escaping (API.Result<StickerResponse>) -> Void) {
-        get(path: Path.stickers(id: stickerId), completion: completion)
+    public func sticker(stickerID: String, completion: @escaping (API.Result<StickerResponse>) -> Void) {
+        get(path: Path.stickers(id: stickerID), completion: completion)
     }
     
     public func removeSticker(stickerIds: [String], completion: @escaping (API.Result<Empty>) -> Void) {

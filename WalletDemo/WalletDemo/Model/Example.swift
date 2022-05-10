@@ -37,7 +37,7 @@ class Example: ObservableObject {
             }
             switch result {
             case .success(let ticker):
-                self.output += "\(ticker.priceUsd)\n"
+                self.output += "\(ticker.usdPrice)\n"
             case .failure(let error):
                 self.output += "\nError: \(error)\n"
             }
@@ -63,7 +63,7 @@ class Example: ObservableObject {
     
     private func getBTCFee() {
         output += "Get BTC's fee..."
-        api.asset.fee(assetId: btcAssetID) { [weak self] result in
+        api.asset.fee(assetID: btcAssetID) { [weak self] result in
             guard let self = self else {
                 return
             }
@@ -81,8 +81,8 @@ class Example: ObservableObject {
         output += "Transfer 1 CNB to someone..."
         let cnb = "965e5c6e-434c-3fa9-b780-c50f43cd955c"
         let opponent = "9b13a3c9-aec0-4375-b86f-f9edfb27e92b"
-        let traceId = UUID().uuidString.lowercased()
-        api.payment.transfer(assetId: cnb, opponentId: opponent, amount: "1", memo: "Hello", pin: pin, traceId: traceId) { [weak self] result in
+        let traceID = UUID().uuidString.lowercased()
+        api.payment.transfer(assetID: cnb, opponentID: opponent, amount: "1", memo: "Hello", pin: pin, traceID: traceID) { [weak self] result in
             guard let self = self else {
                 return
             }

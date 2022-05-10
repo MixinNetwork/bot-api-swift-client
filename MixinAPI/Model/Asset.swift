@@ -10,52 +10,52 @@ import Foundation
 public class Asset: Codable {
     
     public enum CodingKeys: String, CodingKey {
-        case assetId = "asset_id"
+        case assetID = "asset_id"
         case type
         case symbol
         case name
-        case iconUrl = "icon_url"
+        case iconURL = "icon_url"
         case balance
         case destination
         case tag
-        case priceBTC = "price_btc"
-        case priceUSD = "price_usd"
-        case changeUSD = "change_usd"
-        case chainId = "chain_id"
+        case btcPrice = "price_btc"
+        case usdPrice = "price_usd"
+        case usdChange = "change_usd"
+        case chainID = "chain_id"
         case confirmations
         case assetKey = "asset_key"
         case reserve
     }
     
-    public let assetId: String
+    public let assetID: String
     public let type: String
     public let symbol: String
     public let name: String
-    public let iconUrl: String
+    public let iconURL: String
     public let balance: String
     public let destination: String
     public let tag: String
-    public let priceBTC: String
-    public let priceUSD: String
-    public let changeUSD: String
-    public let chainId: String
+    public let btcPrice: String
+    public let usdPrice: String
+    public let usdChange: String
+    public let chainID: String
     public let confirmations: Int
     public let assetKey: String
     public let reserve: String
     
-    public init(assetId: String, type: String, symbol: String, name: String, iconUrl: String, balance: String, destination: String, tag: String, priceBTC: String, priceUSD: String, changeUSD: String, chainId: String, confirmations: Int, assetKey: String, reserve: String) {
-        self.assetId = assetId
+    public init(assetID: String, type: String, symbol: String, name: String, iconURL: String, balance: String, destination: String, tag: String, btcPrice: String, usdPrice: String, usdChange: String, chainID: String, confirmations: Int, assetKey: String, reserve: String) {
+        self.assetID = assetID
         self.type = type
         self.symbol = symbol
         self.name = name
-        self.iconUrl = iconUrl
+        self.iconURL = iconURL
         self.balance = balance
         self.destination = destination
         self.tag = tag
-        self.priceBTC = priceBTC
-        self.priceUSD = priceUSD
-        self.changeUSD = changeUSD
-        self.chainId = chainId
+        self.btcPrice = btcPrice
+        self.usdPrice = usdPrice
+        self.usdChange = usdChange
+        self.chainID = chainID
         self.confirmations = confirmations
         self.assetKey = assetKey
         self.reserve = reserve
@@ -63,18 +63,18 @@ public class Asset: Codable {
     
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        assetId = try container.decode(String.self, forKey: .assetId)
+        assetID = try container.decode(String.self, forKey: .assetID)
         type = try container.decodeIfPresent(String.self, forKey: .type) ?? ""
         symbol = try container.decodeIfPresent(String.self, forKey: .symbol) ?? ""
         name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
-        iconUrl = try container.decodeIfPresent(String.self, forKey: .iconUrl) ?? ""
+        iconURL = try container.decodeIfPresent(String.self, forKey: .iconURL) ?? ""
         balance = try container.decodeIfPresent(String.self, forKey: .balance) ?? ""
         destination = try container.decodeIfPresent(String.self, forKey: .destination) ?? ""
         tag = try container.decodeIfPresent(String.self, forKey: .tag) ?? ""
-        priceBTC = try container.decodeIfPresent(String.self, forKey: .priceBTC) ?? ""
-        priceUSD = try container.decodeIfPresent(String.self, forKey: .priceUSD) ?? ""
-        changeUSD = try container.decodeIfPresent(String.self, forKey: .changeUSD) ?? ""
-        chainId = try container.decodeIfPresent(String.self, forKey: .chainId) ?? ""
+        btcPrice = try container.decodeIfPresent(String.self, forKey: .btcPrice) ?? ""
+        usdPrice = try container.decodeIfPresent(String.self, forKey: .usdPrice) ?? ""
+        usdChange = try container.decodeIfPresent(String.self, forKey: .usdChange) ?? ""
+        chainID = try container.decodeIfPresent(String.self, forKey: .chainID) ?? ""
         confirmations = try container.decodeIfPresent(Int.self, forKey: .confirmations) ?? 0
         assetKey = try container.decodeIfPresent(String.self, forKey: .assetKey) ?? ""
         reserve = try container.decodeIfPresent(String.self, forKey: .reserve) ?? ""

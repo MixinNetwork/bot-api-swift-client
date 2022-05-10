@@ -9,8 +9,8 @@ import Foundation
 
 public struct FavoriteApp {
     
-    public let userId: String
-    public let appId: String
+    public let userID: String
+    public let appID: String
     public let createdAt: String
     
 }
@@ -18,15 +18,15 @@ public struct FavoriteApp {
 extension FavoriteApp: Codable {
     
     public enum CodingKeys: String, CodingKey {
-        case userId = "user_id"
-        case appId = "app_id"
+        case userID = "user_id"
+        case appID = "app_id"
         case createdAt = "created_at"
     }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        userId = try container.decode(String.self, forKey: .userId)
-        appId = try container.decode(String.self, forKey: .appId)
+        userID = try container.decode(String.self, forKey: .userID)
+        appID = try container.decode(String.self, forKey: .appID)
         createdAt = try container.decodeIfPresent(String.self, forKey: .createdAt) ?? ""
     }
     

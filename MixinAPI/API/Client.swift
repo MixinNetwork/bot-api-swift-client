@@ -9,7 +9,7 @@ import Foundation
 
 public struct Client {
     
-    let deviceId: String?
+    let deviceID: String?
     let platform: String
     let platformVersion: String
     let bundleIdentifier: String
@@ -18,7 +18,7 @@ public struct Client {
     let userAgent: String
     
     public init(
-        deviceId: String? = nil,
+        deviceID: String? = nil,
         platform: String? = nil,
         platformVersion: String? = nil,
         bundleIdentifier: String = Bundle.main.bundleIdentifier ?? "null",
@@ -26,7 +26,7 @@ public struct Client {
         acceptLanguage: String = Locale.current.languageCode ?? "en",
         userAgent: String
     ) {
-        self.deviceId = deviceId
+        self.deviceID = deviceID
         
         if let platform = platform {
             self.platform = platform

@@ -56,9 +56,9 @@ public final class EmergencyWorker: Worker {
         }
     }
     
-    public func verifySession(id: String, code: String, sessionSecret: String, registrationId: Int, completion: @escaping (API.Result<Account>) -> Void) {
+    public func verifySession(id: String, code: String, sessionSecret: String, registrationID: Int, completion: @escaping (API.Result<Account>) -> Void) {
         let parameters = AccountRequest.session(code: code,
-                                                registrationId: registrationId,
+                                                registrationID: registrationID,
                                                 sessionSecret: sessionSecret,
                                                 client: session.client)
         post(path: Path.verify(id: id),

@@ -28,11 +28,7 @@ final class PINEncryptor {
         self.analytic = analytic
     }
     
-    func encrypt<Response>(
-        pin: String,
-        onFailure: @escaping (API.Result<Response>) -> Void,
-        onSuccess: @escaping (String) -> Void
-    ) {
+    func encrypt<Response>(pin: String, onFailure: @escaping (API.Result<Response>) -> Void, onSuccess: @escaping (String) -> Void) {
         queue.async {
             switch self.encrypt(pin: pin) {
             case .success(let encrypted):

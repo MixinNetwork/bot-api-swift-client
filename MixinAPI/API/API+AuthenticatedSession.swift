@@ -17,14 +17,14 @@ extension API {
             case invalidSig(String?)
         }
         
-        let userId: String
-        let sessionId: String
+        let userID: String
+        let sessionID: String
         let pinEncryptor: PINEncryptor
         let privateKey: Ed25519PrivateKey
         
         public init(
-            userId: String,
-            sessionId: String,
+            userID: String,
+            sessionID: String,
             pinToken: Data,
             privateKey: Ed25519PrivateKey,
             client: Client,
@@ -32,8 +32,8 @@ extension API {
             pinIterator: PINIterator,
             analytic: Analytic?
         ) {
-            self.userId = userId
-            self.sessionId = sessionId
+            self.userID = userID
+            self.sessionID = sessionID
             self.pinEncryptor = PINEncryptor(pinToken: pinToken,
                                              iterator: pinIterator,
                                              analytic: analytic)
@@ -59,8 +59,8 @@ extension API {
                 }
                 return formatted.joined()
             }()
-            let claims = JWT.Claims(uid: userId,
-                                    sid: sessionId,
+            let claims = JWT.Claims(uid: userID,
+                                    sid: sessionID,
                                     iat: date,
                                     exp: date.addingTimeInterval(30 * .minute),
                                     jti: id,

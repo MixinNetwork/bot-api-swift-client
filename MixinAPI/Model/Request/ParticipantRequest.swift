@@ -9,16 +9,16 @@ import Foundation
 
 public struct ParticipantRequest: Codable {
     
-    public let userId: String
+    public let userID: String
     public let role: String
     
     public enum CodingKeys: String, CodingKey {
-        case userId = "user_id"
+        case userID = "user_id"
         case role
     }
     
-    public init(userId: String, role: String) {
-        self.userId = userId
+    public init(userID: String, role: String) {
+        self.userID = userID
         self.role = role
     }
     

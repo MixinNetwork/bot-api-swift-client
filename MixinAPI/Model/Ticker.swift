@@ -9,14 +9,14 @@ import Foundation
 
 public struct Ticker {
     
-    public let priceUsd: String
+    public let usdPrice: String
     
 }
 
 extension Ticker: Decodable {
     
     enum CodingKeys: String, CodingKey {
-        case priceUsd = "price_usd"
+        case usdPrice = "price_usd"
     }
     
 }

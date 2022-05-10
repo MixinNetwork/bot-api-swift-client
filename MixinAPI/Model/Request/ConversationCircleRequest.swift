@@ -9,11 +9,11 @@ import Foundation
 
 public struct ConversationCircleRequest {
     
-    public let circleId: String
+    public let circleID: String
     public let action: CircleConversationAction
     
-    public init(circleId: String, action: CircleConversationAction) {
-        self.circleId = circleId
+    public init(circleID: String, action: CircleConversationAction) {
+        self.circleID = circleID
         self.action = action
     }
     
@@ -22,7 +22,7 @@ public struct ConversationCircleRequest {
 extension ConversationCircleRequest: Encodable {
     
     public enum CodingKeys: String, CodingKey {
-        case circleId = "circle_id"
+        case circleID = "circle_id"
         case action
     }
     

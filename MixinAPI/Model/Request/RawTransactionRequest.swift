@@ -10,27 +10,27 @@ import Foundation
 public struct RawTransactionRequest: Encodable {
     
     enum CodingKeys: String, CodingKey {
-        case assetId = "asset_id"
+        case assetID = "asset_id"
         case opponentMultisig = "opponent_multisig"
         case amount
         case pin = "pin_base64"
-        case traceId = "trace_id"
+        case traceID = "trace_id"
         case memo
     }
     
-    public let assetId: String
+    public let assetID: String
     public let opponentMultisig: OpponentMultisig
     public let amount: String
     public var pin: String
-    public let traceId: String
+    public let traceID: String
     public let memo: String
     
-    public init(assetId: String, opponentMultisig: OpponentMultisig, amount: String, pin: String, traceId: String, memo: String) {
-        self.assetId = assetId
+    public init(assetID: String, opponentMultisig: OpponentMultisig, amount: String, pin: String, traceID: String, memo: String) {
+        self.assetID = assetID
         self.opponentMultisig = opponentMultisig
         self.amount = amount
         self.pin = pin
-        self.traceId = traceId
+        self.traceID = traceID
         self.memo = memo
     }
     

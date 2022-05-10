@@ -9,12 +9,12 @@ import Foundation
 
 public struct SignedPreKeyRequest {
     
-    public let keyId: UInt32
+    public let keyID: UInt32
     public let publicKey: String
     public let signature: String
     
-    public init(keyId: UInt32, publicKey: String, signature: String) {
-        self.keyId = keyId
+    public init(keyID: UInt32, publicKey: String, signature: String) {
+        self.keyID = keyID
         self.publicKey = publicKey
         self.signature = signature
     }
@@ -24,7 +24,7 @@ public struct SignedPreKeyRequest {
 extension SignedPreKeyRequest: Encodable {
     
     public enum CodingKeys: String, CodingKey {
-        case keyId = "key_id"
+        case keyID = "key_id"
         case publicKey = "pub_key"
         case signature
     }

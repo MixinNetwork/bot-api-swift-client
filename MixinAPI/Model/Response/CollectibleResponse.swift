@@ -1,12 +1,23 @@
 import Foundation
 
+public enum CollectibleState: String {
+    case initial
+    case unlocked
+    case signed
+}
+
+public enum CollectibleAction: String {
+    case unlock
+    case sign
+}
+
 public struct CollectibleResponse: Codable {
     
     public let type: String
-    public let codeId: String
-    public let requestId: String
-    public let userId: String
-    public let tokenId: String
+    public let codeID: String
+    public let requestID: String
+    public let userID: String
+    public let tokenID: String
     public let amount: String
     public let sendersThreshold: Int64
     public let senders: [String]
@@ -22,10 +33,10 @@ public struct CollectibleResponse: Codable {
     
     enum CodingKeys: String, CodingKey {
         case type
-        case codeId = "code_id"
-        case requestId = "request_id"
-        case userId = "user_id"
-        case tokenId = "token_id"
+        case codeID = "code_id"
+        case requestID = "request_id"
+        case userID = "user_id"
+        case tokenID = "token_id"
         case amount
         case sendersThreshold = "senders_threshold"
         case senders
@@ -40,15 +51,4 @@ public struct CollectibleResponse: Codable {
         case memo
     }
     
-}
-
-public enum CollectibleState: String {
-    case initial
-    case unlocked
-    case signed
-}
-
-public enum CollectibleAction: String {
-    case unlock
-    case sign
 }

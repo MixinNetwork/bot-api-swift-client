@@ -10,7 +10,7 @@ import Foundation
 public final class AccountWorker: Worker {
     
     public enum LogCategory {
-        case incorrectPin
+        case incorrectPIN
         case all
     }
     
@@ -73,21 +73,21 @@ public final class AccountWorker: Worker {
                     completion: completion)
     }
     
-    public func login(verificationId: String, code: String, registrationId: Int, sessionSecret: String, completion: @escaping (API.Result<Account>) -> Void) {
+    public func login(verificationID: String, code: String, registrationID: Int, sessionSecret: String, completion: @escaping (API.Result<Account>) -> Void) {
         let request = AccountRequest.session(code: code,
-                                             registrationId: registrationId,
+                                             registrationID: registrationID,
                                              sessionSecret: sessionSecret,
                                              client: session.client)
-        post(path: Path.verifications(id: verificationId),
+        post(path: Path.verifications(id: verificationID),
              parameters: request,
              options: .authIndependent,
              completion: completion)
     }
     
-    public func changePhoneNumber(verificationId: String, code: String, pin: String, completion: @escaping (API.Result<Account>) -> Void) {
+    public func changePhoneNumber(verificationID: String, code: String, pin: String, completion: @escaping (API.Result<Account>) -> Void) {
         session.encryptPIN(pin, onFailure: completion) { pin in
             let request = AccountRequest.phone(code: code, pin: pin, client: self.session.client)
-            self.post(path: Path.verifications(id: verificationId),
+            self.post(path: Path.verifications(id: verificationID),
                       parameters: request,
                       options: .disableRetryOnRequestSigningTimeout,
                       completion: completion)
@@ -138,7 +138,7 @@ public final class AccountWorker: Worker {
         }
     }
     
-    public func updatePin(old: String?, new: String, completion: @escaping (API.Result<Account>) -> Void) {
+    public func updatePIN(old: String?, new: String, completion: @escaping (API.Result<Account>) -> Void) {
         guard let encryptor = (session as? API.AuthenticatedSession)?.pinEncryptor else {
             completion(.failure(TransportError.unauthorizedSession))
             return
@@ -147,8 +147,8 @@ public final class AccountWorker: Worker {
         var param: [String: String] = [:]
         
         func performUpdate() {
-            encryptor.encrypt(pin: new, onFailure: completion) { encryptedPin in
-                param["pin_base64"] = encryptedPin
+            encryptor.encrypt(pin: new, onFailure: completion) { encryptedPIN in
+                param["pin_base64"] = encryptedPIN
                 self.post(path: "/pin/update",
                           parameters: param,
                           options: .disableRetryOnRequestSigningTimeout,
@@ -157,8 +157,8 @@ public final class AccountWorker: Worker {
         }
         
         if let old = old {
-            encryptor.encrypt(pin: old, onFailure: completion) { encryptedPin in
-                param["old_pin_base64"] = encryptedPin
+            encryptor.encrypt(pin: old, onFailure: completion) { encryptedPIN in
+                param["old_pin_base64"] = encryptedPIN
                 performUpdate()
             }
         } else {
@@ -172,7 +172,7 @@ public final class AccountWorker: Worker {
             params.append("offset=\(offset)")
         }
         switch category {
-        case .incorrectPin:
+        case .incorrectPIN:
             params.append("category=PIN_INCORRECT")
         case .all:
             break
@@ -190,24 +190,24 @@ public final class AccountWorker: Worker {
         get(path: path, completion: completion)
     }
     
-    public func logoutSession(sessionId: String, completion: @escaping (API.Result<Empty>) -> Void) {
-        post(path: "/logout", parameters: ["session_id": sessionId], completion: completion)
+    public func logoutSession(sessionID: String, completion: @escaping (API.Result<Empty>) -> Void) {
+        post(path: "/logout", parameters: ["session_id": sessionID], completion: completion)
     }
     
-    public func deactiveVerification(verificationId: String, code: String, completion: @escaping (API.Result<Empty>) -> Void) {
+    public func deactiveVerification(verificationID: String, code: String, completion: @escaping (API.Result<Empty>) -> Void) {
         let parameters = [
             "code": code,
             "purpose": VerificationPurpose.deactivated.rawValue
         ]
-        post(path: Path.verifications(id: verificationId),
+        post(path: Path.verifications(id: verificationID),
              parameters: parameters,
              options: .disableRetryOnRequestSigningTimeout,
              completion: completion)
     }
     
-    public func deactiveAccount(pin: String, verificationId: String, completion: @escaping (API.Result<Empty>) -> Void) {
+    public func deactiveAccount(pin: String, verificationID: String, completion: @escaping (API.Result<Empty>) -> Void) {
         session.encryptPIN(pin, onFailure: completion) { pin in
-            let parameters = ["pin_base64": pin, "verification_id": verificationId]
+            let parameters = ["pin_base64": pin, "verification_id": verificationID]
             self.post(path: "/me/deactivate",
                       parameters: parameters,
                       options: .disableRetryOnRequestSigningTimeout,

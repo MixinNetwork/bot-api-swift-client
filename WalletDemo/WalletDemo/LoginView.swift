@@ -46,8 +46,8 @@ struct LoginView: View {
             let client = Client(userAgent: "WalletDemo 0.1.0")
             let iterator = PINIterator()
             let consoleOutput = ConsoleOutput()
-            let session = API.AuthenticatedSession(userId: uid,
-                                                   sessionId: sid,
+            let session = API.AuthenticatedSession(userID: uid,
+                                                   sessionID: sid,
                                                    pinToken: pinToken,
                                                    privateKey: privateKey,
                                                    client: client,

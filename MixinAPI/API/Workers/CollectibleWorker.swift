@@ -9,30 +9,30 @@ import Foundation
 
 public final class CollectibleWorker: Worker {
     
-    public func cancel(requestId: String, completion: @escaping (API.Result<Empty>) -> Void) {
-        post(path: "/collectibles/requests/\(requestId)/cancel", completion: completion)
+    public func cancel(requestID: String, completion: @escaping (API.Result<Empty>) -> Void) {
+        post(path: "/collectibles/requests/\(requestID)/cancel", completion: completion)
     }
     
-    public func sign(requestId: String, pin: String, completion: @escaping (API.Result<Empty>) -> Void) {
+    public func sign(requestID: String, pin: String, completion: @escaping (API.Result<Empty>) -> Void) {
         session.encryptPIN(pin, onFailure: completion) { pin in
-            self.post(path: "/collectibles/requests/\(requestId)/sign",
+            self.post(path: "/collectibles/requests/\(requestID)/sign",
                       parameters: ["pin_base64": pin],
                       options: .disableRetryOnRequestSigningTimeout,
                       completion: completion)
         }
     }
     
-    public func unlock(requestId: String, pin: String, completion: @escaping (API.Result<Empty>) -> Void) {
+    public func unlock(requestID: String, pin: String, completion: @escaping (API.Result<Empty>) -> Void) {
         session.encryptPIN(pin, onFailure: completion) { pin in
-            self.post(path: "/collectibles/requests/\(requestId)/unlock",
+            self.post(path: "/collectibles/requests/\(requestID)/unlock",
                       parameters: ["pin_base64": pin],
                       options: .disableRetryOnRequestSigningTimeout,
                       completion: completion)
         }
     }
     
-    public func token(tokenId: String) -> API.Result<CollectibleToken> {
-        get(path: "/collectibles/tokens/\(tokenId)")
+    public func token(tokenID: String) -> API.Result<CollectibleToken> {
+        get(path: "/collectibles/tokens/\(tokenID)")
     }
     
 }

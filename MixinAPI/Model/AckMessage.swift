@@ -9,8 +9,8 @@ import Foundation
 
 public struct AckMessage {
     
-    public let jobId: String
-    public let messageId: String
+    public let jobID: String
+    public let messageID: String
     public let status: String
     
 }
@@ -18,7 +18,7 @@ public struct AckMessage {
 extension AckMessage: Encodable {
     
     enum CodingKeys: String, CodingKey {
-        case messageId = "message_id"
+        case messageID = "message_id"
         case status
     }
     

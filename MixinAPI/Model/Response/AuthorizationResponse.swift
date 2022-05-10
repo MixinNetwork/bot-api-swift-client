@@ -9,10 +9,10 @@ import Foundation
 
 public struct AuthorizationResponse {
     
-    public let authorizationId: String
+    public let authorizationID: String
     public let authorizationCode: String
     public let scopes: [String]
-    public let codeId: String
+    public let codeID: String
     public let createdAt: String
     public let accessedAt: String
     public let app: App
@@ -22,10 +22,10 @@ public struct AuthorizationResponse {
 extension AuthorizationResponse: Codable {
     
     enum CodingKeys: String, CodingKey {
-        case authorizationId = "authorization_id"
+        case authorizationID = "authorization_id"
         case authorizationCode = "authorization_code"
         case scopes
-        case codeId = "code_id"
+        case codeID = "code_id"
         case createdAt = "created_at"
         case accessedAt = "accessed_at"
         case app

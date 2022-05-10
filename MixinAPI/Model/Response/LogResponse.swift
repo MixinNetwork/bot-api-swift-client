@@ -9,7 +9,7 @@ import Foundation
 
 public struct LogResponse {
     
-    public let logId: String
+    public let logID: String
     public let code: String
     public let ipAddress: String
     public let createdAt: String
@@ -19,7 +19,7 @@ public struct LogResponse {
 extension LogResponse: Decodable {
     
     enum CodingKeys: String, CodingKey {
-        case logId = "log_id"
+        case logID = "log_id"
         case code = "code"
         case ipAddress = "ip_address"
         case createdAt = "created_at"

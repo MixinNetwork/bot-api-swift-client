@@ -13,20 +13,20 @@ public final class UserWorker: Worker {
         static func search(keyword: String) -> String {
             return "/search/" + keyword
         }
-        static func codes(codeId: String) -> String {
-            return "/codes/" + codeId
+        static func codes(codeID: String) -> String {
+            return "/codes/" + codeID
         }
         static func users(id: String) -> String {
             return "/users/\(id)"
         }
-        static func getFavorite(userId: String) -> String {
-            return "/users/\(userId)/apps/favorite"
+        static func getFavorite(userID: String) -> String {
+            return "/users/\(userID)/apps/favorite"
         }
-        static func setFavorite(appId: String) -> String {
-            return "/apps/\(appId)/favorite"
+        static func setFavorite(appID: String) -> String {
+            return "/apps/\(appID)/favorite"
         }
-        static func unfavorite(appId: String) -> String {
-            return "/apps/\(appId)/unfavorite"
+        static func unfavorite(appID: String) -> String {
+            return "/apps/\(appID)/unfavorite"
         }
         static let users = "/users/fetch"
         static let relationships = "/relationships"
@@ -35,21 +35,21 @@ public final class UserWorker: Worker {
         static let fetchSessions = "/sessions/fetch"
     }
     
-    public func codes(codeId: String, completion: @escaping (API.Result<QRCodeResponse>) -> Void) {
-        get(path: Path.codes(codeId: codeId), completion: completion)
+    public func codes(codeID: String, completion: @escaping (API.Result<QRCodeResponse>) -> Void) {
+        get(path: Path.codes(codeID: codeID), completion: completion)
     }
     
     @discardableResult
-    public func showUser(userId: String, completion: @escaping (API.Result<User>) -> Void) -> Request? {
-        return get(path: Path.users(id: userId), completion: completion)
+    public func showUser(userID: String, completion: @escaping (API.Result<User>) -> Void) -> Request? {
+        return get(path: Path.users(id: userID), completion: completion)
     }
     
     public func blockingUsers(completion: @escaping (API.Result<User>) -> Void) {
         get(path: Path.blockingUsers, completion: completion)
     }
     
-    public func showUser(userId: String) -> API.Result<User> {
-        get(path: Path.users(id: userId))
+    public func showUser(userID: String) -> API.Result<User> {
+        get(path: Path.users(id: userID))
     }
     
     public func showUsers(userIds: [String]) -> API.Result<[User]> {
@@ -70,61 +70,61 @@ public final class UserWorker: Worker {
         return get(path: Path.search(keyword: keyword))
     }
     
-    public func addFriend(userId: String, fullName: String) -> API.Result<User> {
-        let relationshipRequest = RelationshipRequest(user_id: userId, full_name: fullName, action: .ADD)
+    public func addFriend(userID: String, fullName: String) -> API.Result<User> {
+        let relationshipRequest = RelationshipRequest(userID: userID, fullName: fullName, action: .add)
         return post(path: Path.relationships, parameters: relationshipRequest)
     }
     
-    public func addFriend(userId: String, fullName: String, completion: @escaping (API.Result<User>) -> Void) {
-        let relationshipRequest = RelationshipRequest(user_id: userId, full_name: fullName, action: .ADD)
+    public func addFriend(userID: String, fullName: String, completion: @escaping (API.Result<User>) -> Void) {
+        let relationshipRequest = RelationshipRequest(userID: userID, fullName: fullName, action: .add)
         post(path: Path.relationships, parameters: relationshipRequest, completion: completion)
     }
     
-    public func removeFriend(userId: String, completion: @escaping (API.Result<User>) -> Void) {
-        let relationshipRequest = RelationshipRequest(user_id: userId, full_name: nil, action: .REMOVE)
+    public func removeFriend(userID: String, completion: @escaping (API.Result<User>) -> Void) {
+        let relationshipRequest = RelationshipRequest(userID: userID, fullName: nil, action: .remove)
         post(path: Path.relationships, parameters: relationshipRequest, completion: completion)
     }
     
-    public func remarkFriend(userId: String, full_name: String, completion: @escaping (API.Result<User>) -> Void) {
-        let relationshipRequest = RelationshipRequest(user_id: userId, full_name: full_name, action: .UPDATE)
+    public func remarkFriend(userID: String, fullName: String, completion: @escaping (API.Result<User>) -> Void) {
+        let relationshipRequest = RelationshipRequest(userID: userID, fullName: fullName, action: .update)
         post(path: Path.relationships, parameters: relationshipRequest, completion: completion)
     }
     
-    public func blockUser(userId: String, completion: @escaping (API.Result<User>) -> Void) {
-        let relationshipRequest = RelationshipRequest(user_id: userId, full_name: nil, action: .BLOCK)
+    public func blockUser(userID: String, completion: @escaping (API.Result<User>) -> Void) {
+        let relationshipRequest = RelationshipRequest(userID: userID, fullName: nil, action: .block)
         post(path: Path.relationships, parameters: relationshipRequest, completion: completion)
     }
     
-    public func blockUser(userId: String) -> API.Result<User> {
-        let relationshipRequest = RelationshipRequest(user_id: userId, full_name: nil, action: .BLOCK)
+    public func blockUser(userID: String) -> API.Result<User> {
+        let relationshipRequest = RelationshipRequest(userID: userID, fullName: nil, action: .block)
         return post(path: Path.relationships, parameters: relationshipRequest)
     }
     
-    public func reportUser(userId: String, completion: @escaping (API.Result<User>) -> Void) {
-        let relationshipRequest = RelationshipRequest(user_id: userId, full_name: nil, action: .BLOCK)
+    public func reportUser(userID: String, completion: @escaping (API.Result<User>) -> Void) {
+        let relationshipRequest = RelationshipRequest(userID: userID, fullName: nil, action: .block)
         post(path: Path.reports, parameters: relationshipRequest, completion: completion)
     }
     
-    public func reportUser(userId: String) -> API.Result<User> {
-        let relationshipRequest = RelationshipRequest(user_id: userId, full_name: nil, action: .BLOCK)
+    public func reportUser(userID: String) -> API.Result<User> {
+        let relationshipRequest = RelationshipRequest(userID: userID, fullName: nil, action: .block)
         return post(path: Path.reports, parameters: relationshipRequest)
     }
     
-    public func unblockUser(userId: String, completion: @escaping (API.Result<User>) -> Void) {
-        let relationshipRequest = RelationshipRequest(user_id: userId, full_name: nil, action: .UNBLOCK)
+    public func unblockUser(userID: String, completion: @escaping (API.Result<User>) -> Void) {
+        let relationshipRequest = RelationshipRequest(userID: userID, fullName: nil, action: .unblock)
         post(path: Path.relationships, parameters: relationshipRequest, completion: completion)
     }
     
     public func getFavoriteApps(ofUserWith id: String, completion: @escaping (API.Result<[FavoriteApp]>) -> Void) {
-        get(path: Path.getFavorite(userId: id), completion: completion)
+        get(path: Path.getFavorite(userID: id), completion: completion)
     }
     
     public func setFavoriteApp(id: String, completion: @escaping (API.Result<FavoriteApp>) -> Void) {
-        post(path: Path.setFavorite(appId: id), completion: completion)
+        post(path: Path.setFavorite(appID: id), completion: completion)
     }
     
     public func unfavoriteApp(id: String, completion: @escaping (API.Result<Empty>) -> Void) {
-        post(path: Path.unfavorite(appId: id), completion: completion)
+        post(path: Path.unfavorite(appID: id), completion: completion)
     }
     
     public func fetchSessions(userIds: [String]) -> API.Result<[UserSession]> {

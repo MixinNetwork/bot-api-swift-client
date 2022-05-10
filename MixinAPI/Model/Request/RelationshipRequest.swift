@@ -7,16 +7,28 @@
 
 import Foundation
 
-public struct RelationshipRequest: Encodable {
-    let user_id: String
-    let full_name: String?
-    let action: RelationshipAction
+public struct RelationshipRequest {
+    
+    public enum Action: String, Encodable {
+        case add = "ADD"
+        case remove = "REMOVE"
+        case update = "UPDATE"
+        case block = "BLOCK"
+        case unblock = "UNBLOCK"
+    }
+    
+    let userID: String
+    let fullName: String?
+    let action: Action
+    
 }
 
-public enum RelationshipAction: String, Codable {
-    case ADD
-    case REMOVE
-    case UPDATE
-    case BLOCK
-    case UNBLOCK
+extension RelationshipRequest: Encodable {
+    
+    enum CodingKeys: String, CodingKey {
+        case userID = "user_id"
+        case fullName = "full_name"
+        case action
+    }
+    
 }

@@ -1,12 +1,23 @@
 import Foundation
 
+public enum MultisigState: String {
+    case initial
+    case unlocked
+    case signed
+}
+
+public enum MultisigAction: String {
+    case sign
+    case unlock
+}
+
 public struct MultisigResponse: Codable {
     
-    public let codeId: String
-    public let requestId: String
+    public let codeID: String
+    public let requestID: String
     public let action: String
-    public let userId: String
-    public let assetId: String
+    public let userID: String
+    public let assetID: String
     public let amount: String
     public let senders: [String]
     public let receivers: [String]
@@ -17,11 +28,11 @@ public struct MultisigResponse: Codable {
     public let memo: String?
     
     enum CodingKeys: String, CodingKey {
-        case codeId = "code_id"
-        case requestId = "request_id"
+        case codeID = "code_id"
+        case requestID = "request_id"
         case action
-        case userId = "user_id"
-        case assetId = "asset_id"
+        case userID = "user_id"
+        case assetID = "asset_id"
         case amount
         case senders
         case receivers
@@ -32,15 +43,4 @@ public struct MultisigResponse: Codable {
         case memo
     }
     
-}
-
-public enum MultisigState: String {
-    case initial
-    case unlocked
-    case signed
-}
-
-public enum MultisigAction: String {
-    case sign
-    case unlock
 }

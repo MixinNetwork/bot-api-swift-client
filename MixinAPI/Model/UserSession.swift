@@ -9,8 +9,8 @@ import Foundation
 
 public struct UserSession {
     
-    public let userId: String
-    public let sessionId: String
+    public let userID: String
+    public let sessionID: String
     public let platform: String?
     public let publicKey: String?
     
@@ -19,8 +19,8 @@ public struct UserSession {
 extension UserSession: Codable {
     
     enum CodingKeys: String, CodingKey {
-        case userId = "user_id"
-        case sessionId = "session_id"
+        case userID = "user_id"
+        case sessionID = "session_id"
         case platform
         case publicKey = "public_key"
     }

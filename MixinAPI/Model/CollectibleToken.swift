@@ -10,7 +10,7 @@ import Foundation
 public struct CollectibleToken: Codable {
     
     public let type: String
-    public let tokenId: String
+    public let tokenID: String
     public let groupKey: String
     public let tokenKey: String
     public let createdAt: String
@@ -18,7 +18,7 @@ public struct CollectibleToken: Codable {
     
     enum CodingKeys: String, CodingKey {
         case type
-        case tokenId = "token_id"
+        case tokenID = "token_id"
         case groupKey = "group"
         case tokenKey = "token"
         case createdAt = "created_at"
@@ -34,8 +34,8 @@ extension CollectibleToken {
         public let groupName: String
         public let tokenName: String
         public let description: String
-        public let iconUrl: String
-        public let mediaUrl: String
+        public let iconURL: String
+        public let mediaURL: String
         public let mime: String
         public let hash: String
         
@@ -43,8 +43,8 @@ extension CollectibleToken {
             case groupName = "group"
             case tokenName = "name"
             case description
-            case iconUrl = "icon_url"
-            case mediaUrl = "media_url"
+            case iconURL = "icon_url"
+            case mediaURL = "media_url"
             case mime
             case hash
         }

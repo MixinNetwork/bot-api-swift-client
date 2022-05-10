@@ -7,7 +7,16 @@
 
 import Foundation
 
-public enum CircleConversationAction: String, Codable {
-    case ADD
-    case REMOVE
+public enum CircleConversationAction: String {
+    case add
+    case remove
+}
+
+extension CircleConversationAction: Codable {
+    
+    public enum CodingKeys: String, CodingKey {
+        case add = "ADD"
+        case remove = "REMOVE"
+    }
+    
 }

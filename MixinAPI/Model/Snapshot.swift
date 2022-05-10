@@ -9,31 +9,31 @@ import Foundation
 
 public struct Snapshot {
     
-    public let snapshotId: String
+    public let snapshotID: String
     public let type: String
-    public let assetId: String
+    public let assetID: String
     public let amount: String
-    public let opponentId: String?
+    public let opponentID: String?
     public let transactionHash: String?
     public let sender: String?
     public let receiver: String?
     public let memo: String?
     public let confirmations: Int?
-    public let traceId: String?
+    public let traceID: String?
     public var createdAt: String
     
-    public init(snapshotId: String, type: String, assetId: String, amount: String, transactionHash: String?, sender: String?, opponentId: String?, memo: String?, receiver: String?, confirmations: Int?, traceId: String?, createdAt: String) {
-        self.snapshotId = snapshotId
+    public init(snapshotID: String, type: String, assetID: String, amount: String, transactionHash: String?, sender: String?, opponentID: String?, memo: String?, receiver: String?, confirmations: Int?, traceID: String?, createdAt: String) {
+        self.snapshotID = snapshotID
         self.type = type
-        self.assetId = assetId
+        self.assetID = assetID
         self.amount = amount
         self.transactionHash = transactionHash
         self.sender = sender
-        self.opponentId = opponentId
+        self.opponentID = opponentID
         self.memo = memo
         self.receiver = receiver
         self.confirmations = confirmations
-        self.traceId = traceId
+        self.traceID = traceID
         self.createdAt = createdAt
     }
     
@@ -42,17 +42,17 @@ public struct Snapshot {
 extension Snapshot: Decodable {
     
     public enum CodingKeys: String, CodingKey {
-        case snapshotId = "snapshot_id"
+        case snapshotID = "snapshot_id"
         case type
-        case assetId = "asset_id"
+        case assetID = "asset_id"
         case amount
-        case opponentId = "opponent_id"
+        case opponentID = "opponent_id"
         case transactionHash = "transaction_hash"
         case sender
         case receiver
         case memo
         case confirmations
-        case traceId = "trace_id"
+        case traceID = "trace_id"
         case createdAt = "created_at"
     }
     

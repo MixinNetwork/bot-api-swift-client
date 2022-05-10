@@ -14,12 +14,12 @@ public enum AlbumCategory: String, Codable {
 
 public struct Album {
     
-    public let albumId: String
+    public let albumID: String
     public let name: String
-    public let iconUrl: String
+    public let iconURL: String
     public let createdAt: String
     public let updatedAt: String
-    public let userId: String
+    public let userID: String
     public let category: String
     public let description: String
     public let banner: String?
@@ -32,12 +32,12 @@ public struct Album {
 extension Album: Codable {
     
     public enum CodingKeys: String, CodingKey {
-        case albumId = "album_id"
+        case albumID = "album_id"
         case name
-        case iconUrl = "icon_url"
+        case iconURL = "icon_url"
         case createdAt = "created_at"
         case updatedAt = "update_at"
-        case userId = "user_id"
+        case userID = "user_id"
         case category
         case description
         case banner
@@ -48,12 +48,12 @@ extension Album: Codable {
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        albumId = try container.decode(String.self, forKey: .albumId)
+        albumID = try container.decode(String.self, forKey: .albumID)
         name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
-        iconUrl = try container.decodeIfPresent(String.self, forKey: .iconUrl) ?? ""
+        iconURL = try container.decodeIfPresent(String.self, forKey: .iconURL) ?? ""
         createdAt = try container.decodeIfPresent(String.self, forKey: .createdAt) ?? ""
         updatedAt = try container.decodeIfPresent(String.self, forKey: .updatedAt) ?? ""
-        userId = try container.decodeIfPresent(String.self, forKey: .userId) ?? ""
+        userID = try container.decodeIfPresent(String.self, forKey: .userID) ?? ""
         category = try container.decodeIfPresent(String.self, forKey: .category) ?? ""
         description = try container.decodeIfPresent(String.self, forKey: .description) ?? ""
         banner = try container.decodeIfPresent(String.self, forKey: .banner)

@@ -9,7 +9,7 @@ import Foundation
 
 public struct PendingDeposit {
     
-    public let transactionId: String
+    public let transactionID: String
     public let transactionHash: String
     public let sender: String
     public let amount: String
@@ -22,7 +22,7 @@ public struct PendingDeposit {
 extension PendingDeposit: Decodable {
     
     enum CodingKeys: String, CodingKey {
-        case transactionId = "transaction_id"
+        case transactionID = "transaction_id"
         case transactionHash = "transaction_hash"
         case sender
         case amount

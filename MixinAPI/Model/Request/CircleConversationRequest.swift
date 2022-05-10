@@ -10,8 +10,8 @@ import Foundation
 public struct CircleConversationRequest {
     
     public let action: CircleConversationAction
-    public let conversationId: String
-    public let userId: String?
+    public let conversationID: String
+    public let userID: String?
     
 }
 
@@ -19,8 +19,8 @@ extension CircleConversationRequest: Encodable {
     
     public enum CodingKeys: String, CodingKey {
         case action
-        case conversationId = "conversation_id"
-        case userId = "user_id"
+        case conversationID = "conversation_id"
+        case userID = "user_id"
     }
     
 }

@@ -9,28 +9,28 @@ import Foundation
 
 public struct StickerResponse {
     
-    public let stickerId: String
+    public let stickerID: String
     public let name: String
-    public let assetUrl: String
+    public let assetURL: String
     public let assetType: String
     public let assetWidth: Int
     public let assetHeight: Int
     public let createdAt: String
-    public let albumId: String?
+    public let albumID: String?
     
 }
 
 extension StickerResponse: Decodable {
     
     enum CodingKeys: String, CodingKey {
-        case stickerId = "sticker_id"
+        case stickerID = "sticker_id"
         case name
-        case assetUrl = "asset_url"
+        case assetURL = "asset_url"
         case assetType = "asset_type"
         case assetWidth = "asset_width"
         case assetHeight = "asset_height"
         case createdAt = "created_at"
-        case albumId = "album_id"
+        case albumID = "album_id"
     }
     
 }

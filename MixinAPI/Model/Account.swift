@@ -25,17 +25,17 @@ public struct Account {
         case nobody = "NOBODY"
     }
     
-    public let userId: String
-    public let sessionId: String
+    public let userID: String
+    public let sessionID: String
     public let type: String
     public let identityNumber: String
     public let fullName: String
     public let biography: String
-    public let avatarUrl: String
+    public let avatarURL: String
     public let phone: String
     public let authenticationToken: String
-    public let codeId: String
-    public let codeUrl: String
+    public let codeID: String
+    public let codeURL: String
     public let reputation: Int
     public let createdAt: String
     public let receiveMessageSource: String
@@ -53,17 +53,17 @@ public struct Account {
 extension Account: Codable {
     
     public enum CodingKeys: String, CodingKey {
-        case userId = "user_id"
-        case sessionId = "session_id"
+        case userID = "user_id"
+        case sessionID = "session_id"
         case type
         case identityNumber = "identity_number"
         case fullName = "full_name"
         case biography
-        case avatarUrl = "avatar_url"
+        case avatarURL = "avatar_url"
         case phone
         case authenticationToken = "authentication_token"
-        case codeId = "code_id"
-        case codeUrl = "code_url"
+        case codeID = "code_id"
+        case codeURL = "code_url"
         case reputation
         case createdAt = "created_at"
         case receiveMessageSource = "receive_message_source"
@@ -79,16 +79,16 @@ extension Account: Codable {
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        userId = try container.decode(String.self, forKey: .userId)
-        sessionId = try container.decode(String.self, forKey: .sessionId)
+        userID = try container.decode(String.self, forKey: .userID)
+        sessionID = try container.decode(String.self, forKey: .sessionID)
         identityNumber = try container.decode(String.self, forKey: .identityNumber)
         type = try container.decodeIfPresent(String.self, forKey: .type) ?? ""
         fullName = try container.decodeIfPresent(String.self, forKey: .fullName) ?? ""
         biography = try container.decodeIfPresent(String.self, forKey: .biography) ?? ""
-        avatarUrl = try container.decodeIfPresent(String.self, forKey: .avatarUrl) ?? ""
+        avatarURL = try container.decodeIfPresent(String.self, forKey: .avatarURL) ?? ""
         phone = try container.decodeIfPresent(String.self, forKey: .phone) ?? ""
         authenticationToken = try container.decodeIfPresent(String.self, forKey: .authenticationToken) ?? ""
-        codeId = try container.decodeIfPresent(String.self, forKey: .codeId) ?? ""
+        codeID = try container.decodeIfPresent(String.self, forKey: .codeID) ?? ""
         reputation = try container.decodeIfPresent(Int.self, forKey: .reputation) ?? 0
         createdAt = try container.decodeIfPresent(String.self, forKey: .createdAt) ?? ""
         receiveMessageSource = try container.decodeIfPresent(String.self, forKey: .receiveMessageSource) ?? ""
@@ -96,7 +96,7 @@ extension Account: Codable {
         acceptSearchSource = try container.decodeIfPresent(String.self, forKey: .acceptSearchSource) ?? ""
         hasPIN = try container.decodeIfPresent(Bool.self, forKey: .hasPIN) ?? false
         hasEmergencyContact = try container.decodeIfPresent(Bool.self, forKey: .hasEmergencyContact) ?? false
-        codeUrl = try container.decodeIfPresent(String.self, forKey: .codeUrl) ?? ""
+        codeURL = try container.decodeIfPresent(String.self, forKey: .codeURL) ?? ""
         pinToken = try container.decodeIfPresent(String.self, forKey: .pinToken) ?? ""
         fiatCurrency = try container.decodeIfPresent(String.self, forKey: .fiatCurrency) ?? ""
         transferNotificationThreshold = try container.decodeIfPresent(Double.self, forKey: .transferNotificationThreshold) ?? 0

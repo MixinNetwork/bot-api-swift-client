@@ -13,9 +13,9 @@ public final class AuthorizeWorker: Worker {
         get(path: "/authorizations", completion: completion)
     }
     
-    public func cancel(clientId: String, completion: @escaping (API.Result<Empty>) -> Void) {
+    public func cancel(clientID: String, completion: @escaping (API.Result<Empty>) -> Void) {
         post(path: "/oauth/cancel",
-             parameters: ["client_id": clientId],
+             parameters: ["client_id": clientID],
              completion: completion)
     }
     

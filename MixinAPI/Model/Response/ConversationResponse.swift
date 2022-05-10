@@ -9,45 +9,45 @@ import Foundation
 
 public struct ConversationResponse: Codable {
     
-    public let conversationId: String
+    public let conversationID: String
     public let name: String
     public let category: String
-    public let iconUrl: String
+    public let iconURL: String
     public let announcement: String
     public let createdAt: String
     public let participants: [ConversationResponse.Participant]
     public let participantSessions: [UserSession]?
-    public let codeUrl: String
-    public let creatorId: String
+    public let codeURL: String
+    public let creatorID: String
     public let muteUntil: String
     public let circles: [ConversationResponse.Circle]
     
     enum CodingKeys: String, CodingKey {
-        case conversationId = "conversation_id"
+        case conversationID = "conversation_id"
         case name
         case category
-        case iconUrl = "icon_url"
+        case iconURL = "icon_url"
         case announcement
         case createdAt = "created_at"
         case participants
-        case codeUrl = "code_url"
-        case creatorId = "creator_id"
+        case codeURL = "code_url"
+        case creatorID = "creator_id"
         case muteUntil = "mute_until"
         case participantSessions = "participant_sessions"
         case circles = "circles"
     }
     
-    public init(conversationId: String, name: String, category: String, iconUrl: String, announcement: String, createdAt: String, participants: [ConversationResponse.Participant], participantSessions: [UserSession]?, codeUrl: String, creatorId: String, muteUntil: String, circles: [ConversationResponse.Circle]) {
-        self.conversationId = conversationId
+    public init(conversationID: String, name: String, category: String, iconURL: String, announcement: String, createdAt: String, participants: [ConversationResponse.Participant], participantSessions: [UserSession]?, codeURL: String, creatorID: String, muteUntil: String, circles: [ConversationResponse.Circle]) {
+        self.conversationID = conversationID
         self.name = name
         self.category = category
-        self.iconUrl = iconUrl
+        self.iconURL = iconURL
         self.announcement = announcement
         self.createdAt = createdAt
         self.participants = participants
         self.participantSessions = participantSessions
-        self.codeUrl = codeUrl
-        self.creatorId = creatorId
+        self.codeURL = codeURL
+        self.creatorID = creatorID
         self.muteUntil = muteUntil
         self.circles = circles
     }
@@ -60,12 +60,12 @@ extension ConversationResponse {
     public struct Circle: Codable {
         
         public let type: String
-        public let circleId: String
+        public let circleID: String
         public let createdAt: String
         
         public enum CodingKeys: String, CodingKey {
             case type
-            case circleId = "circle_id"
+            case circleID = "circle_id"
             case createdAt = "created_at"
         }
         
@@ -73,18 +73,18 @@ extension ConversationResponse {
     
     public struct Participant: Codable {
         
-        public let userId: String
+        public let userID: String
         public let role: String
         public let createdAt: String
         
         enum CodingKeys: String, CodingKey {
-            case userId = "user_id"
+            case userID = "user_id"
             case role
             case createdAt = "created_at"
         }
         
-        public init(userId: String, role: String, createdAt: String) {
-            self.userId = userId
+        public init(userID: String, role: String, createdAt: String) {
+            self.userID = userID
             self.role = role
             self.createdAt = createdAt
         }

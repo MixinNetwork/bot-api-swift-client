@@ -13,20 +13,20 @@ public final class AssetWorker: Worker {
         
         static let assets = "/assets"
         
-        static func assets(assetId: String) -> String {
-            "/assets/" + assetId
+        static func assets(assetID: String) -> String {
+            "/assets/" + assetID
         }
         
-        static func snapshots(limit: Int, offset: String? = nil, assetId: String? = nil, opponentId: String? = nil, destination: String? = nil, tag: String? = nil) -> String {
+        static func snapshots(limit: Int, offset: String? = nil, assetID: String? = nil, opponentID: String? = nil, destination: String? = nil, tag: String? = nil) -> String {
             var path = "/snapshots?limit=\(limit)"
             if let offset = offset {
                 path += "&offset=\(offset)"
             }
-            if let assetId = assetId {
-                path += "&asset=\(assetId)"
+            if let assetID = assetID {
+                path += "&asset=\(assetID)"
             }
-            if let opponentId = opponentId {
-                path += "&opponent=\(opponentId)"
+            if let opponentID = opponentID {
+                path += "&opponent=\(opponentID)"
             }
             if let destination = destination {
                 path += "&destination=\(destination)"
@@ -47,34 +47,34 @@ public final class AssetWorker: Worker {
         get(path: Path.assets)
     }
     
-    public func asset(assetId: String, completion: @escaping (API.Result<Asset>) -> Void) {
-        get(path: Path.assets(assetId: assetId), completion: completion)
+    public func asset(assetID: String, completion: @escaping (API.Result<Asset>) -> Void) {
+        get(path: Path.assets(assetID: assetID), completion: completion)
     }
     
-    public func asset(assetId: String) -> API.Result<Asset> {
-        get(path: Path.assets(assetId: assetId))
+    public func asset(assetID: String) -> API.Result<Asset> {
+        get(path: Path.assets(assetID: assetID))
     }
     
-    public func snapshots(limit: Int, offset: String? = nil, assetId: String? = nil, opponentId: String? = nil, destination: String? = nil, tag: String? = nil) -> API.Result<[Snapshot]> {
+    public func snapshots(limit: Int, offset: String? = nil, assetID: String? = nil, opponentID: String? = nil, destination: String? = nil, tag: String? = nil) -> API.Result<[Snapshot]> {
         assert(limit <= 500)
-        let path = Path.snapshots(limit: limit, offset: offset, assetId: assetId, opponentId: opponentId, destination: destination, tag: tag)
+        let path = Path.snapshots(limit: limit, offset: offset, assetID: assetID, opponentID: opponentID, destination: destination, tag: tag)
         return get(path: path)
     }
     
-    public func snapshots(limit: Int, assetId: String, destination: String, tag: String, completion: @escaping (API.Result<[Snapshot]>) -> Void) {
-        get(path: Path.snapshots(limit: limit, assetId: assetId, destination: destination, tag: tag), completion: completion)
+    public func snapshots(limit: Int, assetID: String, destination: String, tag: String, completion: @escaping (API.Result<[Snapshot]>) -> Void) {
+        get(path: Path.snapshots(limit: limit, assetID: assetID, destination: destination, tag: tag), completion: completion)
     }
     
-    public func snapshots(limit: Int, assetId: String, completion: @escaping (API.Result<[Snapshot]>) -> Void) {
-        get(path: Path.snapshots(limit: limit, offset: nil, assetId: assetId, opponentId: nil), completion: completion)
+    public func snapshots(limit: Int, assetID: String, completion: @escaping (API.Result<[Snapshot]>) -> Void) {
+        get(path: Path.snapshots(limit: limit, offset: nil, assetID: assetID, opponentID: nil), completion: completion)
     }
     
-    public func fee(assetId: String, completion: @escaping (API.Result<Fee>) -> Void) {
-        get(path: "/assets/\(assetId)/fee", completion: completion)
+    public func fee(assetID: String, completion: @escaping (API.Result<Fee>) -> Void) {
+        get(path: "/assets/\(assetID)/fee", completion: completion)
     }
     
-    public func pendingDeposits(assetId: String, destination: String, tag: String, completion: @escaping (API.Result<[PendingDeposit]>) -> Void) {
-        get(path: "/external/transactions?asset=\(assetId)&destination=\(destination)&tag=\(tag)", completion: completion)
+    public func pendingDeposits(assetID: String, destination: String, tag: String, completion: @escaping (API.Result<[PendingDeposit]>) -> Void) {
+        get(path: "/external/transactions?asset=\(assetID)&destination=\(destination)&tag=\(tag)", completion: completion)
     }
     
     public func search(keyword: String) -> API.Result<[Asset]>  {

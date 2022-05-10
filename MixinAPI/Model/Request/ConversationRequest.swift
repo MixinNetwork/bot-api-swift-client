@@ -9,7 +9,7 @@ import Foundation
 
 public struct ConversationRequest: Encodable {
     
-    public let conversationId: String
+    public let conversationID: String
     public let name: String?
     public let category: String?
     public let participants: [ParticipantRequest]?
@@ -17,7 +17,7 @@ public struct ConversationRequest: Encodable {
     public let announcement: String?
     
     enum CodingKeys: String, CodingKey {
-        case conversationId = "conversation_id"
+        case conversationID = "conversation_id"
         case name
         case category
         case participants
@@ -25,8 +25,8 @@ public struct ConversationRequest: Encodable {
         case announcement
     }
     
-    public init(conversationId: String, name: String?, category: String?, participants: [ParticipantRequest]?, duration: Int64?, announcement: String?) {
-        self.conversationId = conversationId
+    public init(conversationID: String, name: String?, category: String?, participants: [ParticipantRequest]?, duration: Int64?, announcement: String?) {
+        self.conversationID = conversationID
         self.name = name
         self.category = category
         self.participants = participants

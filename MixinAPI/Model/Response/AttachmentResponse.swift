@@ -9,9 +9,9 @@ import Foundation
 
 public struct AttachmentResponse {
     
-    public let attachmentId: String
-    public let uploadUrl: String?
-    public let viewUrl: String?
+    public let attachmentID: String
+    public let uploadURL: String?
+    public let viewURL: String?
     public let createdAt: String?
     
 }
@@ -19,9 +19,9 @@ public struct AttachmentResponse {
 extension AttachmentResponse: Decodable {
     
     enum CodingKeys: String, CodingKey {
-        case attachmentId = "attachment_id"
-        case uploadUrl = "upload_url"
-        case viewUrl = "view_url"
+        case attachmentID = "attachment_id"
+        case uploadURL = "upload_url"
+        case viewURL = "view_url"
         case createdAt = "created_at"
     }
     

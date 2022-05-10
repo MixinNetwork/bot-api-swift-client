@@ -10,37 +10,37 @@ import Foundation
 public final class WithdrawalWorker: Worker {
     
     private enum Path {
-        static func addresses(assetId: String) -> String {
-            "/assets/\(assetId)/addresses"
+        static func addresses(assetID: String) -> String {
+            "/assets/\(assetID)/addresses"
         }
         
         static let addresses = "/addresses"
-        static func address(addressId: String) -> String {
-            "/addresses/\(addressId)"
+        static func address(addressID: String) -> String {
+            "/addresses/\(addressID)"
         }
         
         static let withdrawals = "/withdrawals"
-        static func delete(addressId: String) -> String {
-            "/addresses/\(addressId)/delete"
+        static func delete(addressID: String) -> String {
+            "/addresses/\(addressID)/delete"
         }
     }
     
-    public func address(addressId: String) -> API.Result<Address> {
-        return get(path: Path.address(addressId: addressId))
+    public func address(addressID: String) -> API.Result<Address> {
+        return get(path: Path.address(addressID: addressID))
     }
     
-    public func address(addressId: String, completion: @escaping (API.Result<Address>) -> Void) {
-        get(path: Path.address(addressId: addressId), completion: completion)
+    public func address(addressID: String, completion: @escaping (API.Result<Address>) -> Void) {
+        get(path: Path.address(addressID: addressID), completion: completion)
     }
     
-    public func addresses(assetId: String, completion: @escaping (API.Result<[Address]>) -> Void) {
-        get(path: Path.addresses(assetId: assetId), completion: completion)
+    public func addresses(assetID: String, completion: @escaping (API.Result<[Address]>) -> Void) {
+        get(path: Path.addresses(assetID: assetID), completion: completion)
     }
     
     public func save(address: AddressRequest, completion: @escaping (API.Result<Address>) -> Void) {
-        session.encryptPIN(address.pin, onFailure: completion) { encryptedPin in
+        session.encryptPIN(address.pin, onFailure: completion) { encryptedPIN in
             var address = address
-            address.pin = encryptedPin
+            address.pin = encryptedPIN
             self.post(path: Path.addresses,
                          parameters: address,
                          options: .disableRetryOnRequestSigningTimeout,
@@ -49,9 +49,9 @@ public final class WithdrawalWorker: Worker {
     }
     
     public func withdrawal(withdrawal: WithdrawalRequest, completion: @escaping (API.Result<Snapshot>) -> Void) {
-        session.encryptPIN(withdrawal.pin, onFailure: completion) { encryptedPin in
+        session.encryptPIN(withdrawal.pin, onFailure: completion) { encryptedPIN in
             var withdrawal = withdrawal
-            withdrawal.pin = encryptedPin
+            withdrawal.pin = encryptedPIN
             self.post(path: Path.withdrawals,
                          parameters: withdrawal,
                          options: .disableRetryOnRequestSigningTimeout,
@@ -59,10 +59,10 @@ public final class WithdrawalWorker: Worker {
         }
     }
     
-    public func delete(addressId: String, pin: String, completion: @escaping (API.Result<Empty>) -> Void) {
-        session.encryptPIN(pin, onFailure: completion) { encryptedPin in
-            self.post(path: Path.delete(addressId: addressId),
-                         parameters: ["pin_base64": encryptedPin],
+    public func delete(addressID: String, pin: String, completion: @escaping (API.Result<Empty>) -> Void) {
+        session.encryptPIN(pin, onFailure: completion) { encryptedPIN in
+            self.post(path: Path.delete(addressID: addressID),
+                         parameters: ["pin_base64": encryptedPIN],
                          options: .disableRetryOnRequestSigningTimeout,
                          completion: completion)
         }

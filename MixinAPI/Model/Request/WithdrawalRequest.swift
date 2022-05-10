@@ -9,24 +9,24 @@ import Foundation
 
 public struct WithdrawalRequest: Codable {
     
-    public let addressId: String
+    public let addressID: String
     public let amount: String
-    public let traceId: String
+    public let traceID: String
     public var pin: String
     public let memo: String
     
     enum CodingKeys: String, CodingKey {
-        case addressId = "address_id"
+        case addressID = "address_id"
         case amount
-        case traceId = "trace_id"
+        case traceID = "trace_id"
         case memo
         case pin = "pin_base64"
     }
     
-    public init(addressId: String, amount: String, traceId: String, pin: String, memo: String) {
-        self.addressId = addressId
+    public init(addressID: String, amount: String, traceID: String, pin: String, memo: String) {
+        self.addressID = addressID
         self.amount = amount
-        self.traceId = traceId
+        self.traceID = traceID
         self.pin = pin
         self.memo = memo
     }

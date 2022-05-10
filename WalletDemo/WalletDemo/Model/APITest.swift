@@ -89,7 +89,7 @@ class APITest: ObservableObject {
                 }
             }),
             Case(name: "Change Phone Number", work: { onFinished in
-                api.account.changePhoneNumber(verificationId: uuid, code: "1234", pin: self.pin) { result in
+                api.account.changePhoneNumber(verificationID: uuid, code: "1234", pin: self.pin) { result in
                     self.validate(result: result, expect: .failure(RemoteError.invalidPhoneNumber), onFinished: onFinished)
                 }
             }),

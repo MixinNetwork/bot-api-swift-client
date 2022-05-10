@@ -31,8 +31,8 @@ public final class CircleWorker: Worker {
         get(path: Path.circle(id: id), completion: completion)
     }
     
-    public func circleConversations(circleId: String, offset: String?, limit: Int) -> API.Result<[CircleConversation]> {
-        var path = "/circles/\(circleId)/conversations?limit=\(limit)"
+    public func circleConversations(circleID: String, offset: String?, limit: Int) -> API.Result<[CircleConversation]> {
+        var path = "/circles/\(circleID)/conversations?limit=\(limit)"
         if let offset = offset {
             path += "&offset=\(offset)"
         }

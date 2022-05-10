@@ -9,11 +9,11 @@ import Foundation
 
 public struct OneTimePreKey {
     
-    public let keyId: UInt32
+    public let keyID: UInt32
     public let preKey: String?
     
-    public init(keyId: UInt32, preKey: Data) {
-        self.keyId = keyId
+    public init(keyID: UInt32, preKey: Data) {
+        self.keyID = keyID
         self.preKey = preKey.base64EncodedString()
     }
     
@@ -22,7 +22,7 @@ public struct OneTimePreKey {
 extension OneTimePreKey: Encodable {
     
     public enum CodingKeys: String, CodingKey {
-        case keyId = "key_id"
+        case keyID = "key_id"
         case preKey = "pub_key"
     }
     

@@ -9,16 +9,16 @@ import Foundation
 
 public final class SnapshotWorker: Worker {
     
-    public func snapshot(snapshotId: String) -> API.Result<Snapshot> {
-        get(path: "/snapshots/\(snapshotId)")
+    public func snapshot(snapshotID: String) -> API.Result<Snapshot> {
+        get(path: "/snapshots/\(snapshotID)")
     }
     
-    public func snapshot(snapshotId: String, completion: @escaping (API.Result<Snapshot>) -> Void) {
-        get(path: "/snapshots/\(snapshotId)", completion: completion)
+    public func snapshot(snapshotID: String, completion: @escaping (API.Result<Snapshot>) -> Void) {
+        get(path: "/snapshots/\(snapshotID)", completion: completion)
     }
     
-    public func trace(traceId: String) -> API.Result<Snapshot> {
-        get(path: "/snapshots/trace/\(traceId)")
+    public func trace(traceID: String) -> API.Result<Snapshot> {
+        get(path: "/snapshots/trace/\(traceID)")
     }
     
 }
