@@ -19,7 +19,6 @@
 		94C60B4C282A52C00013DD54 /* TextFieldAlertModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C60B4B282A52C00013DD54 /* TextFieldAlertModifier.swift */; };
 		94C60B4E282A73B00013DD54 /* ExampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C60B4D282A73B00013DD54 /* ExampleView.swift */; };
 		94C60C0A282A87A90013DD54 /* Example.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C60C09282A87A90013DD54 /* Example.swift */; };
-		94C6F992282532810013DD54 /* PINIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C6F991282532810013DD54 /* PINIterator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,7 +37,6 @@
 		94C60B4B282A52C00013DD54 /* TextFieldAlertModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldAlertModifier.swift; sourceTree = "<group>"; };
 		94C60B4D282A73B00013DD54 /* ExampleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleView.swift; sourceTree = "<group>"; };
 		94C60C09282A87A90013DD54 /* Example.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Example.swift; sourceTree = "<group>"; };
-		94C6F991282532810013DD54 /* PINIterator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PINIterator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,7 +115,6 @@
 			children = (
 				94BE7DB928227D2C00EDC789 /* WalletHost.swift */,
 				94C606E52828FB040013DD54 /* ConsoleOutput.swift */,
-				94C6F991282532810013DD54 /* PINIterator.swift */,
 				94C609D62829128F0013DD54 /* APITest.swift */,
 				94C60C09282A87A90013DD54 /* Example.swift */,
 			);
@@ -239,7 +236,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				94BE7CFE2822790D00EDC789 /* LoginView.swift in Sources */,
-				94C6F992282532810013DD54 /* PINIterator.swift in Sources */,
 				94C609D72829128F0013DD54 /* APITest.swift in Sources */,
 				94C60C0A282A87A90013DD54 /* Example.swift in Sources */,
 				94B3AA682819B859006B60C1 /* APITestView.swift in Sources */,
