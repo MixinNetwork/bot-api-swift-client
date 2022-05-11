@@ -99,7 +99,14 @@ class APITest: ObservableObject {
                 }
             })
         ])
-        self.caseGroups = [accountGroup]
+        let userGroup = CaseGroup(caption: "User", cases: [
+            Case(name: "Show", work: { (onFinished) in
+                api.user.showUser(userID: "773e5e77-4107-45c2-b648-8fc722ed77f5") { result in
+                    self.validate(result: result, expect: .success, onFinished: onFinished)
+                }
+            }),
+        ])
+        self.caseGroups = [accountGroup, userGroup]
         self.receivers = caseGroups.enumerated().flatMap { (groupIndex, group) in
             group.cases.enumerated().map { (caseIndex, testCase) in
                 testCase.$state.sink { newState in
