@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class AccountWorker: Worker {
+public class AccountWorker: Worker {
     
     public enum LogCategory {
         case incorrectPIN
@@ -36,62 +36,11 @@ public final class AccountWorker: Worker {
     }
     
     private enum Path {
-        
         static let me = "/me"
-        static let verifications = "/verifications"
-        
-        static func verifications(id: String) -> String {
-            return "/verifications/\(id)"
-        }
-        
     }
     
     public func me(completion: @escaping (API.Result<Account>) -> Void) {
         get(path: Path.me, completion: completion)
-    }
-    
-    @discardableResult
-    public func sendCode(to phoneNumber: String, captchaToken: CaptchaToken?, purpose: VerificationPurpose, completion: @escaping (API.Result<VerificationResponse>) -> Void) -> Request {
-        var param = [
-            "phone": phoneNumber,
-            "purpose": purpose.rawValue
-        ]
-        switch captchaToken {
-        case let .reCaptcha(token):
-            param["g_recaptcha_response"] = token
-        case let .hCaptcha(token):
-            param["hcaptcha_response"] = token
-        case .none:
-            break
-        }
-        if let bundleIdentifier = Bundle.main.bundleIdentifier {
-            param["package_name"] = bundleIdentifier
-        }
-        return post(path: Path.verifications,
-                    parameters: param,
-                    options: .authIndependent,
-                    completion: completion)
-    }
-    
-    public func login(verificationID: String, code: String, registrationID: Int, sessionSecret: String, completion: @escaping (API.Result<Account>) -> Void) {
-        let request = AccountRequest.session(code: code,
-                                             registrationID: registrationID,
-                                             sessionSecret: sessionSecret,
-                                             client: session.client)
-        post(path: Path.verifications(id: verificationID),
-             parameters: request,
-             options: .authIndependent,
-             completion: completion)
-    }
-    
-    public func changePhoneNumber(verificationID: String, code: String, pin: String, completion: @escaping (API.Result<Account>) -> Void) {
-        session.encryptPIN(pin, onFailure: completion) { pin in
-            let request = AccountRequest.phone(code: code, pin: pin, client: self.session.client)
-            self.post(path: Path.verifications(id: verificationID),
-                      parameters: request,
-                      options: .disableRetryOnRequestSigningTimeout,
-                      completion: completion)
-        }
     }
     
     public func update(fullName: String? = nil, biography: String? = nil, avatarBase64: String? = nil, completion: @escaping (API.Result<Account>) -> Void) {
@@ -188,31 +137,6 @@ public final class AccountWorker: Worker {
         }
         
         get(path: path, completion: completion)
-    }
-    
-    public func logoutSession(sessionID: String, completion: @escaping (API.Result<Empty>) -> Void) {
-        post(path: "/logout", parameters: ["session_id": sessionID], completion: completion)
-    }
-    
-    public func deactiveVerification(verificationID: String, code: String, completion: @escaping (API.Result<Empty>) -> Void) {
-        let parameters = [
-            "code": code,
-            "purpose": VerificationPurpose.deactivated.rawValue
-        ]
-        post(path: Path.verifications(id: verificationID),
-             parameters: parameters,
-             options: .disableRetryOnRequestSigningTimeout,
-             completion: completion)
-    }
-    
-    public func deactiveAccount(pin: String, verificationID: String, completion: @escaping (API.Result<Empty>) -> Void) {
-        session.encryptPIN(pin, onFailure: completion) { pin in
-            let parameters = ["pin_base64": pin, "verification_id": verificationID]
-            self.post(path: "/me/deactivate",
-                      parameters: parameters,
-                      options: .disableRetryOnRequestSigningTimeout,
-                      completion: completion)
-        }
     }
     
 }
