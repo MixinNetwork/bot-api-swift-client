@@ -109,11 +109,8 @@ struct LoginView: View {
             Section {
                 switch session {
                 case .success(let session):
-                    NavigationLink("Example") {
-                        ExampleView(session: session)
-                    }
-                    NavigationLink("API Test") {
-                        APITestView(session: session)
+                    NavigationLink("Login") {
+                        HomeView()
                     }
                 case .failure(let error):
                     Text("Invalid Session")

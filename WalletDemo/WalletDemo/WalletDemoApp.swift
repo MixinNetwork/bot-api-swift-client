@@ -13,7 +13,7 @@ struct WalletDemoApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationView {
-                LoginView()
+                HomeView()
             }
         }
     }
