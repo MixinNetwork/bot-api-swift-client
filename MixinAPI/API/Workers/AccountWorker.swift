@@ -75,10 +75,6 @@ public class AccountWorker: Worker {
         post(path: "/session/secret", parameters: ["session_secret": sessionSecret])
     }
     
-    public func preferences(preferenceRequest: UserPreferenceRequest, completion: @escaping (API.Result<Account>) -> Void) {
-        post(path: "/me/preferences", parameters: preferenceRequest, completion: completion)
-    }
-    
     public func verify(pin: String, completion: @escaping (API.Result<Empty>) -> Void) {
         session.encryptPIN(pin, onFailure: completion) { pin in
             self.post(path: "/pin/verify",
