@@ -24,41 +24,12 @@ extension Data {
 
 struct LoginView: View {
     
-    private enum LoginError: Error {
-        case invalidPINToken
-        case invalidPrivateKey
-    }
+    @ObservedObject var viewModel: LoginViewModel
     
     @State private var uid = "(None)"
     @State private var sid = "(None)"
     @State private var pinToken = "(None)"
     @State private var key = "(None)"
-    
-    private var session: Result<API.AuthenticatedSession, Error> {
-        do {
-            guard let pinToken = Data(base64URLEncoded: pinToken) else {
-                throw LoginError.invalidPINToken
-            }
-            guard let rawKey = Data(base64URLEncoded: key)?.prefix(32) else {
-                throw LoginError.invalidPrivateKey
-            }
-            let privateKey = try Ed25519PrivateKey(rawRepresentation: rawKey)
-            let client = Client(userAgent: "WalletDemo 0.1.0")
-            let iterator = CurrentTimePINIterator()
-            let consoleOutput = ConsoleOutput()
-            let session = API.AuthenticatedSession(userID: uid,
-                                                   sessionID: sid,
-                                                   pinToken: pinToken,
-                                                   privateKey: privateKey,
-                                                   client: client,
-                                                   hostStorage: WalletHost(),
-                                                   pinIterator: iterator,
-                                                   analytic: consoleOutput)
-            return .success(session)
-        } catch {
-            return .failure(error)
-        }
-    }
     
     var body: some View {
         Form {
@@ -85,17 +56,6 @@ struct LoginView: View {
             }
             
             Section {
-                Text(key)
-                Button("Paste") {
-                    if let string = UIPasteboard.general.string {
-                        key = string
-                    }
-                }
-            } header: {
-                Text("PIN Token")
-            }
-            
-            Section {
                 Text(pinToken)
                 Button("Paste") {
                     if let string = UIPasteboard.general.string {
@@ -103,24 +63,42 @@ struct LoginView: View {
                     }
                 }
             } header: {
+                Text("PIN Token")
+            }
+            
+            Section {
+                Text(key)
+                Button("Paste") {
+                    if let string = UIPasteboard.general.string {
+                        key = string
+                    }
+                }
+            } header: {
                 Text("Private Key")
             }
             
             Section {
-                switch session {
-                case .success(let session):
-                    NavigationLink("Login") {
-                        HomeView()
+                Button {
+                    viewModel.login(uid: uid, sid: sid, pinToken: pinToken, privateKey: key)
+                } label: {
+                    HStack {
+                        Text("Login")
+                        if viewModel.isLoggingIn {
+                            Spacer()
+                            ProgressView()
+                        }
                     }
-                case .failure(let error):
-                    Text("Invalid Session")
-                        .foregroundColor(.red)
-                    Text(error.localizedDescription)
                 }
             }
         }
-        .navigationTitle("Session")
+        .navigationTitle("Login")
         .listStyle(GroupedListStyle())
+        .disabled(viewModel.isLoggingIn)
+        .alert(isPresented: $viewModel.isPresentingError) {
+            Alert(title: Text("Failed"),
+                  message: Text(viewModel.errorDescription),
+                  dismissButton: .cancel())
+        }
     }
     
 }

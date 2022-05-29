@@ -39,8 +39,8 @@ public final class AssetWorker: Worker {
         
     }
     
-    public func assets(completion: @escaping (API.Result<[Asset]>) -> Void) {
-        get(path: Path.assets, completion: completion)
+    public func assets(queue: DispatchQueue = .main, completion: @escaping (API.Result<[Asset]>) -> Void) {
+        get(path: Path.assets, queue: queue, completion: completion)
     }
     
     public func assets() -> API.Result<[Asset]> {

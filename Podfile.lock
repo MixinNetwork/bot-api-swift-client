@@ -1,13 +1,21 @@
 PODS:
   - MixinAPI (0.1.0):
     - Sodium
+  - SDWebImage (5.12.5):
+    - SDWebImage/Core (= 5.12.5)
+  - SDWebImage/Core (5.12.5)
+  - SDWebImageSwiftUI (2.0.2):
+    - SDWebImage (~> 5.10)
   - Sodium (0.9.1)
 
 DEPENDENCIES:
   - MixinAPI (from `./`)
+  - SDWebImageSwiftUI
 
 SPEC REPOS:
   trunk:
+    - SDWebImage
+    - SDWebImageSwiftUI
     - Sodium
 
 EXTERNAL SOURCES:
@@ -16,8 +24,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   MixinAPI: fb37294e3bca37f284acee633c1be5fc2030a0d2
+  SDWebImage: 0905f1b7760fc8ac4198cae0036600d67478751e
+  SDWebImageSwiftUI: 8a3923c95108312b03a599ec1498754af55a6819
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
 
-PODFILE CHECKSUM: 60703d9ed1c3c3e5b401d7287acb524af21ef60a
+PODFILE CHECKSUM: 2898cee1d824efc49ca65c6d91abf76fec40e8c5
 
 COCOAPODS: 1.11.3

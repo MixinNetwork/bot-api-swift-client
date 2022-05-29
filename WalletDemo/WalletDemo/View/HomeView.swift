@@ -6,30 +6,46 @@
 //
 
 import SwiftUI
+import MixinAPI
 
 struct HomeView: View {
     
+    private let api: API
+    
+    private var account: Account
+    
+    @StateObject private var walletViewModel: WalletViewModel
+    
+    @State private var isPINAbsent: Bool
+    
     var body: some View {
-        NavigationView {
-            TabView {
+        TabView {
+            NavigationView {
                 WalletView()
-                    .tabItem {
-                        Label("Wallet", systemImage: "creditcard")
-                    }
+                    .navigationTitle("Wallet")
+            }
+            .tabItem {
+                Label("Wallet", systemImage: "creditcard")
+            }
+            NavigationView {
                 MarketView()
-                    .tabItem {
-                        Label("Market", systemImage: "cart")
-                    }
+                    .navigationTitle("Market")
+            }
+            .tabItem {
+                Label("Market", systemImage: "cart")
             }
         }
+        .environmentObject(walletViewModel)
+//        .sheet(isPresented: $isPINAbsent) {
+//            InitializePINView()
+//        }
     }
     
-}
-
-struct HomeView_Previews: PreviewProvider {
-    
-    static var previews: some View {
-        HomeView()
+    init(api: API, account: Account) {
+        self.api = api
+        self.account = account
+        self._walletViewModel = StateObject(wrappedValue: WalletViewModel(api: api))
+        self.isPINAbsent = !account.hasPIN
     }
     
 }

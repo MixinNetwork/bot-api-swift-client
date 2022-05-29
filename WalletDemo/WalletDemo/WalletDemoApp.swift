@@ -10,10 +10,17 @@ import SwiftUI
 @main
 struct WalletDemoApp: App {
     
+    @StateObject private var viewModel = LoginViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            NavigationView {
-                HomeView()
+            switch viewModel.result {
+            case let .success((api, account)):
+                HomeView(api: api, account: account)
+            default:
+                NavigationView {
+                    LoginView(viewModel: viewModel)
+                }
             }
         }
     }
