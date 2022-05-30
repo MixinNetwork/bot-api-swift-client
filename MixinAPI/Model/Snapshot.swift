@@ -9,7 +9,7 @@ import Foundation
 
 public struct Snapshot {
     
-    public let snapshotID: String
+    public let id: String
     public let type: String
     public let assetID: String
     public let amount: String
@@ -22,8 +22,8 @@ public struct Snapshot {
     public let traceID: String?
     public var createdAt: String
     
-    public init(snapshotID: String, type: String, assetID: String, amount: String, transactionHash: String?, sender: String?, opponentID: String?, memo: String?, receiver: String?, confirmations: Int?, traceID: String?, createdAt: String) {
-        self.snapshotID = snapshotID
+    public init(id: String, type: String, assetID: String, amount: String, transactionHash: String?, sender: String?, opponentID: String?, memo: String?, receiver: String?, confirmations: Int?, traceID: String?, createdAt: String) {
+        self.id = id
         self.type = type
         self.assetID = assetID
         self.amount = amount
@@ -42,7 +42,7 @@ public struct Snapshot {
 extension Snapshot: Decodable {
     
     public enum CodingKeys: String, CodingKey {
-        case snapshotID = "snapshot_id"
+        case id = "snapshot_id"
         case type
         case assetID = "asset_id"
         case amount

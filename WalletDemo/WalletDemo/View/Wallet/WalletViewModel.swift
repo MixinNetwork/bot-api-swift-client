@@ -31,7 +31,7 @@ class WalletViewModel: ObservableObject {
             case .success(var assets):
                 var missingAssetIDs = Set(self.fixedAssetIDs)
                 missingAssetIDs.formUnion(assets.map(\.chainID))
-                missingAssetIDs.subtract(assets.map(\.assetID))
+                missingAssetIDs.subtract(assets.map(\.id))
                 for id in missingAssetIDs {
                     let result = api.asset.asset(assetID: id)
                     switch result {
@@ -57,7 +57,7 @@ class WalletViewModel: ObservableObject {
                 }
                 let viewModels: [AssetViewModel] = assets.map { asset in
                     let chainIconURL: URL?
-                    if let chain = assets.first(where: { $0.assetID == asset.chainID }) {
+                    if let chain = assets.first(where: { $0.id == asset.chainID }) {
                         chainIconURL = URL(string: chain.iconURL)
                     } else {
                         chainIconURL = nil

@@ -9,8 +9,8 @@ import Foundation
 
 public struct Address {
     
+    public let id: String
     public let type: String
-    public let addressID: String
     public let assetID: String
     public let destination: String
     public let label: String
@@ -25,8 +25,8 @@ public struct Address {
 extension Address: Codable {
     
     public enum CodingKeys: String, CodingKey, CaseIterable {
+        case id = "address_id"
         case type
-        case addressID = "address_id"
         case assetID = "asset_id"
         case destination
         case label
@@ -39,7 +39,7 @@ extension Address: Codable {
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        addressID = try container.decode(String.self, forKey: .addressID)
+        id = try container.decode(String.self, forKey: .id)
         type = try container.decodeIfPresent(String.self, forKey: .type) ?? ""
         assetID = try container.decodeIfPresent(String.self, forKey: .assetID) ?? ""
         destination = try container.decodeIfPresent(String.self, forKey: .destination) ?? ""

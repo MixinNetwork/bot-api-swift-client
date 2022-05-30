@@ -9,16 +9,16 @@ import Foundation
 
 public struct CollectibleToken: Codable {
     
+    public let id: String
     public let type: String
-    public let tokenID: String
     public let groupKey: String
     public let tokenKey: String
     public let createdAt: String
     public let meta: Meta
     
     enum CodingKeys: String, CodingKey {
+        case id = "token_id"
         case type
-        case tokenID = "token_id"
         case groupKey = "group"
         case tokenKey = "token"
         case createdAt = "created_at"

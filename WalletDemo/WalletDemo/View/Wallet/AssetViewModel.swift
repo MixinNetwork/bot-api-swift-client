@@ -45,7 +45,7 @@ class AssetViewModel {
         
         let localizedFiatMoneyPrice = "$" + (CurrencyFormatter.localizedString(from: asset.usdPrice, format: .fiatMoneyPrice, sign: .never) ?? "")
         
-        self.init(assetID: asset.assetID,
+        self.init(assetID: asset.id,
                   assetIconURL: URL(string: asset.iconURL),
                   chainIconURL: chainIconURL,
                   symbol: asset.symbol,

@@ -10,7 +10,7 @@ import Foundation
 public class Asset: Codable {
     
     public enum CodingKeys: String, CodingKey {
-        case assetID = "asset_id"
+        case id = "asset_id"
         case type
         case symbol
         case name
@@ -27,7 +27,7 @@ public class Asset: Codable {
         case reserve
     }
     
-    public let assetID: String
+    public let id: String
     public let type: String
     public let symbol: String
     public let name: String
@@ -44,7 +44,7 @@ public class Asset: Codable {
     public let reserve: String
     
     public init(assetID: String, type: String, symbol: String, name: String, iconURL: String, balance: String, destination: String, tag: String, btcPrice: String, usdPrice: String, usdChange: String, chainID: String, confirmations: Int, assetKey: String, reserve: String) {
-        self.assetID = assetID
+        self.id = assetID
         self.type = type
         self.symbol = symbol
         self.name = name
@@ -63,7 +63,7 @@ public class Asset: Codable {
     
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        assetID = try container.decode(String.self, forKey: .assetID)
+        id = try container.decode(String.self, forKey: .id)
         type = try container.decodeIfPresent(String.self, forKey: .type) ?? ""
         symbol = try container.decodeIfPresent(String.self, forKey: .symbol) ?? ""
         name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
