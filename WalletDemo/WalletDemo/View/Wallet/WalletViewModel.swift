@@ -10,7 +10,13 @@ import MixinAPI
 
 class WalletViewModel: ObservableObject {
     
-    @Published var assets: Result<[AssetViewModel], Error>?
+    struct Representation {
+        let fiatMoneyBalance: String
+        let btcBalance: String
+        let assets: [AssetViewModel]
+    }
+    
+    @Published var result: Result<Representation, Error>?
     
     private let api: API
     private let fixedAssetIDs = [
@@ -39,7 +45,7 @@ class WalletViewModel: ObservableObject {
                         assets.append(asset)
                     case let .failure(error):
                         DispatchQueue.main.async {
-                            self.assets = .failure(error)
+                            self.result = .failure(error)
                         }
                         return
                     }
@@ -64,12 +70,24 @@ class WalletViewModel: ObservableObject {
                     }
                     return AssetViewModel(asset: asset, chainIconURL: chainIconURL)
                 }
+                
+                var fiatMoneyBalance: Double = 0
+                var btcBalance: Double = 0
+                for asset in assets {
+                    let balance = asset.balance.doubleValue
+                    fiatMoneyBalance += balance * asset.usdPrice.doubleValue
+                    btcBalance += balance * asset.btcPrice.doubleValue
+                }
+                let representation = Representation(fiatMoneyBalance: CurrencyFormatter.localizedString(from: fiatMoneyBalance, format: .fiatMoney, sign: .never) ?? "0.00",
+                                                    btcBalance: CurrencyFormatter.localizedString(from: btcBalance, format: .precision, sign: .never) ?? "0.00",
+                                                    assets: viewModels)
+                
                 DispatchQueue.main.async {
-                    self.assets = .success(viewModels)
+                    self.result = .success(representation)
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
-                    self.assets = .failure(error)
+                    self.result = .failure(error)
                 }
             }
         }

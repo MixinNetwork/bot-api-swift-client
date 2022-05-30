@@ -11,7 +11,7 @@ import SDWebImageSwiftUI
 
 struct AssetIconView: View {
     
-    private let chainIconBackgroundScale: CGFloat = 0.45
+    private let chainIconBackgroundScale: CGFloat = 0.47
     private let chainIconScale: CGFloat = 0.4
     
     var body: some View {
@@ -22,6 +22,7 @@ struct AssetIconView: View {
                 WebImage(url: viewModel.assetIconURL)
                     .resizable()
                     .scaledToFit()
+                    .clipShape(Circle())
                 Circle()
                     .fill(Color(UIColor.secondarySystemBackground))
                     .scaleEffect(chainIconBackgroundScale, anchor: .center)
@@ -29,6 +30,7 @@ struct AssetIconView: View {
                 WebImage(url: viewModel.chainIconURL)
                     .resizable()
                     .scaledToFit()
+                    .clipShape(Circle())
                     .scaleEffect(chainIconScale, anchor: .center)
                     .offset(chainIconOffset(assetIconSize: geometry.size, scale: chainIconBackgroundScale))
             }
