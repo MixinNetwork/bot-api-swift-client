@@ -61,20 +61,6 @@ public class AccountWorker: Worker {
         post(path: Path.me, parameters: param, completion: completion)
     }
     
-    public func updateSession(deviceToken: String? = nil, voipToken: VoIPToken? = nil, deviceCheckToken: String? = nil) {
-        let sessionRequest = SessionRequest(client: session.client,
-                                            notificationToken: deviceToken,
-                                            voipToken: voipToken?.value,
-                                            deviceCheckToken: deviceCheckToken)
-        post(path: "/session", parameters: sessionRequest) { (result: API.Result<Account>) in
-            
-        }
-    }
-    
-    public func update(sessionSecret: String) -> API.Result<SessionSecretUpdateResponse> {
-        post(path: "/session/secret", parameters: ["session_secret": sessionSecret])
-    }
-    
     public func verify(pin: String, completion: @escaping (API.Result<Empty>) -> Void) {
         session.encryptPIN(pin, onFailure: completion) { pin in
             self.post(path: "/pin/verify",
