@@ -26,17 +26,17 @@ class AccountViewModel: ObservableObject {
     
     @Published private(set) var result: Result<(API, Account), Error>?
     
-    private let uid = ""
-    private let sid = ""
+    private let clientID = ""
+    private let sessionID = ""
     private let pinToken = ""
     private let privateKey = ""
     
     func loadAccount() {
         self.result = nil
-        guard UUID(uuidString: uid) != nil else {
-            fatalError("Invalid User ID")
+        guard UUID(uuidString: clientID) != nil else {
+            fatalError("Invalid Client ID")
         }
-        guard UUID(uuidString: sid) != nil else {
+        guard UUID(uuidString: sessionID) != nil else {
             fatalError("Invalid Session ID")
         }
         guard let pinToken = Data(base64URLEncoded: pinToken) else {
@@ -49,8 +49,8 @@ class AccountViewModel: ObservableObject {
         let client = Client(userAgent: "WalletDemo 0.1.0")
         let iterator = CurrentTimePINIterator()
         let consoleOutput = ConsoleOutput()
-        let session = API.AuthenticatedSession(userID: uid,
-                                               sessionID: sid,
+        let session = API.AuthenticatedSession(userID: clientID,
+                                               sessionID: sessionID,
                                                pinToken: pinToken,
                                                privateKey: privateKey,
                                                client: client,
