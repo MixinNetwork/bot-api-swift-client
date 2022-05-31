@@ -8,7 +8,7 @@
 import Foundation
 import MixinAPI
 
-class AssetViewModel {
+final class AssetViewModel {
     
     let assetID: String
     let assetIconURL: URL?
@@ -17,10 +17,14 @@ class AssetViewModel {
     let balance: String
     let change: String
     let isChangePositive: Bool
-    let fiatMoneyPrice: String
-    let fiatMoneyBalance: String
-    
-    init(assetID: String, assetIconURL: URL?, chainIconURL: URL?, symbol: String, balance: String, change: String, isChangePositive: Bool, fiatMoneyPrice: String, fiatMoneyBalance: String) {
+    let usdPrice: String
+    let usdBalance: String
+    let decimalBalance: Decimal
+    let decimalUSDPrice: Decimal
+    let decimalUSDBalance: Decimal
+    let decimalBTCBalance: Decimal
+
+    init(assetID: String, assetIconURL: URL?, chainIconURL: URL?, symbol: String, balance: String, change: String, isChangePositive: Bool, usdPrice: String, usdBalance: String, decimalBalance: Decimal, decimalUSDPrice: Decimal, decimalUSDBalance: Decimal, decimalBTCBalance: Decimal) {
         self.assetID = assetID
         self.assetIconURL = assetIconURL
         self.chainIconURL = chainIconURL
@@ -28,32 +32,32 @@ class AssetViewModel {
         self.balance = balance
         self.change = change
         self.isChangePositive = isChangePositive
-        self.fiatMoneyPrice = fiatMoneyPrice
-        self.fiatMoneyBalance = fiatMoneyBalance
+        self.usdPrice = usdPrice
+        self.usdBalance = usdBalance
+        self.decimalBalance = decimalBalance
+        self.decimalUSDPrice = decimalUSDPrice
+        self.decimalUSDBalance = decimalUSDBalance
+        self.decimalBTCBalance = decimalBTCBalance
     }
     
     convenience init(asset: Asset, chainIconURL: URL?) {
-        let localizedChange = (CurrencyFormatter.localizedString(from: asset.usdChange.doubleValue * 100, format: .fiatMoney, sign: .whenNegative) ?? "0.00") + "%"
-        
-        let fiatMoneyBalance = asset.balance.doubleValue * asset.usdPrice.doubleValue
-        let localizedFiatMoneyBalance: String
-        if let value = CurrencyFormatter.localizedString(from: fiatMoneyBalance, format: .fiatMoney, sign: .never) {
-            localizedFiatMoneyBalance = "≈ $" + value
-        } else {
-            localizedFiatMoneyBalance = ""
-        }
-        
-        let localizedFiatMoneyPrice = "$" + (CurrencyFormatter.localizedString(from: asset.usdPrice, format: .fiatMoneyPrice, sign: .never) ?? "")
-        
+        let balance = Decimal(string: asset.balance) ?? 0
+        let usdPrice = Decimal(string: asset.usdPrice) ?? 0
+        let btcPrice = Decimal(string: asset.btcPrice) ?? 0
+        let change = Decimal(string: asset.usdChange) ?? 0
         self.init(assetID: asset.id,
                   assetIconURL: URL(string: asset.iconURL),
                   chainIconURL: chainIconURL,
                   symbol: asset.symbol,
-                  balance: CurrencyFormatter.localizedString(from: asset.balance, format: .pretty, sign: .never) ?? "",
-                  change: localizedChange,
+                  balance: CurrencyFormatter.localizedString(from: balance, format: .pretty, sign: .never),
+                  change: CurrencyFormatter.localizedString(from: change * 100, format: .fiatMoney, sign: .whenNegative, symbol: .percentage),
                   isChangePositive: !asset.usdChange.hasPrefix("-"),
-                  fiatMoneyPrice: localizedFiatMoneyPrice,
-                  fiatMoneyBalance: localizedFiatMoneyBalance)
+                  usdPrice: CurrencyFormatter.localizedString(from: usdPrice, format: .fiatMoneyPrice, sign: .never, symbol: .usd),
+                  usdBalance: CurrencyFormatter.localizedString(from: balance * usdPrice, format: .fiatMoney, sign: .never, symbol: .usd),
+                  decimalBalance: balance,
+                  decimalUSDPrice: usdPrice,
+                  decimalUSDBalance: balance * usdPrice,
+                  decimalBTCBalance: balance * btcPrice)
     }
     
 }

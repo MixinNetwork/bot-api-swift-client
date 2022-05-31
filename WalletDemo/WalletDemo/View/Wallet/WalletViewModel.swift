@@ -50,17 +50,6 @@ class WalletViewModel: ObservableObject {
                         return
                     }
                 }
-                assets.sort { one, another in
-                    let oneUSDBalance = one.balance.doubleValue * one.usdPrice.doubleValue
-                    let anotherUSDBalance = another.balance.doubleValue * another.usdPrice.doubleValue
-                    if oneUSDBalance > anotherUSDBalance {
-                        return true
-                    } else if oneUSDBalance < anotherUSDBalance {
-                        return false
-                    } else {
-                        return one.usdPrice.doubleValue > another.usdPrice.doubleValue
-                    }
-                }
                 let viewModels: [AssetViewModel] = assets.map { asset in
                     let chainIconURL: URL?
                     if let chain = assets.first(where: { $0.id == asset.chainID }) {
@@ -69,19 +58,29 @@ class WalletViewModel: ObservableObject {
                         chainIconURL = nil
                     }
                     return AssetViewModel(asset: asset, chainIconURL: chainIconURL)
+                }.sorted { one, another in
+                    switch one.decimalUSDBalance.compare(to: another.decimalUSDBalance) {
+                    case .orderedAscending:
+                        return false
+                    case .orderedSame:
+                        switch one.decimalUSDPrice.compare(to: another.decimalUSDPrice) {
+                        case .orderedAscending:
+                            return false
+                        case .orderedSame:
+                            return one.balance > another.balance
+                        case .orderedDescending:
+                            return true
+                        }
+                    case .orderedDescending:
+                        return true
+                    }
                 }
-                
-                var fiatMoneyBalance: Double = 0
-                var btcBalance: Double = 0
-                for asset in assets {
-                    let balance = asset.balance.doubleValue
-                    fiatMoneyBalance += balance * asset.usdPrice.doubleValue
-                    btcBalance += balance * asset.btcPrice.doubleValue
+                let (totalUSDBalance, totalBTCBalance) = viewModels.reduce((0, 0)) { partialResult, asset in
+                    (partialResult.0 + asset.decimalUSDBalance, partialResult.1 + asset.decimalBTCBalance)
                 }
-                let representation = Representation(fiatMoneyBalance: CurrencyFormatter.localizedString(from: fiatMoneyBalance, format: .fiatMoney, sign: .never) ?? "0.00",
-                                                    btcBalance: CurrencyFormatter.localizedString(from: btcBalance, format: .precision, sign: .never) ?? "0.00",
+                let representation = Representation(fiatMoneyBalance: CurrencyFormatter.localizedString(from: totalUSDBalance, format: .fiatMoney, sign: .never),
+                                                    btcBalance: CurrencyFormatter.localizedString(from: totalBTCBalance, format: .precision, sign: .never),
                                                     assets: viewModels)
-                
                 DispatchQueue.main.async {
                     self.result = .success(representation)
                 }

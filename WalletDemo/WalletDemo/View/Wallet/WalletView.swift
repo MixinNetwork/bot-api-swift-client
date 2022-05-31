@@ -56,11 +56,11 @@ struct WalletView: View {
                                         .foregroundColor(viewModel.isChangePositive ? .green : .red)
                                 }
                                 HStack {
-                                    Text(viewModel.fiatMoneyBalance)
+                                    Text("≈ " + viewModel.usdBalance)
                                         .font(.caption)
                                         .foregroundColor(Color(.secondaryLabel))
                                     Spacer()
-                                    Text(viewModel.fiatMoneyPrice)
+                                    Text(viewModel.usdPrice)
                                         .font(.caption)
                                         .foregroundColor(Color(.secondaryLabel))
                                 }

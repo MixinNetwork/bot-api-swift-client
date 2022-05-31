@@ -61,8 +61,12 @@ struct AssetIconView_Previews: PreviewProvider {
                                           balance: "",
                                           change: "",
                                           isChangePositive: false,
-                                          fiatMoneyPrice: "",
-                                          fiatMoneyBalance: "")
+                                          usdPrice: "",
+                                          usdBalance: "",
+                                          decimalBalance: 0,
+                                          decimalUSDPrice: 0,
+                                          decimalUSDBalance: 0,
+                                          decimalBTCBalance: 0)
     
     static var previews: some View {
         AssetIconView(viewModel: viewModel)
