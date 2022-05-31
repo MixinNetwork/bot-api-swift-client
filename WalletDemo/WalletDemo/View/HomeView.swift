@@ -28,11 +28,11 @@ struct HomeView: View {
                 Label("Wallet", systemImage: "creditcard")
             }
             NavigationView {
-                MarketView()
-                    .navigationTitle("Market")
+                SwapView()
+                    .navigationTitle("Swap")
             }
             .tabItem {
-                Label("Market", systemImage: "cart")
+                Label("Swap", systemImage: "cart")
             }
         }
         .environmentObject(walletViewModel)

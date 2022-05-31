@@ -1,5 +1,5 @@
 //
-//  MarketView.swift
+//  SwapView.swift
 //  WalletDemo
 //
 //  Created by wuyuehyang on 2022/5/27.
@@ -7,18 +7,18 @@
 
 import SwiftUI
 
-struct MarketView: View {
+struct SwapView: View {
     
     var body: some View {
-        Text("Market")
+        Text("Swap")
     }
     
 }
 
-struct MarketView_Previews: PreviewProvider {
+struct SwapView_Previews: PreviewProvider {
     
     static var previews: some View {
-        MarketView()
+        SwapView()
     }
     
 }

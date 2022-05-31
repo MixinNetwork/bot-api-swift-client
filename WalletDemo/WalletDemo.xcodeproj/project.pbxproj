@@ -11,7 +11,7 @@
 		9470D3B72843C2C200E44A1C /* Font+DINCondensed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9470D3B62843C2C200E44A1C /* Font+DINCondensed.swift */; };
 		94A06AEA28408139004F1117 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A06AE928408139004F1117 /* HomeView.swift */; };
 		94A06AEE284083E7004F1117 /* WalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A06AED284083E7004F1117 /* WalletView.swift */; };
-		94A06AF02840A5EE004F1117 /* MarketView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A06AEF2840A5EE004F1117 /* MarketView.swift */; };
+		94A06AF02840A5EE004F1117 /* SwapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A06AEF2840A5EE004F1117 /* SwapView.swift */; };
 		94A06C5A28420C7C004F1117 /* AccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A06C5928420C7C004F1117 /* AccountViewModel.swift */; };
 		94A06C5C2842257F004F1117 /* RoundedBackgroundButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A06C5B2842257F004F1117 /* RoundedBackgroundButtonStyle.swift */; };
 		94A06D1A2842616E004F1117 /* InitializePINView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A06D192842616E004F1117 /* InitializePINView.swift */; };
@@ -36,7 +36,7 @@
 		9470D3B62843C2C200E44A1C /* Font+DINCondensed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Font+DINCondensed.swift"; sourceTree = "<group>"; };
 		94A06AE928408139004F1117 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		94A06AED284083E7004F1117 /* WalletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletView.swift; sourceTree = "<group>"; };
-		94A06AEF2840A5EE004F1117 /* MarketView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketView.swift; sourceTree = "<group>"; };
+		94A06AEF2840A5EE004F1117 /* SwapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapView.swift; sourceTree = "<group>"; };
 		94A06C5928420C7C004F1117 /* AccountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewModel.swift; sourceTree = "<group>"; };
 		94A06C5B2842257F004F1117 /* RoundedBackgroundButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedBackgroundButtonStyle.swift; sourceTree = "<group>"; };
 		94A06D192842616E004F1117 /* InitializePINView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitializePINView.swift; sourceTree = "<group>"; };
@@ -95,12 +95,12 @@
 			path = Wallet;
 			sourceTree = "<group>";
 		};
-		94A06AF22840A631004F1117 /* Market */ = {
+		94A06AF22840A631004F1117 /* Swap */ = {
 			isa = PBXGroup;
 			children = (
-				94A06AEF2840A5EE004F1117 /* MarketView.swift */,
+				94A06AEF2840A5EE004F1117 /* SwapView.swift */,
 			);
-			path = Market;
+			path = Swap;
 			sourceTree = "<group>";
 		};
 		94A06AF32840A66A004F1117 /* View */ = {
@@ -108,7 +108,7 @@
 			children = (
 				94A06D1B28427AC5004F1117 /* Common */,
 				94A06AF12840A62C004F1117 /* Wallet */,
-				94A06AF22840A631004F1117 /* Market */,
+				94A06AF22840A631004F1117 /* Swap */,
 				94A06AE928408139004F1117 /* HomeView.swift */,
 				94A06D192842616E004F1117 /* InitializePINView.swift */,
 			);
@@ -302,7 +302,7 @@
 				94A06D1D28427AD9004F1117 /* PINField.swift in Sources */,
 				94A06D1F28431D72004F1117 /* WalletViewModel.swift in Sources */,
 				94A070D52843C0E4004F1117 /* String+DoubleValue.swift in Sources */,
-				94A06AF02840A5EE004F1117 /* MarketView.swift in Sources */,
+				94A06AF02840A5EE004F1117 /* SwapView.swift in Sources */,
 				94A070D12843B69C004F1117 /* CurrencyFormatter.swift in Sources */,
 				94A06AEE284083E7004F1117 /* WalletView.swift in Sources */,
 				94A06D1A2842616E004F1117 /* InitializePINView.swift in Sources */,
