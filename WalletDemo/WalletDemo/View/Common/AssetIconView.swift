@@ -11,9 +11,6 @@ import SDWebImageSwiftUI
 
 struct AssetIconView: View {
     
-    private let chainIconBackgroundScale: CGFloat = 0.47
-    private let chainIconScale: CGFloat = 0.4
-    
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -38,6 +35,8 @@ struct AssetIconView: View {
     }
     
     private let icon: AssetIcon
+    private let chainIconBackgroundScale: CGFloat = 0.47
+    private let chainIconScale: CGFloat = 0.4
     
     init(icon: AssetIcon) {
         self.icon = icon

@@ -44,10 +44,10 @@ class WalletViewModel: ObservableObject {
     private let api: API
     private let snapshotLimit = 30
     private let fixedAssetIDs = [
-        "c6d0c728-2624-429b-8e0d-d9d19b6592fa", // BTC
-        "43d61dcd-e413-450d-80b8-101d5e903357", // ETH
-        "4d8c508b-91c5-375b-92b0-ee702ed2dac5", // USDT(Ethereum)
-        "6770a1e5-6086-44d5-b60f-545f9d9e8ffd", // DOGE
+        AssetID.bitcoin,
+        AssetID.ethereum,
+        AssetID.usdtEthereum,
+        AssetID.doge,
     ]
     
     init(api: API) {

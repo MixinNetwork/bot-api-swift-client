@@ -32,6 +32,7 @@ struct AssetHeaderView: View {
                 }
             }
         }
+        .frame(minHeight: 100)
     }
     
 }

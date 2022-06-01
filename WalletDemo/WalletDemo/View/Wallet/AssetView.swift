@@ -11,9 +11,25 @@ struct AssetView: View {
     
     let item: AssetItem
     
+    // Workaround SwiftUI's bug on multiple NavigationLinks inside a List
+    // Confirmed on iOS 15.1
+    @State private var action: Action = .send
+    @State private var isActionActive = false
+    
     @EnvironmentObject private var wallet: WalletViewModel
     
     var body: some View {
+        NavigationLink(isActive: $isActionActive) {
+            switch action {
+            case .send:
+                DepositView(item: item)
+            case .receive:
+                DepositView(item: item)
+            }
+        } label: {
+            EmptyView()
+        }
+        
         List {
             Section {
                 AssetHeaderView(item: item)
@@ -22,18 +38,16 @@ struct AssetView: View {
             Section {
                 HStack(alignment: .center, spacing: 12) {
                     Button {
-                        
+                        action = .send
+                        isActionActive = true
                     } label: {
-                        Color(.secondarySystemBackground)
-                            .overlay(Text("SEND"))
-                            .cornerRadius(10)
+                        ActionButtonLabel(content: "SEND")
                     }
                     Button {
-                        
+                        action = .receive
+                        isActionActive = true
                     } label: {
-                        Color(.secondarySystemBackground)
-                            .overlay(Text("RECEIVE"))
-                            .cornerRadius(10)
+                        ActionButtonLabel(content: "RECEIVE")
                     }
                 }
                 .frame(height: 60)
@@ -80,6 +94,29 @@ struct AssetView: View {
         .onAppear {
             wallet.loadSnapshotsIfEmpty(assetID: item.asset.id)
         }
+    }
+    
+}
+
+extension AssetView {
+    
+    private enum Action {
+        case send, receive
+    }
+    
+    private struct ActionButtonLabel: View {
+        
+        let content: String
+        
+        var body: some View {
+            ZStack {
+                Color(.secondarySystemBackground)
+                    .cornerRadius(10)
+                Text(content)
+                    .foregroundColor(.accentColor)
+            }
+        }
+        
     }
     
 }
