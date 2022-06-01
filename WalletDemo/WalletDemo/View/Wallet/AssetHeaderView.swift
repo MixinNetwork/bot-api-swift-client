@@ -21,12 +21,13 @@ struct AssetHeaderView: View {
                     Text(item.asset.balance)
                         .font(.dinCondensed(ofSize: 34))
                     Text(item.asset.symbol)
-                        .font(.system(size: 12))
+                        .font(.caption)
                     Spacer()
                 }
                 HStack {
                     Text("≈ " + item.usdBalance)
-                        .font(.system(size: 14, weight: .light))
+                        .font(.footnote)
+                        .fontWeight(.light)
                         .foregroundColor(Color(.secondaryLabel))
                     Spacer()
                 }

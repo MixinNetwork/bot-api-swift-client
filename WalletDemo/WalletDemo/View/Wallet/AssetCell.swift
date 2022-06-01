@@ -21,10 +21,11 @@ struct WalletCell: View {
                     Text(item.balance)
                         .font(.dinCondensed(ofSize: 19))
                     Text(item.asset.symbol)
-                        .font(.system(size: 14, weight: .medium, design: .default))
+                        .font(.footnote)
+                        .fontWeight(.medium)
                     Spacer()
                     Text(item.change)
-                        .font(.system(size: 14, weight: .regular, design: .default))
+                        .font(.subheadline)
                         .foregroundColor(item.isChangePositive ? .green : .red)
                 }
                 HStack {

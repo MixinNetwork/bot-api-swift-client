@@ -22,10 +22,11 @@ struct SnapshotView: View {
                             .font(.dinCondensed(ofSize: 34))
                             .foregroundColor(item.isAmountPositive ? .green : .red)
                         Text(item.assetSymbol)
-                            .font(.system(size: 12, weight: .medium))
+                            .font(.caption)
+                            .fontWeight(.medium)
                     }
                     Text("≈ " + item.usdAmount)
-                        .font(.system(size: 12))
+                        .font(.caption)
                         .foregroundColor(Color(.secondaryLabel))
                 }
                 .padding()
@@ -56,7 +57,8 @@ extension SnapshotView {
             if let content = content, !content.isEmpty {
                 Section {
                     Text(content)
-                        .font(.system(.callout))
+                        .font(.callout.monospaced())
+                        .padding(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
                 } header: {
                     Text(header)
                 }

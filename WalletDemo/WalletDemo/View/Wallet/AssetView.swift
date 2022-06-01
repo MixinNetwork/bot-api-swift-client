@@ -11,20 +11,20 @@ struct AssetView: View {
     
     let item: AssetItem
     
-    // Workaround SwiftUI's bug on multiple NavigationLinks inside a List
-    // Confirmed on iOS 15.1
-    @State private var action: Action = .send
+    @State private var action: Action?
     @State private var isActionActive = false
     
-    @EnvironmentObject private var wallet: WalletViewModel
+    @EnvironmentObject private var viewModel: WalletViewModel
     
     var body: some View {
         NavigationLink(isActive: $isActionActive) {
             switch action {
             case .send:
-                DepositView(item: item)
+                AddressPickerView(item: item)
             case .receive:
                 DepositView(item: item)
+            case .none:
+                EmptyView()
             }
         } label: {
             EmptyView()
@@ -37,18 +37,16 @@ struct AssetView: View {
             
             Section {
                 HStack(alignment: .center, spacing: 12) {
-                    Button {
-                        action = .send
-                        isActionActive = true
-                    } label: {
-                        ActionButtonLabel(content: "SEND")
-                    }
-                    Button {
-                        action = .receive
-                        isActionActive = true
-                    } label: {
-                        ActionButtonLabel(content: "RECEIVE")
-                    }
+                    ActionButtonLabel(content: "SEND")
+                        .onTapGesture {
+                            action = .send
+                            isActionActive = true
+                        }
+                    ActionButtonLabel(content: "RECEIVE")
+                        .onTapGesture {
+                            action = .receive
+                            isActionActive = true
+                        }
                 }
                 .frame(height: 60)
             }
@@ -56,26 +54,27 @@ struct AssetView: View {
             .listRowBackground(Color(.systemGroupedBackground))
             
             Section {
-                ForEach(wallet.snapshots[item.asset.id] ?? []) { item in
+                ForEach(viewModel.snapshots[item.asset.id] ?? []) { item in
                     NavigationLink {
                         SnapshotView(item: item)
                     } label: {
                         HStack {
                             Text(item.type)
-                                .font(.system(size: 14))
+                                .font(.subheadline)
                             Spacer()
                             Text(item.amount)
                                 .font(.dinCondensed(ofSize: 19))
                                 .foregroundColor(item.isAmountPositive ? .green : .red)
                             Text(item.assetSymbol)
-                                .font(.system(size: 12, weight: .medium))
+                                .font(.caption)
+                                .fontWeight(.medium)
                         }
                     }
                 }
-                switch wallet.snapshotsState[item.asset.id] {
+                switch viewModel.snapshotsState[item.asset.id] {
                 case .waiting:
                     Button("Load More") {
-                        wallet.loadSnapshots(assetID: item.asset.id)
+                        viewModel.loadSnapshots(assetID: item.asset.id)
                     }
                 case .reachedEnd:
                     EmptyView()
@@ -88,11 +87,13 @@ struct AssetView: View {
                 case .failure(let error):
                     Text(error.localizedDescription)
                 }
+            } header: {
+                Text("Transactions")
             }
         }
         .navigationTitle(item.asset.name)
         .onAppear {
-            wallet.loadSnapshotsIfEmpty(assetID: item.asset.id)
+            viewModel.loadSnapshotsIfEmpty(assetID: item.asset.id)
         }
     }
     

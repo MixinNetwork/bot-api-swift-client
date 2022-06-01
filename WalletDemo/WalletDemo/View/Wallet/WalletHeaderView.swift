@@ -16,7 +16,7 @@ struct WalletHeaderView: View {
             HStack(alignment: .top, spacing: 2) {
                 Spacer()
                 Text("$")
-                    .font(.system(size: 18))
+                    .font(.body)
                     .foregroundColor(Color(.secondaryLabel))
                 Text(viewModel.usdBalance)
                     .font(.dinCondensed(ofSize: 40))
@@ -25,7 +25,7 @@ struct WalletHeaderView: View {
             HStack {
                 Spacer()
                 Text(viewModel.btcBalance)
-                    .font(.dinCondensed(ofSize: 14))
+                    .font(.dinCondensed(ofSize: 15))
                 Text("BTC")
                     .font(.caption)
                     .foregroundColor(Color(.secondaryLabel))

@@ -15,15 +15,6 @@ class WalletViewModel: ObservableObject {
         case loading
         case success
         case failure(Error)
-        
-        var isLoading: Bool {
-            switch self {
-            case .loading:
-                return true
-            default:
-                return false
-            }
-        }
     }
     
     enum SnapshotState {
@@ -41,6 +32,9 @@ class WalletViewModel: ObservableObject {
     @Published private(set) var snapshots: [String: [SnapshotItem]] = [:]
     @Published private(set) var snapshotsState: [String: SnapshotState] = [:]
     
+    @Published private(set) var addresses: [String: [AddressItem]] = [:]
+    @Published private(set) var addressesState: [String: State] = [:]
+    
     private let api: API
     private let snapshotLimit = 30
     private let fixedAssetIDs = [
@@ -55,7 +49,7 @@ class WalletViewModel: ObservableObject {
     }
     
     func reloadAssets() {
-        guard !state.isLoading else {
+        if case .loading = state {
             return
         }
         state = .loading
@@ -129,11 +123,11 @@ class WalletViewModel: ObservableObject {
         case .waiting, .failure, .none:
             break
         }
+        snapshotsState[assetID] = .loading
         let assetItems = self.items
         let limit = self.snapshotLimit
         let currentSnapshots = snapshots[assetID] ?? []
         let offset = currentSnapshots.last?.snapshot.createdAt
-        snapshotsState[assetID] = .loading
         api.asset.snapshots(limit: limit, offset: offset, assetID: assetID, queue: .global()) { result in
             switch result {
             case .success(let snapshots):
@@ -158,6 +152,25 @@ class WalletViewModel: ObservableObject {
             return
         }
         loadSnapshots(assetID: assetID)
+    }
+    
+    func loadAddress(assetID: String) {
+        switch addressesState[assetID] {
+        case .loading, .success:
+            return
+        case .waiting, .failure, .none:
+            break
+        }
+        addressesState[assetID] = .loading
+        api.withdrawal.addresses(assetID: assetID) { result in
+            switch result {
+            case let .success(addresses):
+                self.addresses[assetID] = addresses.map(AddressItem.init(address:))
+                self.addressesState[assetID] = .success
+            case let .failure(error):
+                self.addressesState[assetID] = .failure(error)
+            }
+        }
     }
     
 }
