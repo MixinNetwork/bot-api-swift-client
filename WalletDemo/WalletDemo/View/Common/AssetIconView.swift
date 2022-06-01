@@ -19,7 +19,7 @@ struct AssetIconView: View {
             ZStack {
                 Circle()
                     .fill(Color(UIColor.secondarySystemBackground))
-                WebImage(url: viewModel.assetIconURL)
+                WebImage(url: icon.asset)
                     .resizable()
                     .scaledToFit()
                     .clipShape(Circle())
@@ -27,7 +27,7 @@ struct AssetIconView: View {
                     .fill(Color(UIColor.secondarySystemBackground))
                     .scaleEffect(chainIconBackgroundScale, anchor: .center)
                     .offset(chainIconOffset(assetIconSize: geometry.size, scale: chainIconBackgroundScale))
-                WebImage(url: viewModel.chainIconURL)
+                WebImage(url: icon.chain)
                     .resizable()
                     .scaledToFit()
                     .clipShape(Circle())
@@ -37,39 +37,16 @@ struct AssetIconView: View {
         }
     }
     
-    private let viewModel: AssetViewModel
+    private let icon: AssetIcon
     
-    init(viewModel: AssetViewModel) {
-        self.viewModel = viewModel
+    init(icon: AssetIcon) {
+        self.icon = icon
     }
     
     private func chainIconOffset(assetIconSize: CGSize, scale: CGFloat) -> CGSize {
         let length = min(assetIconSize.width, assetIconSize.height)
         let factor = (1 - scale) / 2
         return CGSize(width: -length * factor, height: length * factor)
-    }
-    
-}
-
-struct AssetIconView_Previews: PreviewProvider {
-    
-    static let iconURL = URL(string: "https://mixin-images.zeromesh.net/zVDjOxNTQvVsA8h2B4ZVxuHoCF3DJszufYKWpd9duXUSbSapoZadC7_13cnWBqg0EmwmRcKGbJaUpA8wFfpgZA=s128")!
-    static let viewModel = AssetViewModel(assetID: "",
-                                          assetIconURL: iconURL,
-                                          chainIconURL: iconURL,
-                                          symbol: "ETH",
-                                          balance: "",
-                                          change: "",
-                                          isChangePositive: false,
-                                          usdPrice: "",
-                                          usdBalance: "",
-                                          decimalBalance: 0,
-                                          decimalUSDPrice: 0,
-                                          decimalUSDBalance: 0,
-                                          decimalBTCBalance: 0)
-    
-    static var previews: some View {
-        AssetIconView(viewModel: viewModel)
     }
     
 }

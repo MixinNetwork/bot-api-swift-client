@@ -20,7 +20,7 @@ public struct Snapshot {
     public let memo: String?
     public let confirmations: Int?
     public let traceID: String?
-    public var createdAt: String
+    public let createdAt: String
     
     public init(id: String, type: String, assetID: String, amount: String, transactionHash: String?, sender: String?, opponentID: String?, memo: String?, receiver: String?, confirmations: Int?, traceID: String?, createdAt: String) {
         self.id = id
