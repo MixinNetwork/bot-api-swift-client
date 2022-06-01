@@ -35,6 +35,7 @@
 		94EB88BC28476AC000DD0C37 /* SnapshotItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94EB88BB28476AC000DD0C37 /* SnapshotItem.swift */; };
 		94EB88BE28476DD000DD0C37 /* AssetIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94EB88BD28476DD000DD0C37 /* AssetIcon.swift */; };
 		94EB88C028476EF200DD0C37 /* DateFormatter+General.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94EB88BF28476EF200DD0C37 /* DateFormatter+General.swift */; };
+		94EB88C2284775D600DD0C37 /* SnapshotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94EB88C1284775D600DD0C37 /* SnapshotView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +70,7 @@
 		94EB88BB28476AC000DD0C37 /* SnapshotItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotItem.swift; sourceTree = "<group>"; };
 		94EB88BD28476DD000DD0C37 /* AssetIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetIcon.swift; sourceTree = "<group>"; };
 		94EB88BF28476EF200DD0C37 /* DateFormatter+General.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+General.swift"; sourceTree = "<group>"; };
+		94EB88C1284775D600DD0C37 /* SnapshotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,6 +122,7 @@
 				94A06D1E28431D72004F1117 /* WalletViewModel.swift */,
 				9433F6BD28468F5C002A943D /* AssetHeaderView.swift */,
 				943BA77C2845F6B900575A7D /* AssetView.swift */,
+				94EB88C1284775D600DD0C37 /* SnapshotView.swift */,
 			);
 			path = Wallet;
 			sourceTree = "<group>";
@@ -333,6 +336,7 @@
 			files = (
 				9433F60028468CB5002A943D /* AssetCell.swift in Sources */,
 				94A06D1D28427AD9004F1117 /* PINField.swift in Sources */,
+				94EB88C2284775D600DD0C37 /* SnapshotView.swift in Sources */,
 				9433F5FE28468C62002A943D /* WalletHeaderView.swift in Sources */,
 				94A06D1F28431D72004F1117 /* WalletViewModel.swift in Sources */,
 				943BA77B2845F59400575A7D /* Decimal+Comparison.swift in Sources */,

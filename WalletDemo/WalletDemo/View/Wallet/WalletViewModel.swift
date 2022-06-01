@@ -139,9 +139,7 @@ class WalletViewModel: ObservableObject {
             case .success(let snapshots):
                 let items: [SnapshotItem] = snapshots.map { snapshot in
                     let item = assetItems.first(where: { $0.asset.id == snapshot.assetID })
-                    return SnapshotItem(snapshot: snapshot,
-                                        assetSymbol: item?.asset.symbol ?? "",
-                                        assetIcon: item?.icon ?? .none)
+                    return SnapshotItem(snapshot: snapshot, assetItem: item)
                 }
                 DispatchQueue.main.async {
                     self.snapshots[assetID] = currentSnapshots + items

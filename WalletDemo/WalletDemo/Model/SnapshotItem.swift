@@ -14,11 +14,16 @@ struct SnapshotItem {
     let type: String
     let amount: String
     let isAmountPositive: Bool
+    let usdAmount: String
     let assetSymbol: String
     let assetIcon: AssetIcon
     let date: String
     
-    init(snapshot: Snapshot, assetSymbol: String, assetIcon: AssetIcon) {
+    init(snapshot: Snapshot, assetItem: AssetItem?) {
+        let decimalAmount = Decimal(string: snapshot.amount) ?? 0
+        let decimalUSDAmount = decimalAmount * (assetItem?.decimalUSDPrice ?? 0)
+        let localizedUSDAmount = CurrencyFormatter.localizedString(from: decimalUSDAmount, format: .fiatMoney, sign: .never, symbol: .usd)
+        
         self.snapshot = snapshot
         self.type = (snapshot.type.first?.uppercased() ?? "") + snapshot.type.dropFirst()
         if snapshot.amount.hasPrefix("-") {
@@ -28,8 +33,9 @@ struct SnapshotItem {
             self.amount = "+" + snapshot.amount
             self.isAmountPositive = true
         }
-        self.assetSymbol = assetSymbol
-        self.assetIcon = assetIcon
+        self.usdAmount = localizedUSDAmount
+        self.assetSymbol = assetItem?.asset.symbol ?? ""
+        self.assetIcon = assetItem?.icon ?? .none
         if let date = DateFormatter.iso8601.date(from: snapshot.createdAt) {
             self.date = DateFormatter.general.string(from: date)
         } else {

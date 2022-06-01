@@ -43,15 +43,19 @@ struct AssetView: View {
             
             Section {
                 ForEach(wallet.snapshots[item.asset.id] ?? []) { item in
-                    HStack {
-                        Text(item.type)
-                            .font(.system(size: 14))
-                        Spacer()
-                        Text(item.amount)
-                            .font(.dinCondensed(ofSize: 19))
-                            .foregroundColor(item.isAmountPositive ? .green : .red)
-                        Text(item.assetSymbol)
-                            .font(.system(size: 12, weight: .medium))
+                    NavigationLink {
+                        SnapshotView(item: item)
+                    } label: {
+                        HStack {
+                            Text(item.type)
+                                .font(.system(size: 14))
+                            Spacer()
+                            Text(item.amount)
+                                .font(.dinCondensed(ofSize: 19))
+                                .foregroundColor(item.isAmountPositive ? .green : .red)
+                            Text(item.assetSymbol)
+                                .font(.system(size: 12, weight: .medium))
+                        }
                     }
                 }
                 switch wallet.snapshotsState[item.asset.id] {

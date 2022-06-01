@@ -15,9 +15,12 @@ extension DateFormatter {
         return formatter
     }()
     
-    static let iso8601: ISO8601DateFormatter = {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = .withInternetDateTime
+    static let iso8601: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+        formatter.locale = .enUSPOSIX
+        formatter.calendar = Calendar(identifier: .iso8601)
+        formatter.timeZone = TimeZone(abbreviation: "UTC")
         return formatter
     }()
     
