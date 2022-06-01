@@ -16,6 +16,7 @@ struct SnapshotItem {
     let isAmountPositive: Bool
     let usdAmount: String
     let assetSymbol: String
+    let assetName: String?
     let assetIcon: AssetIcon
     let date: String
     
@@ -35,6 +36,7 @@ struct SnapshotItem {
         }
         self.usdAmount = localizedUSDAmount
         self.assetSymbol = assetItem?.asset.symbol ?? ""
+        self.assetName = assetItem?.asset.name
         self.assetIcon = assetItem?.icon ?? .none
         if let date = DateFormatter.iso8601.date(from: snapshot.createdAt) {
             self.date = DateFormatter.general.string(from: date)

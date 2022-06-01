@@ -24,14 +24,14 @@ struct AssetView: View {
                     Button {
                         
                     } label: {
-                        Color(.systemBackground)
+                        Color(.secondarySystemBackground)
                             .overlay(Text("SEND"))
                             .cornerRadius(10)
                     }
                     Button {
                         
                     } label: {
-                        Color(.systemBackground)
+                        Color(.secondarySystemBackground)
                             .overlay(Text("RECEIVE"))
                             .cornerRadius(10)
                     }

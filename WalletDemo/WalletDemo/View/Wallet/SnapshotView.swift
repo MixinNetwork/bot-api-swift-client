@@ -31,75 +31,40 @@ struct SnapshotView: View {
                 .padding()
             }
             
-            Section {
-                Text(item.id)
-                    .font(.system(.callout))
-            } header: {
-                Text("ID")
-            }
-            
-            if let id = item.snapshot.opponentID {
-                Section {
-                    Text(id)
-                        .font(.system(.callout))
-                } header: {
-                    Text("Opponent ID")
-                }
-            }
-            
-            if let hash = item.snapshot.transactionHash {
-                Section {
-                    Text(hash)
-                        .font(.system(.callout))
-                } header: {
-                    Text("Transaction Hash")
-                }
-            }
-            
-            if let sender = item.snapshot.sender {
-                Section {
-                    Text(sender)
-                        .font(.system(.callout))
-                } header: {
-                    Text("Sender")
-                }
-            }
-            
-            if let receiver = item.snapshot.receiver {
-                Section {
-                    Text(receiver)
-                        .font(.system(.callout))
-                } header: {
-                    Text("Receiver")
-                }
-            }
-            
-            if let memo = item.snapshot.memo {
-                Section {
-                    Text(memo)
-                        .font(.system(.callout))
-                } header: {
-                    Text("Memo")
-                }
-            }
-            
-            if let id = item.snapshot.traceID {
-                Section {
-                    Text(id)
-                        .font(.system(.callout))
-                } header: {
-                    Text("Trace ID")
-                }
-            }
-            
-            Section {
-                Text(item.date)
-                    .font(.system(.callout))
-            } header: {
-                Text("Date")
-            }
+            InfoSection(header: "Transaction ID", content: item.id)
+            InfoSection(header: "Asset Type", content: item.assetName)
+            InfoSection(header: "Opponent ID", content: item.snapshot.opponentID)
+            InfoSection(header: "Transaction Hash", content: item.snapshot.transactionHash)
+            InfoSection(header: "Sender", content: item.snapshot.sender)
+            InfoSection(header: "Receiver", content: item.snapshot.receiver)
+            InfoSection(header: "Memo", content: item.snapshot.memo)
+            InfoSection(header: "Date", content: item.date)
         }
         .navigationTitle("Transaction")
+    }
+    
+}
+
+extension SnapshotView {
+    
+    private struct InfoSection: View {
+        
+        let header: String
+        let content: String?
+        
+        var body: some View {
+            if let content = content, !content.isEmpty {
+                Section {
+                    Text(content)
+                        .font(.system(.callout))
+                } header: {
+                    Text(header)
+                }
+            } else {
+                EmptyView()
+            }
+        }
+        
     }
     
 }

@@ -31,12 +31,6 @@ struct AssetHeaderView: View {
                     Spacer()
                 }
             }
-            Spacer()
-            Button {
-                
-            } label: {
-                Image(systemName: "info.circle")
-            }
         }
     }
     
