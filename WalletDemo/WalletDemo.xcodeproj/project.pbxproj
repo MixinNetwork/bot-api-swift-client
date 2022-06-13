@@ -121,6 +121,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		9412FF0A285787B3004B9020 /* View Model */ = {
+			isa = PBXGroup;
+			children = (
+				94A06C5928420C7C004F1117 /* AccountViewModel.swift */,
+				94A06D1E28431D72004F1117 /* WalletViewModel.swift */,
+			);
+			path = "View Model";
+			sourceTree = "<group>";
+		};
 		943BA8F428462F4300575A7D /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -138,7 +147,6 @@
 				9433F5FD28468C62002A943D /* WalletHeaderView.swift */,
 				9433F5FF28468CB5002A943D /* AssetCell.swift */,
 				94A06AED284083E7004F1117 /* WalletView.swift */,
-				94A06D1E28431D72004F1117 /* WalletViewModel.swift */,
 				9433F6BD28468F5C002A943D /* AssetHeaderView.swift */,
 				943BA77C2845F6B900575A7D /* AssetView.swift */,
 				94EB88C1284775D600DD0C37 /* SnapshotView.swift */,
@@ -213,10 +221,10 @@
 			isa = PBXGroup;
 			children = (
 				94C606E72828FCEA0013DD54 /* Foundation */,
+				9412FF0A285787B3004B9020 /* View Model */,
 				94A06AF32840A66A004F1117 /* View */,
 				943BA8F428462F4300575A7D /* Model */,
 				94B3AA652819B859006B60C1 /* WalletDemoApp.swift */,
-				94A06C5928420C7C004F1117 /* AccountViewModel.swift */,
 				94B3AA692819B859006B60C1 /* Assets.xcassets */,
 				94B3AA6B2819B859006B60C1 /* Preview Content */,
 			);
