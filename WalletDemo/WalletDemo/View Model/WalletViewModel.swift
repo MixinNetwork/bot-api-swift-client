@@ -71,6 +71,10 @@ extension WalletViewModel {
         let api = self.api
         api.asset.assets(queue: .global()) { result in
             switch result {
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self.assetsState = .failure(error)
+                }
             case .success(var assets):
                 var missingAssetIDs = Set(self.fixedAssetIDs)
                 missingAssetIDs.formUnion(assets.map(\.chainID))
@@ -122,10 +126,6 @@ extension WalletViewModel {
                     self.btcBalance = localizedBTCBalance
                     self.assetItems = items
                     self.assetsState = .success
-                }
-            case .failure(let error):
-                DispatchQueue.main.async {
-                    self.assetsState = .failure(error)
                 }
             }
         }
