@@ -39,9 +39,9 @@
                     </connections>
                 </button>
                 <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZQn-3l-d3q">
-                    <rect key="frame" x="0.0" y="896" width="414" height="290.5"/>
+                    <rect key="frame" x="0.0" y="896" width="414" height="291"/>
                     <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Npe-Dd-4YA">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="290"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="291"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="62R-Q3-k6W">

@@ -17,14 +17,16 @@ struct NewAddressView: View {
     
     let item: AssetItem
     
+    @Environment(\.dismiss) private var dismiss
+    
     @EnvironmentObject private var viewModel: WalletViewModel
+    
+    @FocusState private var focusedField: Field?
     
     @State private var label = ""
     @State private var address = ""
     @State private var needsMemo = true
     @State private var memo = ""
-    
-    @FocusState private var focusedField: Field?
     
     var body: some View {
         List {
@@ -94,7 +96,16 @@ struct NewAddressView: View {
         .navigationTitle("New \(item.asset.symbol) Address")
         .toolbar {
             Button("Save") {
-                viewModel.saveAddress(assetID: item.asset.id, label: label, address: address, memo: memo)
+                viewModel.saveAddress(assetID: item.asset.id,
+                                      label: label,
+                                      address: address,
+                                      memo: memo,
+                                      onSuccess: dismiss.callAsFunction)
+            }
+        }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) {
+                self.focusedField = .label
             }
         }
     }

@@ -13,7 +13,7 @@ struct WalletView: View {
     @EnvironmentObject var viewModel: WalletViewModel
     
     var body: some View {
-        switch viewModel.state {
+        switch viewModel.assetsState {
         case let .failure(error):
             VStack {
                 Button("Reload", action: viewModel.reloadAssets)
@@ -32,7 +32,7 @@ struct WalletView: View {
                     WalletHeaderView()
                 }
                 Section {
-                    ForEach(viewModel.items) { item in
+                    ForEach(viewModel.assetItems) { item in
                         NavigationLink {
                             AssetView(item: item)
                         } label: {

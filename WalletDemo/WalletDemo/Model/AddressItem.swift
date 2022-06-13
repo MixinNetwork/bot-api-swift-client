@@ -12,6 +12,9 @@ struct AddressItem {
     
     let address: Address
     let date: String
+    let fee: Decimal
+    let dust: Decimal
+    let reserve: Decimal
     
     init(address: Address) {
         self.address = address
@@ -20,6 +23,9 @@ struct AddressItem {
         } else {
             self.date = address.updatedAt
         }
+        self.fee = Decimal(string: address.fee) ?? 0
+        self.dust = Decimal(string: address.dust) ?? 0
+        self.reserve = Decimal(string: address.reserve) ?? 0
     }
     
 }

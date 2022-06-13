@@ -20,7 +20,7 @@ struct AssetView: View {
         NavigationLink(isActive: $isActionActive) {
             switch action {
             case .send:
-                AddressPickerView(item: item)
+                AddressPickerView(assetItem: item)
             case .receive:
                 DepositView(item: item)
             case .none:

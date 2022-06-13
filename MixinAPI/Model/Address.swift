@@ -20,6 +20,19 @@ public struct Address {
     public let dust: String
     public let updatedAt: String
     
+    public init(id: String, type: String, assetID: String, destination: String, label: String, tag: String, fee: String, reserve: String, dust: String, updatedAt: String) {
+        self.id = id
+        self.type = type
+        self.assetID = assetID
+        self.destination = destination
+        self.label = label
+        self.tag = tag
+        self.fee = fee
+        self.reserve = reserve
+        self.dust = dust
+        self.updatedAt = updatedAt
+    }
+    
 }
 
 extension Address: Codable {

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AddressPickerView: View {
     
-    let item: AssetItem
+    let assetItem: AssetItem
     
     @EnvironmentObject private var viewModel: WalletViewModel
     
@@ -18,12 +18,12 @@ struct AddressPickerView: View {
             Color(.systemGroupedBackground)
                 .ignoresSafeArea()
             
-            switch viewModel.addressesState[item.asset.id] {
+            switch viewModel.addressesState[assetItem.asset.id] {
             case .waiting, .none:
                 ProgressView()
                     .scaleEffect(2)
                     .onAppear {
-                        viewModel.loadAddress(assetID: item.asset.id)
+                        viewModel.loadAddress(assetID: assetItem.asset.id)
                     }
             case .loading:
                 ProgressView()
@@ -31,7 +31,7 @@ struct AddressPickerView: View {
             case .failure(let error):
                 VStack {
                     Button("Retry") {
-                        viewModel.loadAddress(assetID: item.asset.id)
+                        viewModel.loadAddress(assetID: assetItem.asset.id)
                     }
                     .buttonStyle(RoundedBackgroundButtonStyle())
                     Text(error.localizedDescription)
@@ -44,23 +44,27 @@ struct AddressPickerView: View {
                             .font(.body)
                     } else {
                         List(addresses) { item in
-                            VStack(alignment: .leading, spacing: 6) {
-                                HStack {
-                                    Text(item.address.label)
-                                        .font(.callout)
-                                    Spacer()
-                                    Text(item.date)
-                                        .font(.caption)
+                            NavigationLink {
+                                WithdrawView(assetItem: assetItem, addressItem: item)
+                            } label: {
+                                VStack(alignment: .leading, spacing: 6) {
+                                    HStack {
+                                        Text(item.address.label)
+                                            .font(.callout)
+                                        Spacer()
+                                        Text(item.date)
+                                            .font(.caption)
+                                            .foregroundColor(Color(.secondaryLabel))
+                                    }
+                                    Text(item.address.destination)
+                                        .font(.subheadline.monospaced())
                                         .foregroundColor(Color(.secondaryLabel))
                                 }
-                                Text(item.address.destination)
-                                    .font(.subheadline.monospaced())
-                                    .foregroundColor(Color(.secondaryLabel))
+                                .padding(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
                             }
-                            .padding(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
                             .swipeActions {
                                 Button("Delete") {
-                                    viewModel.deleteAddress(id: item.address.id, assetID: self.item.id)
+                                    viewModel.deleteAddress(id: item.address.id, assetID: self.assetItem.id)
                                 }
                                 .tint(.red)
                             }
@@ -69,18 +73,18 @@ struct AddressPickerView: View {
                 }
                 .toolbar {
                     NavigationLink {
-                        NewAddressView(item: item)
+                        NewAddressView(item: assetItem)
                     } label: {
                         Image(systemName: "plus")
                     }
                 }
             }
         }
-        .navigationTitle(item.asset.symbol + " Address")
+        .navigationTitle(assetItem.asset.symbol + " Address")
     }
     
     private var addresses: [AddressItem] {
-        viewModel.addresses[item.asset.id] ?? []
+        viewModel.addresses[assetItem.asset.id] ?? []
     }
     
 }

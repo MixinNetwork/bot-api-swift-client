@@ -25,10 +25,10 @@ class WalletViewModel: ObservableObject {
         case failure(Error)
     }
     
-    @Published private(set) var state: State = .waiting
+    @Published private(set) var assetsState: State = .waiting
+    @Published private(set) var assetItems: [AssetItem] = []
     @Published private(set) var usdBalance: String = ""
     @Published private(set) var btcBalance: String = ""
-    @Published private(set) var items: [AssetItem] = []
     
     @Published private(set) var snapshots: [String: [SnapshotItem]] = [:]
     @Published private(set) var snapshotsState: [String: SnapshotState] = [:]
@@ -54,11 +54,20 @@ class WalletViewModel: ObservableObject {
         self.api = api
     }
     
+    func dismissPINVerification() {
+        isPINVerificationPresented = false
+    }
+    
+}
+
+// MARK: - Asset
+extension WalletViewModel {
+    
     func reloadAssets() {
-        if case .loading = state {
+        if case .loading = assetsState {
             return
         }
-        state = .loading
+        assetsState = .loading
         let api = self.api
         api.asset.assets(queue: .global()) { result in
             switch result {
@@ -73,7 +82,7 @@ class WalletViewModel: ObservableObject {
                         assets.append(asset)
                     case let .failure(error):
                         DispatchQueue.main.async {
-                            self.state = .failure(error)
+                            self.assetsState = .failure(error)
                         }
                         return
                     }
@@ -111,15 +120,27 @@ class WalletViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.usdBalance = localizedUSDBalance
                     self.btcBalance = localizedBTCBalance
-                    self.items = items
-                    self.state = .success
+                    self.assetItems = items
+                    self.assetsState = .success
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
-                    self.state = .failure(error)
+                    self.assetsState = .failure(error)
                 }
             }
         }
+    }
+    
+}
+
+// MARK: - Snapshot
+extension WalletViewModel {
+    
+    func loadSnapshotsIfEmpty(assetID: String) {
+        if let snapshots = snapshots[assetID], !snapshots.isEmpty {
+            return
+        }
+        loadSnapshots(assetID: assetID)
     }
     
     func loadSnapshots(assetID: String) {
@@ -130,7 +151,7 @@ class WalletViewModel: ObservableObject {
             break
         }
         snapshotsState[assetID] = .loading
-        let assetItems = self.items
+        let assetItems = self.assetItems
         let limit = self.snapshotLimit
         let currentSnapshots = snapshots[assetID] ?? []
         let offset = currentSnapshots.last?.snapshot.createdAt
@@ -153,13 +174,11 @@ class WalletViewModel: ObservableObject {
         }
     }
     
-    func loadSnapshotsIfEmpty(assetID: String) {
-        if let snapshots = snapshots[assetID], !snapshots.isEmpty {
-            return
-        }
-        loadSnapshots(assetID: assetID)
-    }
-    
+}
+
+// MARK: - Address
+extension WalletViewModel {
+
     func loadAddress(assetID: String) {
         switch addressesState[assetID] {
         case .loading, .success:
@@ -179,11 +198,7 @@ class WalletViewModel: ObservableObject {
         }
     }
     
-    func dismissPINVerification() {
-        isPINVerificationPresented = false
-    }
-    
-    func saveAddress(assetID: String, label: String, address: String, memo: String) {
+    func saveAddress(assetID: String, label: String, address: String, memo: String, onSuccess: @escaping () -> Void) {
         onPINInput = { (pin) in
             self.pinVerificationState = .loading
             let request = AddressRequest(assetID: assetID, destination: address, tag: memo, label: label, pin: pin)
@@ -195,6 +210,7 @@ class WalletViewModel: ObservableObject {
                     addresses.append(item)
                     self.addresses[assetID] = addresses
                     self.pinVerificationState = .success
+                    onSuccess()
                 case let .failure(error):
                     self.pinVerificationState = .failure(error)
                 }
@@ -222,6 +238,41 @@ class WalletViewModel: ObservableObject {
         }
         pinVerificationState = .waiting
         pinVerificationCaption = "Delete Address"
+        isPINVerificationPresented = true
+    }
+    
+}
+
+// MARK: - Withdraw
+extension WalletViewModel {
+    
+    func withdraw(amount: String, toAddressWith addressID: String, onSuccess: @escaping () -> Void) {
+        onPINInput = { (pin) in
+            self.pinVerificationState = .loading
+            let request = WithdrawalRequest(addressID: addressID,
+                                            amount: amount,
+                                            traceID: UUID().uuidString.lowercased(),
+                                            pin: pin,
+                                            memo: "")
+            self.api.withdrawal.withdrawal(withdrawal: request) { result in
+                switch result {
+                case .success(let snapshot):
+                    let assetItem = self.assetItems.first(where: { $0.asset.id == snapshot.assetID })
+                    let snapshotItem = SnapshotItem(snapshot: snapshot, assetItem: assetItem)
+                    
+                    var snapshots = self.snapshots[snapshot.assetID] ?? []
+                    snapshots.insert(snapshotItem, at: 0)
+                    self.snapshots[snapshot.assetID] = snapshots
+                    
+                    self.pinVerificationState = .success
+                    onSuccess()
+                case let .failure(error):
+                    self.pinVerificationState = .failure(error)
+                }
+            }
+        }
+        pinVerificationState = .waiting
+        pinVerificationCaption = "Withdraw"
         isPINVerificationPresented = true
     }
     
