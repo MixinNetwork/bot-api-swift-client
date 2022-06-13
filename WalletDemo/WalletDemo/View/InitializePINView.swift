@@ -12,8 +12,30 @@ struct InitializePINView: View {
     @State private var pin = ""
     
     var body: some View {
-        SecureField("PIN", text: $pin)
-            .accentColor(.clear)
+        NavigationView {
+            content
+        }
+        .interactiveDismissDisabled(true)
+    }
+    
+    @ViewBuilder
+    var content: some View {
+        VStack {
+            Text("Initialize PIN")
+                .font(.largeTitle)
+            Text("You must intialize a PIN to access you wallet fully-functional")
+                .multilineTextAlignment(.center)
+                .padding(8)
+            Spacer()
+        }
+    }
+    
+}
+
+struct InitializePINView_Previews: PreviewProvider {
+    
+    static var previews: some View {
+        InitializePINView()
     }
     
 }

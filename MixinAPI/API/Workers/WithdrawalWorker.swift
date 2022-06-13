@@ -42,9 +42,9 @@ public final class WithdrawalWorker: Worker {
             var address = address
             address.pin = encryptedPIN
             self.post(path: Path.addresses,
-                         parameters: address,
-                         options: .disableRetryOnRequestSigningTimeout,
-                         completion: completion)
+                      parameters: address,
+                      options: .disableRetryOnRequestSigningTimeout,
+                      completion: completion)
         }
     }
     
@@ -53,18 +53,18 @@ public final class WithdrawalWorker: Worker {
             var withdrawal = withdrawal
             withdrawal.pin = encryptedPIN
             self.post(path: Path.withdrawals,
-                         parameters: withdrawal,
-                         options: .disableRetryOnRequestSigningTimeout,
-                         completion: completion)
+                      parameters: withdrawal,
+                      options: .disableRetryOnRequestSigningTimeout,
+                      completion: completion)
         }
     }
     
     public func delete(addressID: String, pin: String, completion: @escaping (API.Result<Empty>) -> Void) {
         session.encryptPIN(pin, onFailure: completion) { encryptedPIN in
             self.post(path: Path.delete(addressID: addressID),
-                         parameters: ["pin_base64": encryptedPIN],
-                         options: .disableRetryOnRequestSigningTimeout,
-                         completion: completion)
+                      parameters: ["pin_base64": encryptedPIN],
+                      options: .disableRetryOnRequestSigningTimeout,
+                      completion: completion)
         }
     }
     

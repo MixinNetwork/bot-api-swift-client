@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SDWebImage
 
 @main
 struct WalletDemoApp: App {
@@ -31,9 +32,11 @@ struct WalletDemoApp: App {
     }
     
     init() {
+        SDImageCache.shared.config.maxDiskAge = -1
         let viewModel = AccountViewModel()
         self._viewModel = StateObject(wrappedValue: viewModel)
         viewModel.loadAccount()
+        UIScrollView.appearance().keyboardDismissMode = .onDrag
     }
     
 }

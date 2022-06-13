@@ -8,12 +8,12 @@
 import Foundation
 import CommonCrypto
 
-public enum AESCryptorPadding {
-    case none
-    case pkcs7
-}
-
 enum AESCryptor {
+    
+    public enum Padding {
+        case none
+        case pkcs7
+    }
     
     enum Error: Swift.Error {
         case badInput
@@ -22,7 +22,7 @@ enum AESCryptor {
         case finalize(CCStatus)
     }
     
-    static func encrypt(_ plainData: Data, with key: Data, iv: Data, padding: AESCryptorPadding) throws -> Data {
+    static func encrypt(_ plainData: Data, with key: Data, iv: Data, padding: Padding) throws -> Data {
         let options: CCOptions
         switch padding {
         case .none:

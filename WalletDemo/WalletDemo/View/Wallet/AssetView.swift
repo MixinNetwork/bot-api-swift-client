@@ -111,7 +111,7 @@ extension AssetView {
         
         var body: some View {
             ZStack {
-                Color(.secondarySystemBackground)
+                Color(.secondarySystemGroupedBackground)
                     .cornerRadius(10)
                 Text(content)
                     .foregroundColor(.accentColor)

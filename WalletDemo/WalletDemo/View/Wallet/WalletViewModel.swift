@@ -7,6 +7,7 @@
 
 import Foundation
 import MixinAPI
+import SwiftUI
 
 class WalletViewModel: ObservableObject {
     
@@ -34,6 +35,11 @@ class WalletViewModel: ObservableObject {
     
     @Published private(set) var addresses: [String: [AddressItem]] = [:]
     @Published private(set) var addressesState: [String: State] = [:]
+    
+    private(set) var onPINInput: ((String) -> Void)?
+    @Published private(set) var pinVerificationState: State = .waiting
+    @Published private(set) var pinVerificationCaption = "Transfer"
+    @Published private(set) var isPINVerificationPresented = false
     
     private let api: API
     private let snapshotLimit = 30
@@ -171,6 +177,52 @@ class WalletViewModel: ObservableObject {
                 self.addressesState[assetID] = .failure(error)
             }
         }
+    }
+    
+    func dismissPINVerification() {
+        isPINVerificationPresented = false
+    }
+    
+    func saveAddress(assetID: String, label: String, address: String, memo: String) {
+        onPINInput = { (pin) in
+            self.pinVerificationState = .loading
+            let request = AddressRequest(assetID: assetID, destination: address, tag: memo, label: label, pin: pin)
+            self.api.withdrawal.save(address: request) { result in
+                switch result {
+                case let .success(address):
+                    let item = AddressItem(address: address)
+                    var addresses = self.addresses[assetID] ?? []
+                    addresses.append(item)
+                    self.addresses[assetID] = addresses
+                    self.pinVerificationState = .success
+                case let .failure(error):
+                    self.pinVerificationState = .failure(error)
+                }
+            }
+        }
+        pinVerificationState = .waiting
+        pinVerificationCaption = "Add Address"
+        isPINVerificationPresented = true
+    }
+    
+    func deleteAddress(id: String, assetID: String) {
+        onPINInput = { (pin) in
+            self.pinVerificationState = .loading
+            self.api.withdrawal.delete(addressID: id, pin: pin) { result in
+                switch result {
+                case .success:
+                    self.addresses[assetID]?.removeAll(where: { item in
+                        item.address.id == id
+                    })
+                    self.pinVerificationState = .success
+                case let .failure(error):
+                    self.pinVerificationState = .failure(error)
+                }
+            }
+        }
+        pinVerificationState = .waiting
+        pinVerificationCaption = "Delete Address"
+        isPINVerificationPresented = true
     }
     
 }

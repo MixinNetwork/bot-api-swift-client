@@ -19,26 +19,35 @@ struct HomeView: View {
     @State private var isPINAbsent: Bool
     
     var body: some View {
-        TabView {
-            NavigationView {
-                WalletView()
-                    .navigationTitle("Wallet")
+        ZStack {
+            TabView {
+                NavigationView {
+                    WalletView()
+                        .navigationTitle("Wallet")
+                }
+                .tabItem {
+                    Label("Wallet", systemImage: "creditcard")
+                }
+                NavigationView {
+                    SwapView()
+                        .navigationTitle("Swap")
+                }
+                .tabItem {
+                    Label("Swap", systemImage: "cart")
+                }
             }
-            .tabItem {
-                Label("Wallet", systemImage: "creditcard")
-            }
-            NavigationView {
-                SwapView()
-                    .navigationTitle("Swap")
-            }
-            .tabItem {
-                Label("Swap", systemImage: "cart")
+            .zIndex(0)
+            
+            if walletViewModel.isPINVerificationPresented {
+                VerifyPINView()
+                    .ignoresSafeArea()
+                    .zIndex(2)
             }
         }
         .environmentObject(walletViewModel)
-//        .sheet(isPresented: $isPINAbsent) {
-//            InitializePINView()
-//        }
+        .sheet(isPresented: $isPINAbsent) {
+            InitializePINView()
+        }
     }
     
     init(api: API, account: Account) {
