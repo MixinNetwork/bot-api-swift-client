@@ -20,7 +20,7 @@ class WalletViewModel: ObservableObject {
     
     enum SnapshotState {
         case waiting
-        case loading
+        case loading(Request)
         case reachedEnd
         case failure(Error)
     }
@@ -131,31 +131,82 @@ extension WalletViewModel {
         }
     }
     
+    func reloadAsset(with id: String, completion: ((AssetItem?) -> Void)? = nil) {
+        api.asset.asset(assetID: id) { result in
+            let assetItem: AssetItem?
+            switch result {
+            case .success(let asset):
+                let chainIconURL: URL?
+                if let chain = self.assetItems.first(where: { $0.asset.id == asset.chainID }) {
+                    chainIconURL = URL(string: chain.asset.iconURL)
+                } else {
+                    chainIconURL = nil
+                }
+                let item = AssetItem(asset: asset, chainIconURL: chainIconURL)
+                if let index = self.assetItems.firstIndex(where: { $0.asset.id == id }) {
+                    self.assetItems[index] = item
+                } else {
+                    self.assetItems.append(item)
+                }
+                assetItem = item
+            case .failure:
+                assetItem = nil
+            }
+            completion?(assetItem)
+        }
+    }
+    
 }
 
 // MARK: - Snapshot
 extension WalletViewModel {
     
-    func loadSnapshotsIfEmpty(assetID: String) {
+    func reloadSnapshotsIfEmpty(assetID: String) {
         if let snapshots = snapshots[assetID], !snapshots.isEmpty {
             return
         }
-        loadSnapshots(assetID: assetID)
+        reloadSnapshots(assetID: assetID)
     }
     
-    func loadSnapshots(assetID: String) {
+    func reloadSnapshots(assetID: String, completion: (() -> Void)? = nil) {
+        if case let .loading(request) = snapshotsState[assetID]{
+            request.cancel()
+        }
+        let assetItems = self.assetItems
+        let limit = self.snapshotLimit
+        let request = api.asset.snapshots(limit: limit, offset: nil, assetID: assetID, queue: .global()) { result in
+            switch result {
+            case .success(let snapshots):
+                let items: [SnapshotItem] = snapshots.map { snapshot in
+                    let item = assetItems.first(where: { $0.asset.id == snapshot.assetID })
+                    return SnapshotItem(snapshot: snapshot, assetItem: item)
+                }
+                DispatchQueue.main.async {
+                    self.snapshots[assetID] = items
+                    self.snapshotsState[assetID] = snapshots.count < limit ? .reachedEnd : .waiting
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self.snapshotsState[assetID] = .failure(error)
+                }
+            }
+            completion?()
+        }
+        snapshotsState[assetID] = .loading(request)
+    }
+    
+    func loadMoreSnapshotsIfNeeded(assetID: String) {
         switch snapshotsState[assetID] {
         case .loading, .reachedEnd:
             return
         case .waiting, .failure, .none:
             break
         }
-        snapshotsState[assetID] = .loading
         let assetItems = self.assetItems
         let limit = self.snapshotLimit
         let currentSnapshots = snapshots[assetID] ?? []
         let offset = currentSnapshots.last?.snapshot.createdAt
-        api.asset.snapshots(limit: limit, offset: offset, assetID: assetID, queue: .global()) { result in
+        let request = api.asset.snapshots(limit: limit, offset: offset, assetID: assetID, queue: .global()) { result in
             switch result {
             case .success(let snapshots):
                 let items: [SnapshotItem] = snapshots.map { snapshot in
@@ -172,6 +223,7 @@ extension WalletViewModel {
                 }
             }
         }
+        snapshotsState[assetID] = .loading(request)
     }
     
 }
@@ -257,13 +309,8 @@ extension WalletViewModel {
             self.api.withdrawal.withdrawal(withdrawal: request) { result in
                 switch result {
                 case .success(let snapshot):
-                    let assetItem = self.assetItems.first(where: { $0.asset.id == snapshot.assetID })
-                    let snapshotItem = SnapshotItem(snapshot: snapshot, assetItem: assetItem)
-                    
-                    var snapshots = self.snapshots[snapshot.assetID] ?? []
-                    snapshots.insert(snapshotItem, at: 0)
-                    self.snapshots[snapshot.assetID] = snapshots
-                    
+                    self.reloadAsset(with: snapshot.assetID)
+                    self.reloadSnapshots(assetID: snapshot.assetID)
                     self.pinVerificationState = .success
                     onSuccess()
                 case let .failure(error):

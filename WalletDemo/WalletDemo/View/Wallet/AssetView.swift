@@ -9,10 +9,9 @@ import SwiftUI
 
 struct AssetView: View {
     
-    let item: AssetItem
-    
     @State private var action: Action?
     @State private var isActionActive = false
+    @State private var item: AssetItem
     
     @EnvironmentObject private var viewModel: WalletViewModel
     
@@ -95,7 +94,7 @@ struct AssetView: View {
                 switch viewModel.snapshotsState[item.asset.id] {
                 case .waiting:
                     Button("Load More") {
-                        viewModel.loadSnapshots(assetID: item.asset.id)
+                        viewModel.loadMoreSnapshotsIfNeeded(assetID: item.asset.id)
                     }
                 case .reachedEnd:
                     EmptyView()
@@ -114,8 +113,27 @@ struct AssetView: View {
         }
         .navigationTitle(item.asset.name)
         .onAppear {
-            viewModel.loadSnapshotsIfEmpty(assetID: item.asset.id)
+            viewModel.reloadSnapshotsIfEmpty(assetID: item.asset.id)
         }
+        .refreshable {
+            await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+                viewModel.reloadAsset(with: item.asset.id) { item in
+                    if let item = item {
+                        self.item = item
+                    }
+                    continuation.resume()
+                }
+            }
+            await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+                viewModel.reloadSnapshots(assetID: item.asset.id) {
+                    continuation.resume()
+                }
+            }
+        }
+    }
+    
+    init(item: AssetItem) {
+        self._item = State(initialValue: item)
     }
     
 }

@@ -77,16 +77,18 @@ struct WithdrawView: View {
                     }
                 }
                 
-                Button("Withdraw") {
-                    viewModel.withdraw(amount: amount,
-                                       toAddressWith: address.id,
-                                       onSuccess: dismiss.callAsFunction)
+                if !viewModel.isPINVerificationPresented {
+                    Button("Withdraw") {
+                        viewModel.withdraw(amount: amount,
+                                           toAddressWith: address.id,
+                                           onSuccess: dismiss.callAsFunction)
+                    }
+                    .tint(.accentColor)
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                    .buttonBorderShape(.capsule)
+                    .padding()
                 }
-                .tint(.accentColor)
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .buttonBorderShape(.capsule)
-                .padding()
             }
         }
         .onAppear {

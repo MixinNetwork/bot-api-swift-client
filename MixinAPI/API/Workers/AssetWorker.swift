@@ -61,10 +61,11 @@ public final class AssetWorker: Worker {
         return get(path: path)
     }
     
-    public func snapshots(limit: Int, offset: String? = nil, assetID: String? = nil, opponentID: String? = nil, destination: String? = nil, tag: String? = nil, queue: DispatchQueue = .main, completion: @escaping (API.Result<[Snapshot]>) -> Void) {
+    @discardableResult
+    public func snapshots(limit: Int, offset: String? = nil, assetID: String? = nil, opponentID: String? = nil, destination: String? = nil, tag: String? = nil, queue: DispatchQueue = .main, completion: @escaping (API.Result<[Snapshot]>) -> Void) -> Request {
         assert(limit <= 500)
         let path = Path.snapshots(limit: limit, offset: offset, assetID: assetID, opponentID: opponentID, destination: destination, tag: tag)
-        get(path: path, queue: queue, completion: completion)
+        return get(path: path, queue: queue, completion: completion)
     }
     
     public func fee(assetID: String, completion: @escaping (API.Result<Fee>) -> Void) {
