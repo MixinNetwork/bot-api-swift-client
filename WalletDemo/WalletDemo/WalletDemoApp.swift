@@ -20,8 +20,12 @@ struct WalletDemoApp: App {
                 HomeView(api: api, account: account)
             case let .failure(error):
                 VStack {
-                    Button("Retry", action: viewModel.loadAccount)
-                        .buttonStyle(RoundedBackgroundButtonStyle())
+                    Button("Reload", action: viewModel.loadAccount)
+                        .tint(.accentColor)
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.large)
+                        .buttonBorderShape(.roundedRectangle)
+                        .padding()
                     Text(error.localizedDescription)
                 }
             case .none:

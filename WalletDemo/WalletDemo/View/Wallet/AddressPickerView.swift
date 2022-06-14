@@ -30,10 +30,15 @@ struct AddressPickerView: View {
                     .scaleEffect(2)
             case .failure(let error):
                 VStack {
-                    Button("Retry") {
+                    Button("Reload") {
                         viewModel.loadAddress(assetID: assetItem.asset.id)
                     }
-                    .buttonStyle(RoundedBackgroundButtonStyle())
+                    .tint(.accentColor)
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                    .buttonBorderShape(.roundedRectangle)
+                    .padding()
+                    
                     Text(error.localizedDescription)
                 }
             case .success:
