@@ -70,8 +70,9 @@ class WalletViewModel: ObservableObject {
 // MARK: - Asset
 extension WalletViewModel {
     
-    func reloadAssets() {
+    func reloadAssets(completion: (() -> Void)?) {
         if case .loading = reloadAssetsState {
+            completion?()
             return
         }
         reloadAssetsState = .loading
@@ -81,6 +82,7 @@ extension WalletViewModel {
             case .failure(let error):
                 DispatchQueue.main.async {
                     self.reloadAssetsState = .failure(error)
+                    completion?()
                 }
             case .success(var assets):
                 var missingAssetIDs = Set(self.fixedAssetIDs)
@@ -141,6 +143,7 @@ extension WalletViewModel {
                     self.assets = assets
                     self.assetItems = items
                     self.reloadAssetsState = .success
+                    completion?()
                 }
             }
         }

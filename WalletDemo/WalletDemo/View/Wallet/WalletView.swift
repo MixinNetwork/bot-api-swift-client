@@ -16,77 +16,98 @@ struct WalletView: View {
         switch viewModel.reloadAssetsState {
         case let .failure(error):
             VStack {
-                Button("Reload", action: viewModel.reloadAssets)
+                Button("Reload", action: reloadAssets)
                 Text(error.localizedDescription)
             }
         case .waiting:
             ProgressView()
                 .scaleEffect(2)
-                .onAppear(perform: viewModel.reloadAssets)
-        case .loading:
+                .onAppear(perform: reloadAssets)
+        case .loading where viewModel.assetItems.isEmpty:
             ProgressView()
                 .scaleEffect(2)
-        case .success:
+        default:
             List {
                 Section {
-                    VStack(alignment: .center, spacing: 8) {
-                        HStack(alignment: .top, spacing: 2) {
+                    headerView
+                }
+                Section {
+                    assetsView
+                }
+            }
+            .refreshable {
+                await withCheckedContinuation { continuation in
+                    viewModel.reloadAssets {
+                        continuation.resume()
+                    }
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var headerView: some View {
+        VStack(alignment: .center, spacing: 8) {
+            HStack(alignment: .top, spacing: 2) {
+                Spacer()
+                Text("$")
+                    .font(.body)
+                    .foregroundColor(Color(.secondaryLabel))
+                Text(viewModel.usdBalance)
+                    .font(.dinCondensed(ofSize: 40))
+                Spacer()
+            }
+            HStack {
+                Spacer()
+                Text(viewModel.btcBalance)
+                    .font(.dinCondensed(ofSize: 15))
+                Text("BTC")
+                    .font(.caption)
+                    .foregroundColor(Color(.secondaryLabel))
+                Spacer()
+            }
+        }.padding(16)
+    }
+    
+    @ViewBuilder
+    private var assetsView: some View {
+        ForEach(viewModel.assetItems) { item in
+            NavigationLink {
+                AssetView(item: item)
+            } label: {
+                HStack {
+                    AssetIconView(icon: item.icon)
+                        .aspectRatio(1, contentMode: .fit)
+                        .frame(maxHeight: 44)
+                    VStack {
+                        HStack {
+                            Text(item.balance)
+                                .font(.dinCondensed(ofSize: 19))
+                            Text(item.asset.symbol)
+                                .font(.footnote)
+                                .fontWeight(.medium)
                             Spacer()
-                            Text("$")
-                                .font(.body)
-                                .foregroundColor(Color(.secondaryLabel))
-                            Text(viewModel.usdBalance)
-                                .font(.dinCondensed(ofSize: 40))
-                            Spacer()
+                            Text(item.change)
+                                .font(.subheadline)
+                                .foregroundColor(item.isChangePositive ? .green : .red)
                         }
                         HStack {
-                            Spacer()
-                            Text(viewModel.btcBalance)
-                                .font(.dinCondensed(ofSize: 15))
-                            Text("BTC")
+                            Text("≈ " + item.usdBalance)
                                 .font(.caption)
                                 .foregroundColor(Color(.secondaryLabel))
                             Spacer()
-                        }
-                    }.padding(16)
-                }
-                Section {
-                    ForEach(viewModel.assetItems) { item in
-                        NavigationLink {
-                            AssetView(item: item)
-                        } label: {
-                            HStack {
-                                AssetIconView(icon: item.icon)
-                                    .aspectRatio(1, contentMode: .fit)
-                                    .frame(maxHeight: 44)
-                                VStack {
-                                    HStack {
-                                        Text(item.balance)
-                                            .font(.dinCondensed(ofSize: 19))
-                                        Text(item.asset.symbol)
-                                            .font(.footnote)
-                                            .fontWeight(.medium)
-                                        Spacer()
-                                        Text(item.change)
-                                            .font(.subheadline)
-                                            .foregroundColor(item.isChangePositive ? .green : .red)
-                                    }
-                                    HStack {
-                                        Text("≈ " + item.usdBalance)
-                                            .font(.caption)
-                                            .foregroundColor(Color(.secondaryLabel))
-                                        Spacer()
-                                        Text(item.usdPrice)
-                                            .font(.caption)
-                                            .foregroundColor(Color(.secondaryLabel))
-                                    }
-                                }
-                            }
+                            Text(item.usdPrice)
+                                .font(.caption)
+                                .foregroundColor(Color(.secondaryLabel))
                         }
                     }
                 }
             }
         }
+    }
+    
+    private func reloadAssets() {
+        viewModel.reloadAssets(completion: nil)
     }
     
 }
