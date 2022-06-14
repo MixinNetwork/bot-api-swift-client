@@ -54,6 +54,7 @@ struct WithdrawView: View {
                         }
                     } footer: {
                         VStack(alignment: .leading, spacing: 2) {
+                            Spacer(minLength: 8)
                             HStack(alignment: .center, spacing: 0) {
                                 Text("Network fee: ")
                                 Text(address.fee)
@@ -88,9 +89,11 @@ struct WithdrawView: View {
                     .controlSize(.large)
                     .buttonBorderShape(.capsule)
                     .padding()
+                    .disabled(!isAmountValid)
                 }
             }
         }
+        .navigationTitle("Withdraw to \(address.label)")
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) {
                 self.isAmountFocused = true
@@ -110,6 +113,14 @@ struct WithdrawView: View {
         let decimal = (Decimal(string: amount) ?? 0) * assetItem.decimalUSDPrice
         let string = CurrencyFormatter.localizedString(from: decimal, format: .fiatMoney, sign: .never)
         return string + " USD"
+    }
+    
+    private var isAmountValid: Bool {
+        if let decimal = Decimal(string: amount) {
+            return decimal > 0
+        } else {
+            return false
+        }
     }
     
 }

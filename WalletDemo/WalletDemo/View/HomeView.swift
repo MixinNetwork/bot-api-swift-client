@@ -25,9 +25,11 @@ struct HomeView: View {
                     WalletView()
                         .navigationTitle("Wallet")
                 }
+                .navigationViewStyle(.stack)
                 .tabItem {
                     Label("Wallet", systemImage: "creditcard")
                 }
+                
                 NavigationView {
                     SwapView()
                         .navigationTitle("Swap")

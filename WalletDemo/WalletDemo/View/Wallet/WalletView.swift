@@ -13,7 +13,7 @@ struct WalletView: View {
     @EnvironmentObject var viewModel: WalletViewModel
     
     var body: some View {
-        switch viewModel.assetsState {
+        switch viewModel.reloadAssetsState {
         case let .failure(error):
             VStack {
                 Button("Reload", action: viewModel.reloadAssets)

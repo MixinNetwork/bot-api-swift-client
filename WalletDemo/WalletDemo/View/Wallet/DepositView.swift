@@ -9,9 +9,12 @@ import SwiftUI
 
 struct DepositView: View {
     
-    let item: AssetItem
+    @State private var item: AssetItem
     
-    var body: some View {
+    @EnvironmentObject private var viewModel: WalletViewModel
+    
+    @ViewBuilder
+    private var contentView: some View {
         List {
             Section {
                 Text(item.asset.destination)
@@ -41,7 +44,52 @@ struct DepositView: View {
                 }
             }
         }
+    }
+    
+    var body: some View {
+        ZStack {
+            Color(.systemGroupedBackground)
+                .ignoresSafeArea()
+            
+            if let state = viewModel.assetItemsState[item.asset.id] {
+                switch state {
+                case .waiting, .success:
+                    contentView
+                case .loading:
+                    ProgressView()
+                        .scaleEffect(2)
+                case .failure(let error):
+                    VStack {
+                        Button("Reload", action: reloadAsset)
+                            .tint(.accentColor)
+                            .buttonStyle(.borderedProminent)
+                            .controlSize(.large)
+                            .buttonBorderShape(.roundedRectangle)
+                            .padding()
+                        Text(error.localizedDescription)
+                    }
+                }
+            } else if item.asset.destination.isEmpty {
+                ProgressView()
+                    .scaleEffect(2)
+                    .onAppear(perform: reloadAsset)
+            } else {
+                contentView
+            }
+        }
         .navigationTitle("Deposit " + item.asset.symbol)
+    }
+    
+    init(item: AssetItem) {
+        self._item = State(initialValue: item)
+    }
+    
+    private func reloadAsset() {
+        viewModel.reloadAsset(with: item.asset.id) { item in
+            if let item = item {
+                self.item = item
+            }
+        }
     }
     
 }

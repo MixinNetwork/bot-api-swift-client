@@ -34,16 +34,19 @@ class WalletViewModel: ObservableObject {
         AssetID.doge,
     ]
     
-    private var assets: [Asset] = []
-    
-    @Published private(set) var assetsState: State = .waiting
+    @Published private(set) var reloadAssetsState: State = .waiting
     @Published private(set) var assetItems: [AssetItem] = []
     @Published private(set) var usdBalance: String = ""
     @Published private(set) var btcBalance: String = ""
     
+    // Key is Asset ID
+    @Published private(set) var assetItemsState: [String: State] = [:]
+    
+    // Key is Asset ID
     @Published private(set) var snapshots: [String: [SnapshotItem]] = [:]
     @Published private(set) var snapshotsState: [String: SnapshotState] = [:]
     
+    // Key is Asset ID
     @Published private(set) var addresses: [String: [AddressItem]] = [:]
     @Published private(set) var addressesState: [String: State] = [:]
     
@@ -51,6 +54,8 @@ class WalletViewModel: ObservableObject {
     @Published private(set) var pinVerificationState: State = .waiting
     @Published private(set) var pinVerificationCaption = "Transfer"
     @Published private(set) var isPINVerificationPresented = false
+    
+    private var assets: [Asset] = []
     
     init(api: API) {
         self.api = api
@@ -66,16 +71,16 @@ class WalletViewModel: ObservableObject {
 extension WalletViewModel {
     
     func reloadAssets() {
-        if case .loading = assetsState {
+        if case .loading = reloadAssetsState {
             return
         }
-        assetsState = .loading
+        reloadAssetsState = .loading
         let api = self.api
         api.asset.assets(queue: .global()) { result in
             switch result {
             case .failure(let error):
                 DispatchQueue.main.async {
-                    self.assetsState = .failure(error)
+                    self.reloadAssetsState = .failure(error)
                 }
             case .success(var assets):
                 var missingAssetIDs = Set(self.fixedAssetIDs)
@@ -88,7 +93,7 @@ extension WalletViewModel {
                         assets.append(asset)
                     case let .failure(error):
                         DispatchQueue.main.async {
-                            self.assetsState = .failure(error)
+                            self.reloadAssetsState = .failure(error)
                         }
                         return
                     }
@@ -135,15 +140,23 @@ extension WalletViewModel {
                     self.btcBalance = localizedBTCBalance
                     self.assets = assets
                     self.assetItems = items
-                    self.assetsState = .success
+                    self.reloadAssetsState = .success
                 }
             }
         }
     }
     
     func reloadAsset(with id: String, completion: ((AssetItem?) -> Void)? = nil) {
+        if case .loading = reloadAssetsState {
+            completion?(nil)
+            return
+        }
+        if case .loading = assetItemsState[id] {
+            completion?(nil)
+            return
+        }
+        assetItemsState[id] = .loading
         api.asset.asset(assetID: id) { result in
-            let assetItem: AssetItem?
             switch result {
             case .success(let asset):
                 let chainIconURL: URL?
@@ -167,11 +180,12 @@ extension WalletViewModel {
                 } else {
                     self.assetItems.append(item)
                 }
-                assetItem = item
-            case .failure:
-                assetItem = nil
+                self.assetItemsState[id] = .success
+                completion?(item)
+            case .failure(let error):
+                self.assetItemsState[id] = .failure(error)
+                completion?(nil)
             }
-            completion?(assetItem)
         }
     }
     
@@ -188,7 +202,7 @@ extension WalletViewModel {
     }
     
     func reloadSnapshots(assetID: String, completion: (() -> Void)? = nil) {
-        if case let .loading(request) = snapshotsState[assetID]{
+        if case let .loading(request) = snapshotsState[assetID] {
             request.cancel()
         }
         let assetItems = self.assetItems

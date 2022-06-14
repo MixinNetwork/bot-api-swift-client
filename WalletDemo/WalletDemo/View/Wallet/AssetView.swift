@@ -73,42 +73,44 @@ struct AssetView: View {
             .listRowInsets(EdgeInsets(.zero))
             .listRowBackground(Color(.systemGroupedBackground))
             
-            Section {
-                ForEach(viewModel.snapshots[item.asset.id] ?? []) { item in
-                    NavigationLink {
-                        SnapshotView(item: item)
-                    } label: {
-                        HStack {
-                            Text(item.type)
-                                .font(.subheadline)
-                            Spacer()
-                            Text(item.amount)
-                                .font(.dinCondensed(ofSize: 19))
-                                .foregroundColor(item.isAmountPositive ? .green : .red)
-                            Text(item.assetSymbol)
-                                .font(.caption)
-                                .fontWeight(.medium)
+            if !snapshots.isEmpty {
+                Section {
+                    ForEach(snapshots) { item in
+                        NavigationLink {
+                            SnapshotView(item: item)
+                        } label: {
+                            HStack {
+                                Text(item.type)
+                                    .font(.subheadline)
+                                Spacer()
+                                Text(item.amount)
+                                    .font(.dinCondensed(ofSize: 19))
+                                    .foregroundColor(item.isAmountPositive ? .green : .red)
+                                Text(item.assetSymbol)
+                                    .font(.caption)
+                                    .fontWeight(.medium)
+                            }
                         }
                     }
-                }
-                switch viewModel.snapshotsState[item.asset.id] {
-                case .waiting:
-                    Button("Load More") {
-                        viewModel.loadMoreSnapshotsIfNeeded(assetID: item.asset.id)
+                    switch viewModel.snapshotsState[item.asset.id] {
+                    case .waiting:
+                        Button("Load More") {
+                            viewModel.loadMoreSnapshotsIfNeeded(assetID: item.asset.id)
+                        }
+                    case .reachedEnd:
+                        EmptyView()
+                    case .none, .loading:
+                        HStack {
+                            Spacer()
+                            ProgressView()
+                            Spacer()
+                        }
+                    case .failure(let error):
+                        Text(error.localizedDescription)
                     }
-                case .reachedEnd:
-                    EmptyView()
-                case .none, .loading:
-                    HStack {
-                        Spacer()
-                        ProgressView()
-                        Spacer()
-                    }
-                case .failure(let error):
-                    Text(error.localizedDescription)
+                } header: {
+                    Text("Transactions")
                 }
-            } header: {
-                Text("Transactions")
             }
         }
         .navigationTitle(item.asset.name)
@@ -130,6 +132,10 @@ struct AssetView: View {
                 }
             }
         }
+    }
+    
+    private var snapshots: [SnapshotItem] {
+        viewModel.snapshots[item.asset.id] ?? []
     }
     
     init(item: AssetItem) {
