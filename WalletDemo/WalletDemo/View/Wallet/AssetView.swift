@@ -73,7 +73,7 @@ struct AssetView: View {
             .listRowInsets(EdgeInsets(.zero))
             .listRowBackground(Color(.systemGroupedBackground))
             
-            if !snapshots.isEmpty {
+            if showTransactionSection {
                 Section {
                     ForEach(snapshots) { item in
                         NavigationLink {
@@ -136,6 +136,15 @@ struct AssetView: View {
     
     private var snapshots: [SnapshotItem] {
         viewModel.snapshots[item.asset.id] ?? []
+    }
+    
+    private var showTransactionSection: Bool {
+        switch viewModel.snapshotsState[item.asset.id] {
+        case .reachedEnd:
+            return !snapshots.isEmpty
+        default:
+            return true
+        }
     }
     
     init(item: AssetItem) {
