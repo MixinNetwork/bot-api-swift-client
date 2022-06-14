@@ -27,6 +27,7 @@ struct AssetItem {
         let usdPrice = Decimal(string: asset.usdPrice) ?? 0
         let btcPrice = Decimal(string: asset.btcPrice) ?? 0
         let change = Decimal(string: asset.usdChange) ?? 0
+        
         self.asset = asset
         self.icon = AssetIcon(asset: URL(string: asset.iconURL), chain: chainIconURL)
         self.balance = CurrencyFormatter.localizedString(from: balance, format: .pretty, sign: .never)
@@ -34,6 +35,7 @@ struct AssetItem {
         self.isChangePositive = !asset.usdChange.hasPrefix("-")
         self.usdPrice = CurrencyFormatter.localizedString(from: usdPrice, format: .fiatMoneyPrice, sign: .never, symbol: .usd)
         self.usdBalance = CurrencyFormatter.localizedString(from: balance * usdPrice, format: .fiatMoney, sign: .never, symbol: .usd)
+        
         self.decimalBalance = balance
         self.decimalUSDPrice = usdPrice
         self.decimalUSDBalance = balance * usdPrice

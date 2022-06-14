@@ -25,6 +25,17 @@ class WalletViewModel: ObservableObject {
         case failure(Error)
     }
     
+    private let api: API
+    private let snapshotLimit = 30
+    private let fixedAssetIDs = [
+        AssetID.bitcoin,
+        AssetID.ethereum,
+        AssetID.usdtEthereum,
+        AssetID.doge,
+    ]
+    
+    private var assets: [Asset] = []
+    
     @Published private(set) var assetsState: State = .waiting
     @Published private(set) var assetItems: [AssetItem] = []
     @Published private(set) var usdBalance: String = ""
@@ -40,15 +51,6 @@ class WalletViewModel: ObservableObject {
     @Published private(set) var pinVerificationState: State = .waiting
     @Published private(set) var pinVerificationCaption = "Transfer"
     @Published private(set) var isPINVerificationPresented = false
-    
-    private let api: API
-    private let snapshotLimit = 30
-    private let fixedAssetIDs = [
-        AssetID.bitcoin,
-        AssetID.ethereum,
-        AssetID.usdtEthereum,
-        AssetID.doge,
-    ]
     
     init(api: API) {
         self.api = api
@@ -91,7 +93,14 @@ extension WalletViewModel {
                         return
                     }
                 }
-                let items: [AssetItem] = assets.map { asset in
+                let items: [AssetItem] = assets.filter { asset in
+                    if self.fixedAssetIDs.contains(asset.id) {
+                        return true
+                    } else {
+                        let balance = Decimal(string: asset.balance) ?? 0
+                        return balance > 0
+                    }
+                }.map { asset in
                     let chainIconURL: URL?
                     if let chain = assets.first(where: { $0.id == asset.chainID }) {
                         chainIconURL = URL(string: chain.iconURL)
@@ -124,6 +133,7 @@ extension WalletViewModel {
                 DispatchQueue.main.async {
                     self.usdBalance = localizedUSDBalance
                     self.btcBalance = localizedBTCBalance
+                    self.assets = assets
                     self.assetItems = items
                     self.assetsState = .success
                 }
@@ -137,11 +147,20 @@ extension WalletViewModel {
             switch result {
             case .success(let asset):
                 let chainIconURL: URL?
-                if let chain = self.assetItems.first(where: { $0.asset.id == asset.chainID }) {
-                    chainIconURL = URL(string: chain.asset.iconURL)
+                if asset.id == asset.chainID {
+                    chainIconURL = URL(string: asset.iconURL)
+                } else if let chain = self.assets.first(where: { $0.id == asset.chainID }) {
+                    chainIconURL = URL(string: chain.iconURL)
                 } else {
                     chainIconURL = nil
                 }
+                
+                if let index = self.assets.firstIndex(where: { $0.id == id }) {
+                    self.assets[index] = asset
+                } else {
+                    self.assets.append(asset)
+                }
+                
                 let item = AssetItem(asset: asset, chainIconURL: chainIconURL)
                 if let index = self.assetItems.firstIndex(where: { $0.asset.id == id }) {
                     self.assetItems[index] = item
