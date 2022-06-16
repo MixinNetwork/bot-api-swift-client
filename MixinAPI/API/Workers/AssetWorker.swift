@@ -37,6 +37,10 @@ public final class AssetWorker: Worker {
             return path
         }
         
+        static func search(keyword: String) -> String {
+            "/network/assets/search/\(keyword)"
+        }
+        
     }
     
     public func assets(queue: DispatchQueue = .main, completion: @escaping (API.Result<[Asset]>) -> Void) {
@@ -77,11 +81,27 @@ public final class AssetWorker: Worker {
     }
     
     public func search(keyword: String) -> API.Result<[Asset]>  {
-        guard let encodedKeyword = keyword.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+        if let encoded = keyword.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+            return get(path: Path.search(keyword: encoded))
+        } else {
             return .success([])
         }
-        let path = "/network/assets/search/\(encodedKeyword)"
-        return get(path: path)
+    }
+    
+    public func search(keyword: String, completion: @escaping (API.Result<[Asset]>) -> Void) -> Request {
+        if let encoded = keyword.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+            return get(path: Path.search(keyword: encoded), completion: completion)
+        } else {
+            let request = Request()
+            DispatchQueue.main.async {
+                if request.isCancelled {
+                    completion(.failure(TransportError.cancelled))
+                } else {
+                    completion(.success([]))
+                }
+            }
+            return request
+        }
     }
     
     public func topAssets<Asset>(completion: @escaping (API.Result<[Asset]>) -> Void) {

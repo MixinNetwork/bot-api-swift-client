@@ -18,6 +18,12 @@ class WalletViewModel: ObservableObject {
         case failure(Error)
     }
     
+    enum SearchAssetState {
+        case loading(Request)
+        case success([AssetItem])
+        case failure(Error)
+    }
+    
     enum SnapshotState {
         case waiting
         case loading(Request)
@@ -41,6 +47,8 @@ class WalletViewModel: ObservableObject {
     @Published private(set) var btcBalance: String = ""
     private(set) var allAssetItems: [AssetItem] = []
     
+    @Published private(set) var assetSearchState: SearchAssetState? = nil
+    
     // Key is Asset ID
     @Published private(set) var assetItemsState: [String: State] = [:]
     
@@ -63,6 +71,13 @@ class WalletViewModel: ObservableObject {
     
     func dismissPINVerification() {
         isPINVerificationPresented = false
+    }
+    
+    func clearSearchResults() {
+        if case let .loading(request) = assetSearchState {
+            request.cancel()
+        }
+        assetSearchState = nil
     }
     
     private func isItemValuableForDisplay(_ item: AssetItem) -> Bool {
@@ -176,6 +191,40 @@ extension WalletViewModel {
         }
     }
     
+    func search(keyword: String) {
+        if case let .loading(request) = assetSearchState {
+            request.cancel()
+        }
+        let request = api.asset.search(keyword: keyword) { result in
+            switch result {
+            case .success(let assets):
+                let items: [AssetItem] = assets.map { asset in
+                    let chainIconURL: URL?
+                    if asset.id == asset.chainID {
+                        chainIconURL = URL(string: asset.iconURL)
+                    } else if let chain = self.allAssetItems.first(where: { $0.id == asset.chainID }) {
+                        chainIconURL = URL(string: chain.asset.iconURL)
+                    } else {
+                        chainIconURL = nil
+                    }
+                    return AssetItem(asset: asset, chainIconURL: chainIconURL)
+                }
+                for item in items {
+                    if let index = self.allAssetItems.firstIndex(where: { $0.id == item.id }) {
+                        self.allAssetItems[index] = item
+                    } else {
+                        self.allAssetItems.append(item)
+                    }
+                }
+                self.allAssetItems.sort(using: self.assetComparator)
+                self.assetSearchState = .success(items)
+            case .failure(let error):
+                self.assetSearchState = .failure(error)
+            }
+        }
+        assetSearchState = .loading(request)
+    }
+    
 }
 
 // MARK: - Snapshot
@@ -192,7 +241,7 @@ extension WalletViewModel {
         if case let .loading(request) = snapshotsState[assetID] {
             request.cancel()
         }
-        let assetItems = self.visibleAssetItems
+        let assetItems = self.allAssetItems
         let limit = self.snapshotLimit
         let request = api.asset.snapshots(limit: limit, offset: nil, assetID: assetID, queue: .global()) { result in
             switch result {
@@ -222,7 +271,7 @@ extension WalletViewModel {
         case .waiting, .failure, .none:
             break
         }
-        let assetItems = self.visibleAssetItems
+        let assetItems = self.allAssetItems
         let limit = self.snapshotLimit
         let currentSnapshots = snapshots[assetID] ?? []
         let offset = currentSnapshots.last?.snapshot.createdAt

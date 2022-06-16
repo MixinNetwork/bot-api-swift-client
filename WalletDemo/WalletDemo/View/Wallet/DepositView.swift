@@ -13,6 +13,39 @@ struct DepositView: View {
     
     @EnvironmentObject private var viewModel: WalletViewModel
     
+    var body: some View {
+        ZStack {
+            Color(.systemGroupedBackground)
+                .ignoresSafeArea()
+            
+            if let state = viewModel.assetItemsState[item.asset.id] {
+                switch state {
+                case .waiting, .success:
+                    destinationLoadingContentView
+                case .loading:
+                    ProgressView()
+                        .scaleEffect(2)
+                case .failure(let error):
+                    ErrorView(error: error, action: reloadAsset)
+                }
+            } else {
+                destinationLoadingContentView
+            }
+        }
+        .navigationTitle("Deposit " + item.asset.symbol)
+    }
+    
+    @ViewBuilder
+    private var destinationLoadingContentView: some View {
+        if item.asset.destination.isEmpty {
+            ProgressView()
+                .scaleEffect(2)
+                .onAppear(perform: reloadAsset)
+        } else {
+            contentView
+        }
+    }
+    
     @ViewBuilder
     private var contentView: some View {
         List {
@@ -44,32 +77,6 @@ struct DepositView: View {
                 }
             }
         }
-    }
-    
-    var body: some View {
-        ZStack {
-            Color(.systemGroupedBackground)
-                .ignoresSafeArea()
-            
-            if let state = viewModel.assetItemsState[item.asset.id] {
-                switch state {
-                case .waiting, .success:
-                    contentView
-                case .loading:
-                    ProgressView()
-                        .scaleEffect(2)
-                case .failure(let error):
-                    ErrorView(error: error, action: reloadAsset)
-                }
-            } else if item.asset.destination.isEmpty {
-                ProgressView()
-                    .scaleEffect(2)
-                    .onAppear(perform: reloadAsset)
-            } else {
-                contentView
-            }
-        }
-        .navigationTitle("Deposit " + item.asset.symbol)
     }
     
     init(item: AssetItem) {
