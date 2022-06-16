@@ -15,8 +15,12 @@ struct SnapshotView: View {
         List {
             Section {
                 VStack {
-                    AssetIconView(icon: item.assetIcon)
-                        .frame(width: 70, height: 70)
+                    HStack {
+                        Spacer()
+                        AssetIconView(icon: item.assetIcon)
+                            .frame(width: 70, height: 70)
+                        Spacer()
+                    }
                     HStack {
                         Text(item.amount)
                             .font(.dinCondensed(ofSize: 34))
@@ -33,7 +37,7 @@ struct SnapshotView: View {
             }
             
             InfoSection(header: "Transaction ID", content: item.id)
-            InfoSection(header: "Asset Type", content: item.assetName)
+            InfoSection(header: "Asset Name", content: item.assetName)
             InfoSection(header: "Opponent ID", content: item.snapshot.opponentID)
             InfoSection(header: "Transaction Hash", content: item.snapshot.transactionHash)
             InfoSection(header: "Sender", content: item.snapshot.sender)
