@@ -33,8 +33,7 @@ struct AssetView: View {
             Section {
                 HStack(alignment: .center, spacing: 8) {
                     AssetIconView(icon: item.icon)
-                        .aspectRatio(1, contentMode: .fit)
-                        .frame(maxHeight: 50)
+                        .frame(width: 50, height: 50)
                     VStack {
                         HStack {
                             Text(item.asset.balance)

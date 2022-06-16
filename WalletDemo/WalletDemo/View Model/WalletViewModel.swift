@@ -26,6 +26,7 @@ class WalletViewModel: ObservableObject {
     }
     
     private let api: API
+    private let assetComparator = AssetValueSortComparator()
     private let snapshotLimit = 30
     private let fixedAssetIDs = [
         AssetID.bitcoin,
@@ -35,9 +36,10 @@ class WalletViewModel: ObservableObject {
     ]
     
     @Published private(set) var reloadAssetsState: State = .waiting
-    @Published private(set) var assetItems: [AssetItem] = []
+    @Published private(set) var visibleAssetItems: [AssetItem] = []
     @Published private(set) var usdBalance: String = ""
     @Published private(set) var btcBalance: String = ""
+    private(set) var allAssetItems: [AssetItem] = []
     
     // Key is Asset ID
     @Published private(set) var assetItemsState: [String: State] = [:]
@@ -55,14 +57,20 @@ class WalletViewModel: ObservableObject {
     @Published private(set) var pinVerificationCaption = "Transfer"
     @Published private(set) var isPINVerificationPresented = false
     
-    private var assets: [Asset] = []
-    
     init(api: API) {
         self.api = api
     }
     
     func dismissPINVerification() {
         isPINVerificationPresented = false
+    }
+    
+    private func isItemValuableForDisplay(_ item: AssetItem) -> Bool {
+        if fixedAssetIDs.contains(item.asset.id) {
+            return true
+        } else {
+            return item.decimalBalance > 0
+        }
     }
     
 }
@@ -100,14 +108,8 @@ extension WalletViewModel {
                         return
                     }
                 }
-                let items: [AssetItem] = assets.filter { asset in
-                    if self.fixedAssetIDs.contains(asset.id) {
-                        return true
-                    } else {
-                        let balance = Decimal(string: asset.balance) ?? 0
-                        return balance > 0
-                    }
-                }.map { asset in
+                
+                let allItems: [AssetItem] = assets.map { asset in
                     let chainIconURL: URL?
                     if let chain = assets.first(where: { $0.id == asset.chainID }) {
                         chainIconURL = URL(string: chain.iconURL)
@@ -115,24 +117,10 @@ extension WalletViewModel {
                         chainIconURL = nil
                     }
                     return AssetItem(asset: asset, chainIconURL: chainIconURL)
-                }.sorted { one, another in
-                    switch one.decimalUSDBalance.compare(to: another.decimalUSDBalance) {
-                    case .orderedAscending:
-                        return false
-                    case .orderedSame:
-                        switch one.decimalUSDPrice.compare(to: another.decimalUSDPrice) {
-                        case .orderedAscending:
-                            return false
-                        case .orderedSame:
-                            return one.decimalBalance > another.decimalBalance
-                        case .orderedDescending:
-                            return true
-                        }
-                    case .orderedDescending:
-                        return true
-                    }
-                }
-                let (totalUSDBalance, totalBTCBalance) = items.reduce((0, 0)) { partialResult, asset in
+                }.sorted(using: self.assetComparator)
+                let visibleItems = allItems.filter(self.isItemValuableForDisplay(_:))
+                
+                let (totalUSDBalance, totalBTCBalance) = visibleItems.reduce((0, 0)) { partialResult, asset in
                     (partialResult.0 + asset.decimalUSDBalance, partialResult.1 + asset.decimalBTCBalance)
                 }
                 let localizedUSDBalance = CurrencyFormatter.localizedString(from: totalUSDBalance, format: .fiatMoney, sign: .never)
@@ -140,8 +128,8 @@ extension WalletViewModel {
                 DispatchQueue.main.async {
                     self.usdBalance = localizedUSDBalance
                     self.btcBalance = localizedBTCBalance
-                    self.assets = assets
-                    self.assetItems = items
+                    self.allAssetItems = allItems
+                    self.visibleAssetItems = visibleItems
                     self.reloadAssetsState = .success
                     completion?()
                 }
@@ -165,24 +153,20 @@ extension WalletViewModel {
                 let chainIconURL: URL?
                 if asset.id == asset.chainID {
                     chainIconURL = URL(string: asset.iconURL)
-                } else if let chain = self.assets.first(where: { $0.id == asset.chainID }) {
-                    chainIconURL = URL(string: chain.iconURL)
+                } else if let chain = self.allAssetItems.first(where: { $0.id == asset.chainID }) {
+                    chainIconURL = URL(string: chain.asset.iconURL)
                 } else {
                     chainIconURL = nil
                 }
                 
-                if let index = self.assets.firstIndex(where: { $0.id == id }) {
-                    self.assets[index] = asset
-                } else {
-                    self.assets.append(asset)
-                }
-                
                 let item = AssetItem(asset: asset, chainIconURL: chainIconURL)
-                if let index = self.assetItems.firstIndex(where: { $0.asset.id == id }) {
-                    self.assetItems[index] = item
+                if let index = self.allAssetItems.firstIndex(where: { $0.id == id }) {
+                    self.allAssetItems[index] = item
                 } else {
-                    self.assetItems.append(item)
+                    self.allAssetItems.append(item)
                 }
+                self.allAssetItems.sort(using: self.assetComparator)
+                self.visibleAssetItems = self.allAssetItems.filter(self.isItemValuableForDisplay(_:))
                 self.assetItemsState[id] = .success
                 completion?(item)
             case .failure(let error):
@@ -208,7 +192,7 @@ extension WalletViewModel {
         if case let .loading(request) = snapshotsState[assetID] {
             request.cancel()
         }
-        let assetItems = self.assetItems
+        let assetItems = self.visibleAssetItems
         let limit = self.snapshotLimit
         let request = api.asset.snapshots(limit: limit, offset: nil, assetID: assetID, queue: .global()) { result in
             switch result {
@@ -238,7 +222,7 @@ extension WalletViewModel {
         case .waiting, .failure, .none:
             break
         }
-        let assetItems = self.assetItems
+        let assetItems = self.visibleAssetItems
         let limit = self.snapshotLimit
         let currentSnapshots = snapshots[assetID] ?? []
         let offset = currentSnapshots.last?.snapshot.createdAt

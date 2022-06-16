@@ -14,38 +14,43 @@ struct AssetIconView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
+                WebImage(url: assetIconURL)
+                    .resizable()
+                    .scaledToFit()
+                    .background(Color(.secondarySystemBackground))
+                    .clipShape(Circle())
                 Circle()
-                    .fill(Color(UIColor.secondarySystemBackground))
-                WebImage(url: icon.asset)
+                    .fill(Color(.secondarySystemBackground))
+                    .scaleEffect(chainIconBackgroundScale, anchor: .bottomLeading)
+                    .offset(x: -(chainIconBackgroundScale - chainIconScale) * geometry.size.width / 2,
+                            y: (chainIconBackgroundScale - chainIconScale) * geometry.size.height / 2)
+                WebImage(url: chainIconURL)
                     .resizable()
                     .scaledToFit()
                     .clipShape(Circle())
-                Circle()
-                    .fill(Color(UIColor.secondarySystemBackground))
-                    .scaleEffect(chainIconBackgroundScale, anchor: .center)
-                    .offset(chainIconOffset(assetIconSize: geometry.size, scale: chainIconBackgroundScale))
-                WebImage(url: icon.chain)
-                    .resizable()
-                    .scaledToFit()
-                    .clipShape(Circle())
-                    .scaleEffect(chainIconScale, anchor: .center)
-                    .offset(chainIconOffset(assetIconSize: geometry.size, scale: chainIconBackgroundScale))
+                    .scaleEffect(chainIconScale, anchor: .bottomLeading)
             }
         }
+        .aspectRatio(1, contentMode: .fit)
+        .clipShape(Rectangle())
     }
     
-    private let icon: AssetIcon
+    private let assetIconURL: URL?
+    private let chainIconURL: URL?
     private let chainIconBackgroundScale: CGFloat = 0.47
     private let chainIconScale: CGFloat = 0.4
     
     init(icon: AssetIcon) {
-        self.icon = icon
+        self.assetIconURL = icon.asset
+        self.chainIconURL = icon.chain
     }
     
-    private func chainIconOffset(assetIconSize: CGSize, scale: CGFloat) -> CGSize {
-        let length = min(assetIconSize.width, assetIconSize.height)
-        let factor = (1 - scale) / 2
-        return CGSize(width: -length * factor, height: length * factor)
+}
+
+struct AssetIconView_Previews: PreviewProvider {
+    
+    static var previews: some View {
+        AssetIconView(icon: .init(asset: nil, chain: nil))
     }
     
 }

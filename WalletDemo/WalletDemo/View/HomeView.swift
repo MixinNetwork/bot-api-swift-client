@@ -23,20 +23,21 @@ struct HomeView: View {
             TabView {
                 NavigationView {
                     WalletView()
-                        .navigationTitle("Wallet")
                 }
                 .navigationViewStyle(.stack)
                 .tabItem {
                     Label("Wallet", systemImage: "creditcard")
                 }
+                .environmentObject(walletViewModel)
                 
                 NavigationView {
                     SwapView()
-                        .navigationTitle("Swap")
                 }
+                .navigationViewStyle(.stack)
                 .tabItem {
                     Label("Swap", systemImage: "cart")
                 }
+                .environmentObject(SwapViewModel())
             }
             .zIndex(0)
             
@@ -46,7 +47,6 @@ struct HomeView: View {
                     .zIndex(2)
             }
         }
-        .environmentObject(walletViewModel)
         .sheet(isPresented: $isPINAbsent) {
             InitializePINView()
         }

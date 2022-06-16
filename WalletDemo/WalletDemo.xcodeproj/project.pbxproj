@@ -15,6 +15,7 @@
 		943BA77D2845F6B900575A7D /* AssetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943BA77C2845F6B900575A7D /* AssetView.swift */; };
 		9470D3B72843C2C200E44A1C /* Font+DINCondensed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9470D3B62843C2C200E44A1C /* Font+DINCondensed.swift */; };
 		9489816B284C9DB50065DC5D /* VerifyPINView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9489816A284C9DB50065DC5D /* VerifyPINView.swift */; };
+		949E7A3B285B71BD00AABA4E /* ChainAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949E7A3A285B71BD00AABA4E /* ChainAsset.swift */; };
 		94A06AEA28408139004F1117 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A06AE928408139004F1117 /* HomeView.swift */; };
 		94A06AEE284083E7004F1117 /* WalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A06AED284083E7004F1117 /* WalletView.swift */; };
 		94A06AF02840A5EE004F1117 /* SwapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A06AEF2840A5EE004F1117 /* SwapView.swift */; };
@@ -26,6 +27,12 @@
 		94A070132843A46A004F1117 /* AssetItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A070122843A46A004F1117 /* AssetItem.swift */; };
 		94A070D12843B69C004F1117 /* CurrencyFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A070D02843B69C004F1117 /* CurrencyFormatter.swift */; };
 		94A070D32843B79F004F1117 /* Locale+General.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A070D22843B79F004F1117 /* Locale+General.swift */; };
+		94A093E82859D7B7006D52E9 /* SettlementAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A093E72859D7B7006D52E9 /* SettlementAsset.swift */; };
+		94A093EA285A3D42006D52E9 /* AssetValueSortComparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A093E9285A3D42006D52E9 /* AssetValueSortComparator.swift */; };
+		94A094A8285AF763006D52E9 /* SwapAssetPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A094A7285AF763006D52E9 /* SwapAssetPickerView.swift */; };
+		94A299212858C0F9007F3581 /* SwapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A299202858C0F9007F3581 /* SwapViewModel.swift */; };
+		94A299242858C915007F3581 /* PaymentAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A299232858C915007F3581 /* PaymentAsset.swift */; };
+		94A299E22858E480007F3581 /* SwapResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A299E12858E480007F3581 /* SwapResponse.swift */; };
 		94B3AA662819B859006B60C1 /* WalletDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94B3AA652819B859006B60C1 /* WalletDemoApp.swift */; };
 		94B3AA6A2819B859006B60C1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94B3AA692819B859006B60C1 /* Assets.xcassets */; };
 		94B3AA6D2819B859006B60C1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94B3AA6C2819B859006B60C1 /* Preview Assets.xcassets */; };
@@ -40,6 +47,9 @@
 		94EB8A402847C7EB00DD0C37 /* AddressPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94EB8A3F2847C7EB00DD0C37 /* AddressPickerView.swift */; };
 		94EB8A422847CCA700DD0C37 /* AddressItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94EB8A412847CCA700DD0C37 /* AddressItem.swift */; };
 		94EB8A4428485EBB00DD0C37 /* NewAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94EB8A4328485EBB00DD0C37 /* NewAddressView.swift */; };
+		94F95E49285B1F6D003970EE /* QuoteAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94F95E48285B1F6D003970EE /* QuoteAsset.swift */; };
+		94F95F07285B2514003970EE /* SwappableAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94F95F06285B2514003970EE /* SwappableAsset.swift */; };
+		94F95F09285B3690003970EE /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94F95F08285B3690003970EE /* ErrorView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,6 +63,7 @@
 		943BA77C2845F6B900575A7D /* AssetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetView.swift; sourceTree = "<group>"; };
 		9470D3B62843C2C200E44A1C /* Font+DINCondensed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Font+DINCondensed.swift"; sourceTree = "<group>"; };
 		9489816A284C9DB50065DC5D /* VerifyPINView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyPINView.swift; sourceTree = "<group>"; };
+		949E7A3A285B71BD00AABA4E /* ChainAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChainAsset.swift; sourceTree = "<group>"; };
 		94A06AE928408139004F1117 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		94A06AED284083E7004F1117 /* WalletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletView.swift; sourceTree = "<group>"; };
 		94A06AEF2840A5EE004F1117 /* SwapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapView.swift; sourceTree = "<group>"; };
@@ -64,6 +75,12 @@
 		94A070122843A46A004F1117 /* AssetItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetItem.swift; sourceTree = "<group>"; };
 		94A070D02843B69C004F1117 /* CurrencyFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrencyFormatter.swift; sourceTree = "<group>"; };
 		94A070D22843B79F004F1117 /* Locale+General.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Locale+General.swift"; sourceTree = "<group>"; };
+		94A093E72859D7B7006D52E9 /* SettlementAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementAsset.swift; sourceTree = "<group>"; };
+		94A093E9285A3D42006D52E9 /* AssetValueSortComparator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetValueSortComparator.swift; sourceTree = "<group>"; };
+		94A094A7285AF763006D52E9 /* SwapAssetPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapAssetPickerView.swift; sourceTree = "<group>"; };
+		94A299202858C0F9007F3581 /* SwapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapViewModel.swift; sourceTree = "<group>"; };
+		94A299232858C915007F3581 /* PaymentAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentAsset.swift; sourceTree = "<group>"; };
+		94A299E12858E480007F3581 /* SwapResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapResponse.swift; sourceTree = "<group>"; };
 		94B3AA622819B859006B60C1 /* WalletDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WalletDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		94B3AA652819B859006B60C1 /* WalletDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDemoApp.swift; sourceTree = "<group>"; };
 		94B3AA692819B859006B60C1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -79,6 +96,9 @@
 		94EB8A3F2847C7EB00DD0C37 /* AddressPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressPickerView.swift; sourceTree = "<group>"; };
 		94EB8A412847CCA700DD0C37 /* AddressItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressItem.swift; sourceTree = "<group>"; };
 		94EB8A4328485EBB00DD0C37 /* NewAddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewAddressView.swift; sourceTree = "<group>"; };
+		94F95E48285B1F6D003970EE /* QuoteAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteAsset.swift; sourceTree = "<group>"; };
+		94F95F06285B2514003970EE /* SwappableAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwappableAsset.swift; sourceTree = "<group>"; };
+		94F95F08285B3690003970EE /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +136,7 @@
 			children = (
 				94A06C5928420C7C004F1117 /* AccountViewModel.swift */,
 				94A06D1E28431D72004F1117 /* WalletViewModel.swift */,
+				94A299202858C0F9007F3581 /* SwapViewModel.swift */,
 			);
 			path = "View Model";
 			sourceTree = "<group>";
@@ -124,9 +145,16 @@
 			isa = PBXGroup;
 			children = (
 				94A070122843A46A004F1117 /* AssetItem.swift */,
+				94A093E9285A3D42006D52E9 /* AssetValueSortComparator.swift */,
 				94EB88BB28476AC000DD0C37 /* SnapshotItem.swift */,
 				94EB88BD28476DD000DD0C37 /* AssetIcon.swift */,
 				94EB8A412847CCA700DD0C37 /* AddressItem.swift */,
+				94A299E12858E480007F3581 /* SwapResponse.swift */,
+				949E7A3A285B71BD00AABA4E /* ChainAsset.swift */,
+				94A299232858C915007F3581 /* PaymentAsset.swift */,
+				94A093E72859D7B7006D52E9 /* SettlementAsset.swift */,
+				94F95E48285B1F6D003970EE /* QuoteAsset.swift */,
+				94F95F06285B2514003970EE /* SwappableAsset.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -149,6 +177,7 @@
 			isa = PBXGroup;
 			children = (
 				94A06AEF2840A5EE004F1117 /* SwapView.swift */,
+				94A094A7285AF763006D52E9 /* SwapAssetPickerView.swift */,
 			);
 			path = Swap;
 			sourceTree = "<group>";
@@ -173,6 +202,7 @@
 				9489816A284C9DB50065DC5D /* VerifyPINView.swift */,
 				9412FD8D2857086A004B9020 /* VerifyPINView.xib */,
 				9412FD8C2857086A004B9020 /* VerifyPINViewController.swift */,
+				94F95F08285B3690003970EE /* ErrorView.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -350,30 +380,40 @@
 				94A06D1D28427AD9004F1117 /* PINField.swift in Sources */,
 				94EB88C2284775D600DD0C37 /* SnapshotView.swift in Sources */,
 				94EB8A402847C7EB00DD0C37 /* AddressPickerView.swift in Sources */,
+				94A093E82859D7B7006D52E9 /* SettlementAsset.swift in Sources */,
 				9489816B284C9DB50065DC5D /* VerifyPINView.swift in Sources */,
 				94EB8A4428485EBB00DD0C37 /* NewAddressView.swift in Sources */,
 				94A06D1F28431D72004F1117 /* WalletViewModel.swift in Sources */,
 				943BA77B2845F59400575A7D /* Decimal+Comparison.swift in Sources */,
 				94A06AF02840A5EE004F1117 /* SwapView.swift in Sources */,
+				94A093EA285A3D42006D52E9 /* AssetValueSortComparator.swift in Sources */,
+				94F95E49285B1F6D003970EE /* QuoteAsset.swift in Sources */,
 				94A070D12843B69C004F1117 /* CurrencyFormatter.swift in Sources */,
+				94A299212858C0F9007F3581 /* SwapViewModel.swift in Sources */,
 				943BA77D2845F6B900575A7D /* AssetView.swift in Sources */,
 				94A06AEE284083E7004F1117 /* WalletView.swift in Sources */,
 				94A06D1A2842616E004F1117 /* InitializePINView.swift in Sources */,
 				94EB88C028476EF200DD0C37 /* DateFormatter+General.swift in Sources */,
+				94A094A8285AF763006D52E9 /* SwapAssetPickerView.swift in Sources */,
 				94EB88BE28476DD000DD0C37 /* AssetIcon.swift in Sources */,
 				94EB8A422847CCA700DD0C37 /* AddressItem.swift in Sources */,
 				94A06AEA28408139004F1117 /* HomeView.swift in Sources */,
+				94F95F09285B3690003970EE /* ErrorView.swift in Sources */,
 				94A070D32843B79F004F1117 /* Locale+General.swift in Sources */,
 				9412FD8E2857086A004B9020 /* VerifyPINViewController.swift in Sources */,
 				94EB88BC28476AC000DD0C37 /* SnapshotItem.swift in Sources */,
 				94EB8A3E2847B4EE00DD0C37 /* AssetID.swift in Sources */,
+				94A299242858C915007F3581 /* PaymentAsset.swift in Sources */,
 				94BE7DBA28227D2C00EDC789 /* WalletHost.swift in Sources */,
+				94A299E22858E480007F3581 /* SwapResponse.swift in Sources */,
+				94F95F07285B2514003970EE /* SwappableAsset.swift in Sources */,
 				94C606E62828FB040013DD54 /* ConsoleOutput.swift in Sources */,
 				9470D3B72843C2C200E44A1C /* Font+DINCondensed.swift in Sources */,
 				94A06C5A28420C7C004F1117 /* AccountViewModel.swift in Sources */,
 				94A06E9928436A42004F1117 /* AssetIconView.swift in Sources */,
 				94B3AA662819B859006B60C1 /* WalletDemoApp.swift in Sources */,
 				94A070132843A46A004F1117 /* AssetItem.swift in Sources */,
+				949E7A3B285B71BD00AABA4E /* ChainAsset.swift in Sources */,
 				9412FF0928576E93004B9020 /* WithdrawView.swift in Sources */,
 				94EB8A3C2847A71E00DD0C37 /* DepositView.swift in Sources */,
 			);

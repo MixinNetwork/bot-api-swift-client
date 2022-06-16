@@ -16,7 +16,7 @@ struct SnapshotView: View {
             Section {
                 VStack {
                     AssetIconView(icon: item.assetIcon)
-                        .frame(height: 70)
+                        .frame(width: 70, height: 70)
                     HStack {
                         Text(item.amount)
                             .font(.dinCondensed(ofSize: 34))

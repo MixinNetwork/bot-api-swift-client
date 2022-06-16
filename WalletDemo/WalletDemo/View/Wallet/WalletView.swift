@@ -13,36 +13,36 @@ struct WalletView: View {
     @EnvironmentObject var viewModel: WalletViewModel
     
     var body: some View {
-        switch viewModel.reloadAssetsState {
-        case let .failure(error):
-            VStack {
-                Button("Reload", action: reloadAssets)
-                Text(error.localizedDescription)
-            }
-        case .waiting:
-            ProgressView()
-                .scaleEffect(2)
-                .onAppear(perform: reloadAssets)
-        case .loading where viewModel.assetItems.isEmpty:
-            ProgressView()
-                .scaleEffect(2)
-        default:
-            List {
-                Section {
-                    headerView
+        Group {
+            switch viewModel.reloadAssetsState {
+            case let .failure(error):
+                ErrorView(error: error, action: reloadAssets)
+            case .waiting:
+                ProgressView()
+                    .scaleEffect(2)
+                    .onAppear(perform: reloadAssets)
+            case .loading where viewModel.visibleAssetItems.isEmpty:
+                ProgressView()
+                    .scaleEffect(2)
+            default:
+                List {
+                    Section {
+                        headerView
+                    }
+                    Section {
+                        assetsView
+                    }
                 }
-                Section {
-                    assetsView
-                }
-            }
-            .refreshable {
-                await withCheckedContinuation { continuation in
-                    viewModel.reloadAssets {
-                        continuation.resume()
+                .refreshable {
+                    await withCheckedContinuation { continuation in
+                        viewModel.reloadAssets {
+                            continuation.resume()
+                        }
                     }
                 }
             }
         }
+        .navigationTitle("Wallet")
     }
     
     @ViewBuilder
@@ -71,14 +71,13 @@ struct WalletView: View {
     
     @ViewBuilder
     private var assetsView: some View {
-        ForEach(viewModel.assetItems) { item in
+        ForEach(viewModel.visibleAssetItems) { item in
             NavigationLink {
                 AssetView(item: item)
             } label: {
                 HStack {
                     AssetIconView(icon: item.icon)
-                        .aspectRatio(1, contentMode: .fit)
-                        .frame(maxHeight: 44)
+                        .frame(width: 44, height: 44)
                     VStack {
                         HStack {
                             Text(item.balance)

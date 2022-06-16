@@ -30,8 +30,7 @@ struct WithdrawView: View {
                     Section {
                         HStack {
                             AssetIconView(icon: assetItem.icon)
-                                .aspectRatio(1, contentMode: .fit)
-                                .frame(maxHeight: 44)
+                                .frame(width: 44, height: 44)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(asset.name)
                                 Text(asset.balance + " " + asset.symbol)

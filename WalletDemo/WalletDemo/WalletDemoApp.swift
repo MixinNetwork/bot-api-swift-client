@@ -19,15 +19,7 @@ struct WalletDemoApp: App {
             case let .success((api, account)):
                 HomeView(api: api, account: account)
             case let .failure(error):
-                VStack {
-                    Button("Reload", action: viewModel.loadAccount)
-                        .tint(.accentColor)
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.large)
-                        .buttonBorderShape(.roundedRectangle)
-                        .padding()
-                    Text(error.localizedDescription)
-                }
+                ErrorView(error: error, action: viewModel.loadAccount)
             case .none:
                 ProgressView()
                     .scaleEffect(2)

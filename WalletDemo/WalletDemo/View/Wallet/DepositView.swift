@@ -59,15 +59,7 @@ struct DepositView: View {
                     ProgressView()
                         .scaleEffect(2)
                 case .failure(let error):
-                    VStack {
-                        Button("Reload", action: reloadAsset)
-                            .tint(.accentColor)
-                            .buttonStyle(.borderedProminent)
-                            .controlSize(.large)
-                            .buttonBorderShape(.roundedRectangle)
-                            .padding()
-                        Text(error.localizedDescription)
-                    }
+                    ErrorView(error: error, action: reloadAsset)
                 }
             } else if item.asset.destination.isEmpty {
                 ProgressView()

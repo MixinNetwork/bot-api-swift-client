@@ -29,17 +29,8 @@ struct AddressPickerView: View {
                 ProgressView()
                     .scaleEffect(2)
             case .failure(let error):
-                VStack {
-                    Button("Reload") {
-                        viewModel.loadAddress(assetID: assetItem.asset.id)
-                    }
-                    .tint(.accentColor)
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
-                    .buttonBorderShape(.roundedRectangle)
-                    .padding()
-                    
-                    Text(error.localizedDescription)
+                ErrorView(error: error) {
+                    viewModel.loadAddress(assetID: assetItem.asset.id)
                 }
             case .success:
                 Group {
