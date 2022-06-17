@@ -51,6 +51,7 @@ struct DepositView: View {
         List {
             Section {
                 Text(item.asset.destination)
+                    .font(.callout.monospaced())
                     .padding(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
                     .swipeActions {
                         Button("Copy") {
@@ -65,6 +66,7 @@ struct DepositView: View {
             if !item.asset.tag.isEmpty {
                 Section {
                     Text(item.asset.tag)
+                        .font(.callout.monospaced())
                         .padding(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
                         .swipeActions {
                             Button("Copy") {
