@@ -60,7 +60,7 @@ struct AddressPickerView: View {
                             }
                             .swipeActions {
                                 Button("Delete") {
-                                    viewModel.deleteAddress(id: item.address.id, assetID: self.assetItem.id)
+                                    viewModel.deleteAddress(address: item.address, assetID: self.assetItem.id)
                                 }
                                 .tint(.red)
                             }

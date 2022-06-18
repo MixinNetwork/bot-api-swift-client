@@ -9,7 +9,8 @@ import SwiftUI
 
 struct SwapView: View {
     
-    @EnvironmentObject var viewModel: SwapViewModel
+    @EnvironmentObject private var swapViewModel: SwapViewModel
+    @EnvironmentObject private var walletViewModel: WalletViewModel
     
     @State private var amount = ""
     @State private var pickerTarget: SwapAssetPickerView.Target = .payment
@@ -19,26 +20,29 @@ struct SwapView: View {
         ZStack {
             Color(.systemGroupedBackground)
                 .ignoresSafeArea()
-            switch viewModel.swappableAssets {
+            switch swapViewModel.swappableAssets {
             case .waiting, .loading:
                 ProgressView()
                     .scaleEffect(2)
             case .failed(let error):
                 ErrorView(error: error) {
                     Task {
-                        await viewModel.reloadSwappableAssets()
+                        await swapViewModel.reloadSwappableAssets()
                     }
                 }
             case .success(let assets):
+                let paymentAsset = assets[swapViewModel.selectedPaymentAssetIndex]
+                let paymentAssetItem = walletViewModel.allAssetItems[paymentAsset.id]!
+                let settlementAsset = assets[swapViewModel.selectedSettlementAssetIndex]
+                let settlementAssetItem = walletViewModel.allAssetItems[settlementAsset.id]!
                 VStack {
                     List {
-                        let paymentAsset = assets[viewModel.selectedPaymentAssetIndex]
                         Section {
                             HStack {
                                 HStack {
-                                    AssetIconView(icon: paymentAsset.icon)
+                                    AssetIconView(icon: paymentAssetItem.icon)
                                         .frame(width: 24, height: 24)
-                                    Text(paymentAsset.symbol)
+                                    Text(paymentAssetItem.asset.symbol)
                                         .font(.headline)
                                         .fontWeight(.medium)
                                     Image(systemName: "chevron.down")
@@ -52,7 +56,7 @@ struct SwapView: View {
                                 Divider()
                                 TextField("Amount", text: $amount)
                                     .multilineTextAlignment(.trailing)
-                                    .keyboardType(.asciiCapableNumberPad)
+                                    .keyboardType(.decimalPad)
                                     .onChange(of: amount) { newValue in
                                         // Restrict decimal
                                     }
@@ -60,16 +64,32 @@ struct SwapView: View {
                         } header: {
                             Text("Pay")
                                 .font(.headline)
+                        } footer: {
+                            HStack {
+                                Button {
+                                    amount = paymentAssetItem.balance
+                                } label: {
+                                    HStack {
+                                        Text("Balance: " + paymentAssetItem.balance)
+                                            .foregroundColor(Color(.secondaryLabel))
+                                        Image(systemName: "arrow.up.right.circle")
+                                            .tint(Color(.label))
+                                    }
+                                }
+                                Spacer()
+                                if let amount = paymentUSDAmount(item: paymentAssetItem) {
+                                    Text("≈ " + amount)
+                                }
+                            }
                         }
                         .textCase(nil)
                         
-                        let settlementAsset = assets[viewModel.selectedSettlementAssetIndex]
                         Section {
                             HStack {
                                 HStack {
-                                    AssetIconView(icon: settlementAsset.icon)
+                                    AssetIconView(icon: settlementAssetItem.icon)
                                         .frame(width: 24, height: 24)
-                                    Text(settlementAsset.symbol)
+                                    Text(settlementAssetItem.asset.symbol)
                                         .font(.headline)
                                         .fontWeight(.medium)
                                     Image(systemName: "chevron.down")
@@ -82,38 +102,77 @@ struct SwapView: View {
                                 }
                                 Divider()
                                 Spacer()
-                                Text("")
+                                Text(receivedAmount(paymentItem: paymentAssetItem, settlementItem: settlementAssetItem))
+                                    .foregroundColor(Color(.secondaryLabel))
                                     .multilineTextAlignment(.trailing)
                             }
                         } header: {
                             Text("Receive")
                                 .font(.headline)
+                        } footer: {
+                            
                         }
                         .textCase(nil)
+                        
+                        if let error = swapViewModel.paymentError {
+                            Section {
+                                Text(error.localizedDescription)
+                                    .foregroundColor(.red)
+                            }
+                            .listRowBackground(Color(.systemGroupedBackground))
+                        }
                     }
                     .listStyle(InsetGroupedListStyle())
                     
                     Spacer()
                     
-                    Button {
-                        
-                    } label: {
-                        Text("Commit")
+                    if !walletViewModel.isAuthenticationPresented {
+                        Button {
+                            Task {
+                                await swapViewModel.createPayment(quoteAssetID: paymentAsset.id,
+                                                                  quoteAmount: amount,
+                                                                  settlementAssetID: settlementAsset.id)
+                            }
+                        } label: {
+                            if swapViewModel.isCreatingPayment {
+                                ProgressView()
+                            } else {
+                                Text("Swap")
+                            }
+                        }
+                        .tint(.accentColor)
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.large)
+                        .buttonBorderShape(.capsule)
+                        .padding()
                     }
-                    .tint(.accentColor)
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
-                    .buttonBorderShape(.capsule)
-                    .padding()
                 }
             }
         }
+        .disabled(swapViewModel.isCreatingPayment)
         .navigationTitle("Swap")
-        .sheet(isPresented: $isPickerPresented, content: {
+        .sheet(isPresented: $isPickerPresented) {
             SwapAssetPickerView(target: pickerTarget)
-        })
+        }
         .task {
-            await viewModel.reloadSwappableAssets()
+            await swapViewModel.reloadSwappableAssets()
+        }
+    }
+    
+    private func paymentUSDAmount(item: AssetItem) -> String? {
+        guard let decimalAmount = Decimal(string: amount) else {
+            return nil
+        }
+        let amount = decimalAmount * item.decimalUSDPrice
+        return CurrencyFormatter.localizedString(from: amount, format: .fiatMoney, sign: .never, symbol: .usd)
+    }
+    
+    private func receivedAmount(paymentItem: AssetItem, settlementItem: AssetItem) -> String {
+        if let decimalAmount = Decimal(string: amount) {
+            let amount = decimalAmount * paymentItem.decimalUSDPrice / settlementItem.decimalUSDPrice
+            return CurrencyFormatter.localizedString(from: amount, format: .precision, sign: .never)
+        } else {
+            return "Estimated Amount"
         }
     }
     

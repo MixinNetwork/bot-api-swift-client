@@ -96,6 +96,7 @@ struct NewAddressView: View {
         .navigationTitle("New \(item.asset.symbol) Address")
         .toolbar {
             Button("Save") {
+                focusedField = nil
                 viewModel.saveAddress(assetID: item.asset.id,
                                       label: label,
                                       address: address,

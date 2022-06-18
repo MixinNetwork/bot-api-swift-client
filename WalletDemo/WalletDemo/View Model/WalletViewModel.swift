@@ -60,17 +60,11 @@ class WalletViewModel: ObservableObject {
     @Published private(set) var addresses: [String: [AddressItem]] = [:]
     @Published private(set) var addressesState: [String: State] = [:]
     
-    private(set) var onPINInput: ((String) -> Void)?
-    @Published private(set) var pinVerificationState: State = .waiting
-    @Published private(set) var pinVerificationCaption = "Transfer"
-    @Published private(set) var isPINVerificationPresented = false
+    @Published var isAuthenticationPresented = false
+    @Published var authentication: Authentication?
     
     init(api: API) {
         self.api = api
-    }
-    
-    func dismissPINVerification() {
-        isPINVerificationPresented = false
     }
     
     func clearSearchResults() {
@@ -287,8 +281,12 @@ extension WalletViewModel {
     }
     
     func saveAddress(assetID: String, label: String, address: String, memo: String, onSuccess: @escaping () -> Void) {
-        onPINInput = { (pin) in
-            self.pinVerificationState = .loading
+        let fields = [
+            Authentication.Field(title: "Label", description: label),
+            Authentication.Field(title: "Address", description: address),
+        ]
+        authentication = Authentication(title: "Add Address", operation: .verify(confirmation: fields)) { (pin, report) in
+            report(.loading)
             let request = AddressRequest(assetID: assetID, destination: address, tag: memo, label: label, pin: pin)
             self.api.withdrawal.save(address: request) { result in
                 switch result {
@@ -297,36 +295,36 @@ extension WalletViewModel {
                     var addresses = self.addresses[assetID] ?? []
                     addresses.append(item)
                     self.addresses[assetID] = addresses
-                    self.pinVerificationState = .success
+                    report(.success)
                     onSuccess()
                 case let .failure(error):
-                    self.pinVerificationState = .failure(error)
+                    report(.failure(error))
                 }
             }
         }
-        pinVerificationState = .waiting
-        pinVerificationCaption = "Add Address"
-        isPINVerificationPresented = true
+        isAuthenticationPresented = true
     }
     
-    func deleteAddress(id: String, assetID: String) {
-        onPINInput = { (pin) in
-            self.pinVerificationState = .loading
-            self.api.withdrawal.delete(addressID: id, pin: pin) { result in
+    func deleteAddress(address: Address, assetID: String) {
+        let fields = [
+            Authentication.Field(title: "Label", description: address.label),
+            Authentication.Field(title: "Destination", description: address.destination),
+        ]
+        authentication = Authentication(title: "Delete Address", operation: .verify(confirmation: fields)) { (pin, report) in
+            report(.loading)
+            self.api.withdrawal.delete(addressID: address.id, pin: pin) { result in
                 switch result {
                 case .success:
                     self.addresses[assetID]?.removeAll(where: { item in
-                        item.address.id == id
+                        item.address.id == address.id
                     })
-                    self.pinVerificationState = .success
+                    report(.success)
                 case let .failure(error):
-                    self.pinVerificationState = .failure(error)
+                    report(.failure(error))
                 }
             }
         }
-        pinVerificationState = .waiting
-        pinVerificationCaption = "Delete Address"
-        isPINVerificationPresented = true
+        isAuthenticationPresented = true
     }
     
 }
@@ -334,10 +332,15 @@ extension WalletViewModel {
 // MARK: - Withdraw
 extension WalletViewModel {
     
-    func withdraw(amount: String, toAddressWith addressID: String, onSuccess: @escaping () -> Void) {
-        onPINInput = { (pin) in
-            self.pinVerificationState = .loading
-            let request = WithdrawalRequest(addressID: addressID,
+    func withdraw(amount: String, symbol: String, to address: Address, onSuccess: @escaping () -> Void) {
+        let fields = [
+            Authentication.Field(title: "Amount", description: "\(amount) \(symbol)"),
+            Authentication.Field(title: "Address", description: address.label),
+            Authentication.Field(title: "Destination", description: address.destination),
+        ]
+        authentication = Authentication(title: "Withdraw", operation: .verify(confirmation: fields)) { (pin, report) in
+            report(.loading)
+            let request = WithdrawalRequest(addressID: address.id,
                                             amount: amount,
                                             traceID: UUID().uuidString.lowercased(),
                                             pin: pin,
@@ -347,16 +350,42 @@ extension WalletViewModel {
                 case .success(let snapshot):
                     self.reloadAsset(with: snapshot.assetID)
                     self.reloadSnapshots(assetID: snapshot.assetID)
-                    self.pinVerificationState = .success
+                    report(.success)
                     onSuccess()
                 case let .failure(error):
-                    self.pinVerificationState = .failure(error)
+                    report(.failure(error))
                 }
             }
         }
-        pinVerificationState = .waiting
-        pinVerificationCaption = "Withdraw"
-        isPINVerificationPresented = true
+        isAuthenticationPresented = true
+    }
+    
+    func swap(payment: SwapPayment) {
+        let fields = [
+            Authentication.Field(title: "Pay", description: "\(payment.paymentAmount) \(payment.paymentAssetSymbol)"),
+            Authentication.Field(title: "Est. Receive", description: "\(payment.estimatedSettlementAmount) \(payment.settlementAssetSymbol)"),
+            Authentication.Field(title: "Trace ID", description: "\(payment.traceID)"),
+            Authentication.Field(title: "Expire At", description: DateFormatter.general.string(from: payment.expire)),
+        ]
+        authentication = Authentication(title: "Swap", operation: .verify(confirmation: fields)) { (pin, report) in
+            report(.loading)
+            self.api.payment.transfer(assetID: payment.paymentAssetID,
+                                      opponentID: payment.recipient,
+                                      amount: payment.paymentAmount,
+                                      memo: payment.memo,
+                                      pin: pin,
+                                      traceID: payment.traceID) { result in
+                switch result {
+                case .success(let snapshot):
+                    self.reloadAsset(with: snapshot.assetID)
+                    self.reloadSnapshots(assetID: snapshot.assetID)
+                    report(.success)
+                case let .failure(error):
+                    report(.failure(error))
+                }
+            }
+        }
+        isAuthenticationPresented = true
     }
     
 }

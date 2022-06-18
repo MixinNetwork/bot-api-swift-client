@@ -16,12 +16,13 @@ struct SwapAssetPickerView: View {
     
     let target: Target
     
-    @EnvironmentObject var viewModel: SwapViewModel
+    @EnvironmentObject private var swapViewModel: SwapViewModel
+    @EnvironmentObject private var walletViewModel: WalletViewModel
     
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        switch viewModel.swappableAssets {
+        switch swapViewModel.swappableAssets {
         case .success(let assets):
             VStack {
                 Group {
@@ -40,9 +41,9 @@ struct SwapAssetPickerView: View {
                         if let index = assets.firstIndex(where: { $0.id == asset.id }) {
                             switch target {
                             case .payment:
-                                viewModel.selectedPaymentAssetIndex = index
+                                swapViewModel.selectedPaymentAssetIndex = index
                             case .settlement:
-                                viewModel.selectedSettlementAssetIndex = index
+                                swapViewModel.selectedSettlementAssetIndex = index
                             }
                         }
                         dismiss()
@@ -51,13 +52,13 @@ struct SwapAssetPickerView: View {
                             Group {
                                 switch target {
                                 case .payment:
-                                    if asset.id == assets[viewModel.selectedPaymentAssetIndex].id {
+                                    if asset.id == assets[swapViewModel.selectedPaymentAssetIndex].id {
                                         Image(systemName: "checkmark")
                                     } else {
                                         Spacer()
                                     }
                                 case .settlement:
-                                    if asset.id == assets[viewModel.selectedSettlementAssetIndex].id {
+                                    if asset.id == assets[swapViewModel.selectedSettlementAssetIndex].id {
                                         Image(systemName: "checkmark")
                                     } else {
                                         Spacer()
@@ -65,9 +66,11 @@ struct SwapAssetPickerView: View {
                                 }
                             }
                             .frame(width: 18)
-                            AssetIconView(icon: asset.icon)
+                            
+                            let item = walletViewModel.allAssetItems[asset.id]!
+                            AssetIconView(icon: item.icon)
                                 .frame(width: 44, height: 44)
-                            Text(asset.symbol)
+                            Text(item.asset.symbol)
                                 .foregroundColor(Color(.label))
                         }
                     }

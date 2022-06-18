@@ -31,16 +31,26 @@ class SwapViewModel: ObservableObject {
         
     }
     
-    @Published var swappableAssets: State<[SwappableAsset]> = .waiting
     @Published var selectedPaymentAssetIndex = 0
     @Published var selectedSettlementAssetIndex = 0
     
+    @Published private(set) var swappableAssets: State<[SwappableAsset]> = .waiting
+    @Published private(set) var isCreatingPayment = false
+    @Published private(set) var paymentError: Swift.Error?
+    
+    private let clientID: String
+    private let walletViewModel: WalletViewModel
     private let jsonDecoder = JSONDecoder()
     private let session: URLSession = {
         let config = URLSessionConfiguration.default
         config.httpAdditionalHeaders = ["Content-Type": "application/json"]
         return URLSession(configuration: config)
     }()
+    
+    init(clientID: String, walletViewModel: WalletViewModel) {
+        self.clientID = clientID
+        self.walletViewModel = walletViewModel
+    }
     
     @MainActor
     func reloadSwappableAssets() async {
@@ -49,17 +59,19 @@ class SwapViewModel: ObservableObject {
         }
         let task = Task {
             do {
-                let paymentAssets: [PaymentAsset] = try await {
+                let paymentAssetIDs: Set<String> = try await {
                     let url = URL(string: "https://api.mixpay.me/v1/setting/payment_assets")!
                     let (data, _) = try await session.data(from: url)
                     let response = try jsonDecoder.decode(SwapResponse<[PaymentAsset]>.self, from: data)
-                    return response.data
+                    let ids = response.data.map(\.assetID)
+                    return Set(ids)
                 }()
-                let settlementAssets: [SettlementAsset] = try await {
+                let settlementAssetIDs: Set<String> = try await {
                     let url = URL(string: "https://api.mixpay.me/v1/setting/settlement_assets")!
                     let (data, _) = try await session.data(from: url)
                     let response = try jsonDecoder.decode(SwapResponse<[SettlementAsset]>.self, from: data)
-                    return response.data.filter(\.isAsset)
+                    let ids = response.data.filter(\.isAsset).map(\.assetID)
+                    return Set(ids)
                 }()
                 let quoteAssets: [QuoteAsset] = try await {
                     let url = URL(string: "https://api.mixpay.me/v1/setting/quote_assets")!
@@ -69,32 +81,39 @@ class SwapViewModel: ObservableObject {
                         asset.isAsset == 1
                     }
                 }()
-                let paymentAssetMap = paymentAssets.reduce(into: [:]) { partialResult, asset in
-                    partialResult[asset.assetID] = asset
-                }
-                let settlementAssetIDs = Set(settlementAssets.map(\.assetID))
                 
-                let swappableAssets: [SwappableAsset] = quoteAssets.compactMap { asset in
-                    guard let paymentAsset = paymentAssetMap[asset.assetID] else {
-                        return nil
+                var swappableAssets: [SwappableAsset] = []
+                for asset in quoteAssets {
+                    guard paymentAssetIDs.contains(asset.assetID) else {
+                        continue
                     }
                     guard settlementAssetIDs.contains(asset.assetID) else {
-                        return nil
+                        continue
+                    }
+                    let itemExists: Bool
+                    if walletViewModel.allAssetItems[asset.id] != nil {
+                        itemExists = true
+                    } else {
+                        itemExists = await withCheckedContinuation { continuation in
+                            walletViewModel.reloadAsset(with: asset.id) { item in
+                                continuation.resume(returning: item != nil)
+                            }
+                        }
+                    }
+                    guard itemExists else {
+                        continue
                     }
                     guard let minQuoteAmount = Decimal(string: asset.minQuoteAmount) else {
-                        return nil
+                        continue
                     }
                     guard let maxQuoteAmount = Decimal(string: asset.maxQuoteAmount) else {
-                        return nil
+                        continue
                     }
-                    let icon = AssetIcon(asset: paymentAsset.iconURL,
-                                         chain: paymentAsset.chainAsset.iconURL)
-                    return SwappableAsset(id: asset.assetID,
-                                          symbol: paymentAsset.symbol,
-                                          icon: icon,
-                                          minQuoteAmount: minQuoteAmount,
-                                          maxQuoteAmount: maxQuoteAmount,
-                                          decimalDigit: asset.decimalDigit)
+                    let asset = SwappableAsset(id: asset.assetID,
+                                               minQuoteAmount: minQuoteAmount,
+                                               maxQuoteAmount: maxQuoteAmount,
+                                               decimalDigit: asset.decimalDigit)
+                    swappableAssets.append(asset)
                 }
                 if swappableAssets.isEmpty {
                     self.swappableAssets = .failed(Error.noAvailableAsset)
@@ -106,6 +125,33 @@ class SwapViewModel: ObservableObject {
             }
         }
         swappableAssets = .loading(task)
+    }
+    
+    @MainActor
+    func createPayment(quoteAssetID: String, quoteAmount: String, settlementAssetID: String) async {
+        paymentError = nil
+        isCreatingPayment = true
+        let traceID = UUID().uuidString.lowercased()
+        let url: URL = {
+            var components = URLComponents(string: "https://api.mixpay.me/v1/payments")!
+            components.queryItems = [
+                URLQueryItem(name: "traceId", value: traceID),
+                URLQueryItem(name: "payeeId", value: clientID),
+                URLQueryItem(name: "quoteAssetId", value: quoteAssetID),
+                URLQueryItem(name: "quoteAmount", value: quoteAmount),
+                URLQueryItem(name: "settlementAssetId", value: settlementAssetID),
+                URLQueryItem(name: "isChain", value: "true"),
+            ]
+            return components.url!
+        }()
+        do {
+            let (data, _) = try await session.data(from: url)
+            let response = try jsonDecoder.decode(SwapResponse<SwapPayment>.self, from: data)
+            walletViewModel.swap(payment: response.data)
+        } catch {
+            paymentError = error
+        }
+        isCreatingPayment = false
     }
     
 }

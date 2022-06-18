@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="AuthenticationConfirmationView" customModule="WalletDemo" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="186"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="xjT-uV-QuN">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="117"/>
+                </stackView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yMq-cg-b23">
+                    <rect key="frame" x="161" y="141" width="92" height="33"/>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="filled" title="Confirm" cornerStyle="large">
+                        <fontDescription key="titleFontDescription" style="UICTFontTextStyleBody"/>
+                        <directionalEdgeInsets key="contentInsets" top="8" leading="20" bottom="8" trailing="20"/>
+                    </buttonConfiguration>
+                </button>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="xjT-uV-QuN" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="2hr-W8-RYk"/>
+                <constraint firstItem="yMq-cg-b23" firstAttribute="top" secondItem="xjT-uV-QuN" secondAttribute="bottom" constant="24" id="JYT-Ts-vc7"/>
+                <constraint firstAttribute="bottom" secondItem="yMq-cg-b23" secondAttribute="bottom" constant="12" id="XN5-Av-ZPQ"/>
+                <constraint firstItem="yMq-cg-b23" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="Zbo-rd-wTV"/>
+                <constraint firstItem="xjT-uV-QuN" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="aQU-iH-Q4K"/>
+                <constraint firstAttribute="trailing" secondItem="xjT-uV-QuN" secondAttribute="trailing" id="hO0-MQ-l6F"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="confirmButton" destination="yMq-cg-b23" id="On2-Wf-B21"/>
+                <outlet property="fieldsStackView" destination="xjT-uV-QuN" id="ZAp-ck-lyF"/>
+            </connections>
+            <point key="canvasLocation" x="137.68115942028987" y="390.40178571428572"/>
+        </view>
+    </objects>
+</document>

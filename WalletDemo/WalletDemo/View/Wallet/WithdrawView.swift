@@ -77,10 +77,12 @@ struct WithdrawView: View {
                     }
                 }
                 
-                if !viewModel.isPINVerificationPresented {
+                if !viewModel.isAuthenticationPresented {
                     Button("Withdraw") {
+                        isAmountFocused = false
                         viewModel.withdraw(amount: amount,
-                                           toAddressWith: address.id,
+                                           symbol: assetItem.asset.symbol,
+                                           to: address,
                                            onSuccess: dismiss.callAsFunction)
                     }
                     .tint(.accentColor)
@@ -120,48 +122,6 @@ struct WithdrawView: View {
         } else {
             return false
         }
-    }
-    
-}
-
-struct WithdrawView_Previews: PreviewProvider {
-    
-    static let assetItem: AssetItem = {
-        let iconURL = URL(string: "https://mixin-images.zeromesh.net/HvYGJsV5TGeZ-X9Ek3FEQohQZ3fE9LBEBGcOcn4c4BNHovP4fW4YB97Dg5LcXoQ1hUjMEgjbl1DPlKg1TW7kK6XP=s128")
-        let asset = Asset(assetID: "c6d0c728-2624-429b-8e0d-d9d19b6592fa",
-                          type: "asset",
-                          symbol: "BTC",
-                          name: "Bitcoin",
-                          iconURL: iconURL!.absoluteString,
-                          balance: "10",
-                          destination: "",
-                          tag: "",
-                          btcPrice: "1",
-                          usdPrice: "50399",
-                          usdChange: "-0.010717440376877024",
-                          chainID: "c6d0c728-2624-429b-8e0d-d9d19b6592fa",
-                          confirmations: 3,
-                          assetKey: "c6d0c728-2624-429b-8e0d-d9d19b6592fa",
-                          reserve: "")
-        return AssetItem(asset: asset, chainIconURL: iconURL)
-    }()
-    
-    static let addressItem: AddressItem = {
-        let address = Address(id: "",
-                              type: "address",
-                              assetID: "c6d0c728-2624-429b-8e0d-d9d19b6592fa",
-                              destination: "",
-                              label: "",
-                              tag: "",
-                              fee: "0.01",
-                              reserve: "0.01",
-                              dust: "0.0001",
-                              updatedAt: "2018-09-29T07:10:59.699476845Z")
-        return AddressItem(address: address)
-    }()
-    
-    static var previews: some View {
-        WithdrawView(assetItem: assetItem, addressItem: addressItem)
     }
     
 }
