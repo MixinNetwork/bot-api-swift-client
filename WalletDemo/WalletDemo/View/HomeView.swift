@@ -12,7 +12,7 @@ struct HomeView: View {
     
     private let api: API
     
-    private var account: Account
+    @State private var account: Account
     
     @StateObject private var walletViewModel: WalletViewModel
     @StateObject private var swapViewModel: SwapViewModel
@@ -48,8 +48,12 @@ struct HomeView: View {
             }
         }
         .environmentObject(walletViewModel)
-        .sheet(isPresented: $isPINAbsent) {
-            InitializePINView()
+        .task {
+            if !account.hasPIN {
+                walletViewModel.initializePIN() { account in
+                    self.account = account
+                }
+            }
         }
     }
     

@@ -9,6 +9,8 @@ import UIKit
 
 class PINInputView: UIView {
     
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var subtitleLabel: UILabel!
     @IBOutlet weak var stackView: UIStackView!
     @IBOutlet weak var pinField: PINField!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!

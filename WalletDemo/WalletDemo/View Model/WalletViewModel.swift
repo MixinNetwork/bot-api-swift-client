@@ -107,6 +107,27 @@ class WalletViewModel: ObservableObject {
     
 }
 
+// MARK: - PIN
+extension WalletViewModel {
+    
+    func initializePIN(onSuccess: @escaping (Account) -> Void) {
+        authentication = Authentication(title: "Initialize PIN", operation: .initialize) { pin, report in
+            report(.loading)
+            self.api.account.updatePIN(old: nil, new: pin) { result in
+                switch result {
+                case .success(let account):
+                    onSuccess(account)
+                    report(.success)
+                case .failure(let error):
+                    report(.failure(error))
+                }
+            }
+        }
+        isAuthenticationPresented = true
+    }
+    
+}
+
 // MARK: - Asset
 extension WalletViewModel {
     

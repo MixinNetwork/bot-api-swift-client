@@ -11,6 +11,19 @@ import SwiftUI
 
 class AuthenticationViewController: UIViewController {
     
+    enum InitializePINError: LocalizedError {
+        
+        case mismatched
+        
+        var errorDescription: String? {
+            switch self {
+            case .mismatched:
+                return "Mismatched PIN"
+            }
+        }
+        
+    }
+    
     enum OperationViewPosition {
         case left, right
     }
@@ -78,15 +91,20 @@ class AuthenticationViewController: UIViewController {
                 return view
             }()
         case .initialize:
+            cancelButton.isHidden = true
             let nib = UINib(nibName: "PINInputView", bundle: .main)
             leftOperationView = {
                 let view = nib.instantiate(withOwner: nil).first as! PINInputView
+                view.titleLabel.text = "Initialize your PIN"
+                view.subtitleLabel.text = "Initialize a PIN to access your wallet fully-functional"
                 view.pinField.addTarget(self, action: #selector(pinFieldEditingChanged(_:)), for: .editingChanged)
                 leftPINField = view.pinField
                 return view
             }()
             rightOperationView = {
                 let view = nib.instantiate(withOwner: nil).first as! PINInputView
+                view.titleLabel.text = "Initialize your PIN"
+                view.subtitleLabel.text = "Input that PIN again to confirm it"
                 view.pinField.addTarget(self, action: #selector(pinFieldEditingChanged(_:)), for: .editingChanged)
                 rightPINField = view.pinField
                 return view
@@ -154,6 +172,9 @@ class AuthenticationViewController: UIViewController {
     }
     
     @IBAction func cancelVerification(_ sender: Any) {
+        guard case .verify = authentication.operation else {
+            return
+        }
         updateViews(isPresented: false) {
             self.isPresented.wrappedValue = false
         }
@@ -181,10 +202,19 @@ class AuthenticationViewController: UIViewController {
             case .initialize:
                 if pin == leftPIN {
                     authentication.onPINInput(pin) { state in
-                        
+                        self.updateViews(state: state)
+                        if let view = self.rightOperationView as? PINInputView {
+                            view.updateViews(state: state)
+                            self.view.layoutIfNeeded()
+                        }
                     }
                 } else {
-                    
+                    if let view = leftOperationView as? PINInputView {
+                        view.updateViews(state: .failure(InitializePINError.mismatched))
+                        view.pinField.clear()
+                    }
+                    rightPINField?.clear()
+                    moveToLeftView()
                 }
             }
         default:
@@ -239,6 +269,14 @@ class AuthenticationViewController: UIViewController {
     }
     
     private func updateViews(isPresented: Bool, completion: (() -> Void)?) {
+        if isPresented {
+            if let field = leftPINField {
+                field.becomeFirstResponder()
+            }
+        } else {
+            leftPINField?.resignFirstResponder()
+            rightPINField?.resignFirstResponder()
+        }
         UIView.animate(withDuration: 0.5, delay: 0, options: .init(rawValue: UInt(7 << 16))) {
             self.backgroundView.alpha = isPresented ? 1 : 0
             self.hideContentConstraint.priority = isPresented ? .defaultLow : .defaultHigh
@@ -250,25 +288,33 @@ class AuthenticationViewController: UIViewController {
     }
     
     private func updateViews(state: Authentication.State) {
-        switch state {
-        case .waiting:
-            cancelButton.isHidden = false
-        case .loading:
+        switch authentication.operation {
+        case .verify:
+            switch state {
+            case .waiting:
+                cancelButton.isHidden = false
+            case .loading:
+                cancelButton.isHidden = true
+            case .success:
+                cancelButton.isHidden = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    self.updateViews(isPresented: false) {
+                        self.isPresented.wrappedValue = false
+                    }
+                }
+            case .failure:
+                cancelButton.isHidden = false
+            }
+        case .initialize:
             cancelButton.isHidden = true
-        case .success:
-            cancelButton.isHidden = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                self.updateViews(isPresented: false) {
-                    self.isPresented.wrappedValue = false
+            if case .success = state {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    self.updateViews(isPresented: false) {
+                        self.isPresented.wrappedValue = false
+                    }
                 }
             }
-        case .failure:
-            cancelButton.isHidden = false
         }
-    }
-    
-    private func updateViews(caption: String) {
-        captionLabel.text = caption
     }
     
 }
