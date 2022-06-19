@@ -2,7 +2,7 @@
 The [Mixin Network](https://mixin.one/) based wallet allows for the rapid construction of decentralized wallets, decentralized on-chain exchanges, and other products.
 
 # Requirements
-- iOS 9.0 or later
+- iOS 13.0 or later
 
 # Installation
 
@@ -27,7 +27,7 @@ let session = API.AuthenticatedSession(userID: uid,
                                        analytic: nil)
 let api = API(session: session)
 ```
-[More usage](https://github.com/MixinNetwork/bot-api-swift-client/blob/main/WalletDemo/WalletDemo/Model/Example.swift)
+[More usage](https://github.com/MixinNetwork/bot-api-swift-client/blob/main/WalletDemo/WalletDemo/View%20Model/WalletViewModel.swift)
 
 ## About PIN 
 A 6-digit PIN is required when a user is trying to transfer assets, the code functions pretty much like a private key, not retrievable if lost.
