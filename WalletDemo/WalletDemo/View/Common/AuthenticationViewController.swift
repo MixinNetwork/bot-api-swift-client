@@ -122,7 +122,7 @@ class AuthenticationViewController: UIViewController {
         self.leftOperationViewLeadingConstraint = leftLeadingConstraint
         
         let leftBottomConstraint = leftOperationView.bottomAnchor.constraint(equalTo: operationView.bottomAnchor)
-        self.leftOperationViewBottomConstraint = leftLeadingConstraint
+        self.leftOperationViewBottomConstraint = leftBottomConstraint
         
         let rightTrailingConstraint = rightOperationView.trailingAnchor.constraint(equalTo: operationView.trailingAnchor)
         rightTrailingConstraint.priority = .defaultLow
