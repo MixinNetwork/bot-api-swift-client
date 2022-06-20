@@ -13,6 +13,8 @@ struct SwapView: View {
     @EnvironmentObject private var walletViewModel: WalletViewModel
     
     @State private var amount = ""
+    @State private var decimalAmount: Decimal?
+    @State private var isAmountLegal = false
     @State private var pickerTarget: SwapAssetPickerView.Target = .payment
     @State private var isPickerPresented = false
     
@@ -57,8 +59,12 @@ struct SwapView: View {
                                 TextField("Amount", text: $amount)
                                     .multilineTextAlignment(.trailing)
                                     .keyboardType(.decimalPad)
-                                    .onChange(of: amount) { newValue in
-                                        // Restrict decimal
+                                    .onChange(of: amount) { amount in
+                                        if let amount = decimalAmount {
+                                            isAmountLegal = amount <= paymentAsset.maxQuoteAmount && amount >= paymentAsset.minQuoteAmount
+                                        } else {
+                                            isAmountLegal = false
+                                        }
                                     }
                             }
                         } header: {
@@ -77,8 +83,10 @@ struct SwapView: View {
                                     }
                                 }
                                 Spacer()
-                                if let amount = paymentUSDAmount(item: paymentAssetItem) {
+                                if isAmountLegal, let amount = paymentUSDAmount(item: paymentAssetItem) {
                                     Text("≈ " + amount)
+                                } else {
+                                    Text("Amount between \(paymentAsset.minQuoteAmountString) and \(paymentAsset.maxQuoteAmountString)")
                                 }
                             }
                         }
@@ -145,6 +153,7 @@ struct SwapView: View {
                         .controlSize(.large)
                         .buttonBorderShape(.capsule)
                         .padding()
+                        .disabled(!isAmountLegal)
                     }
                 }
             }
@@ -154,13 +163,16 @@ struct SwapView: View {
         .sheet(isPresented: $isPickerPresented) {
             SwapAssetPickerView(target: pickerTarget)
         }
+        .onChange(of: amount) { amount in
+            decimalAmount = Decimal(string: amount)
+        }
         .task {
             await swapViewModel.reloadSwappableAssets()
         }
     }
     
     private func paymentUSDAmount(item: AssetItem) -> String? {
-        guard let decimalAmount = Decimal(string: amount) else {
+        guard let decimalAmount = decimalAmount else {
             return nil
         }
         let amount = decimalAmount * item.decimalUSDPrice
@@ -168,7 +180,7 @@ struct SwapView: View {
     }
     
     private func receivedAmount(paymentItem: AssetItem, settlementItem: AssetItem) -> String {
-        if let decimalAmount = Decimal(string: amount) {
+        if let decimalAmount = decimalAmount {
             let amount = decimalAmount * paymentItem.decimalUSDPrice / settlementItem.decimalUSDPrice
             return CurrencyFormatter.localizedString(from: amount, format: .precision, sign: .never)
         } else {

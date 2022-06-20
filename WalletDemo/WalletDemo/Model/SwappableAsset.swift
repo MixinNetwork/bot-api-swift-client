@@ -11,7 +11,9 @@ struct SwappableAsset: Identifiable {
     
     let id: String
     let minQuoteAmount: Decimal
+    let minQuoteAmountString: String
     let maxQuoteAmount: Decimal
+    let maxQuoteAmountString: String
     let decimalDigit: UInt
     
 }

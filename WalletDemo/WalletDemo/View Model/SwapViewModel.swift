@@ -111,7 +111,9 @@ class SwapViewModel: ObservableObject {
                     }
                     let asset = SwappableAsset(id: asset.assetID,
                                                minQuoteAmount: minQuoteAmount,
+                                               minQuoteAmountString: asset.minQuoteAmount,
                                                maxQuoteAmount: maxQuoteAmount,
+                                               maxQuoteAmountString: asset.maxQuoteAmount,
                                                decimalDigit: asset.decimalDigit)
                     swappableAssets.append(asset)
                 }
@@ -132,20 +134,22 @@ class SwapViewModel: ObservableObject {
         paymentError = nil
         isCreatingPayment = true
         let traceID = UUID().uuidString.lowercased()
-        let url: URL = {
+        let request: URLRequest = {
             var components = URLComponents(string: "https://api.mixpay.me/v1/payments")!
             components.queryItems = [
-                URLQueryItem(name: "traceId", value: traceID),
                 URLQueryItem(name: "payeeId", value: clientID),
+                URLQueryItem(name: "traceId", value: traceID),
+                URLQueryItem(name: "paymentAssetId", value: quoteAssetID),
                 URLQueryItem(name: "quoteAssetId", value: quoteAssetID),
                 URLQueryItem(name: "quoteAmount", value: quoteAmount),
                 URLQueryItem(name: "settlementAssetId", value: settlementAssetID),
-                URLQueryItem(name: "isChain", value: "true"),
             ]
-            return components.url!
+            var request = URLRequest(url: components.url!)
+            request.httpMethod = "POST"
+            return request
         }()
         do {
-            let (data, _) = try await session.data(from: url)
+            let (data, _) = try await session.data(for: request)
             let response = try jsonDecoder.decode(SwapResponse<SwapPayment>.self, from: data)
             walletViewModel.swap(payment: response.data)
         } catch {
