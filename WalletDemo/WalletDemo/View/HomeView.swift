@@ -46,6 +46,13 @@ struct HomeView: View {
                     .ignoresSafeArea()
                     .zIndex(2)
             }
+            
+            if let id = swapViewModel.traceID, !walletViewModel.isAuthenticationPresented {
+                SwapTraceView(traceID: id) {
+                    swapViewModel.traceID = nil
+                }
+                .environmentObject(swapViewModel)
+            }
         }
         .environmentObject(walletViewModel)
         .task {

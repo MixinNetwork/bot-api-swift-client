@@ -381,7 +381,7 @@ extension WalletViewModel {
         isAuthenticationPresented = true
     }
     
-    func swap(payment: SwapPayment) {
+    func swap(payment: SwapPayment, onSuccess: @escaping () -> Void) {
         let fields = [
             Authentication.Field(title: "Pay", description: "\(payment.paymentAmount) \(payment.paymentAssetSymbol)"),
             Authentication.Field(title: "Est. Receive", description: "\(payment.estimatedSettlementAmount) \(payment.settlementAssetSymbol)"),
@@ -401,6 +401,7 @@ extension WalletViewModel {
                     self.reloadAsset(with: snapshot.assetID)
                     self.reloadSnapshots(assetID: snapshot.assetID)
                     report(.success)
+                    onSuccess()
                 case let .failure(error):
                     report(.failure(error))
                 }

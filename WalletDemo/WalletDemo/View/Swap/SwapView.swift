@@ -73,7 +73,7 @@ struct SwapView: View {
                         } footer: {
                             HStack {
                                 Button {
-                                    amount = paymentAssetItem.balance
+                                    amount = paymentAssetItem.asset.balance
                                 } label: {
                                     HStack {
                                         Text("Balance: " + paymentAssetItem.balance)

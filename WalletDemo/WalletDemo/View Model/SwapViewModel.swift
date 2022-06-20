@@ -37,6 +37,7 @@ class SwapViewModel: ObservableObject {
     @Published private(set) var swappableAssets: State<[SwappableAsset]> = .waiting
     @Published private(set) var isCreatingPayment = false
     @Published private(set) var paymentError: Swift.Error?
+    @Published var traceID: String?
     
     private let clientID: String
     private let walletViewModel: WalletViewModel
@@ -151,11 +152,25 @@ class SwapViewModel: ObservableObject {
         do {
             let (data, _) = try await session.data(for: request)
             let response = try jsonDecoder.decode(SwapResponse<SwapPayment>.self, from: data)
-            walletViewModel.swap(payment: response.data)
+            walletViewModel.swap(payment: response.data) {
+                self.traceID = response.data.traceID
+            }
         } catch {
             paymentError = error
         }
         isCreatingPayment = false
+    }
+    
+    @MainActor
+    func paymentStatus(traceID: String) async -> SwapPaymentResult.Status {
+        let url = URL(string: "https://api.mixpay.me/v1/payments_result?traceId=\(traceID)")!
+        do {
+            let (data, _) = try await session.data(from: url)
+            let response = try jsonDecoder.decode(SwapResponse<SwapPaymentResult>.self, from: data)
+            return response.data.status
+        } catch {
+            return .failed
+        }
     }
     
 }
