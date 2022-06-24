@@ -14,6 +14,8 @@
 		943BA77B2845F59400575A7D /* Decimal+Comparison.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943BA77A2845F59400575A7D /* Decimal+Comparison.swift */; };
 		943BA77D2845F6B900575A7D /* AssetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943BA77C2845F6B900575A7D /* AssetView.swift */; };
 		9470D3B72843C2C200E44A1C /* Font+DINCondensed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9470D3B62843C2C200E44A1C /* Font+DINCondensed.swift */; };
+		9481A5F22865F8AE00095104 /* TransportError+Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9481A5F12865F8AE00095104 /* TransportError+Localization.swift */; };
+		9481A5F42865F95B00095104 /* RemoteError+Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9481A5F32865F95B00095104 /* RemoteError+Localization.swift */; };
 		9489816B284C9DB50065DC5D /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9489816A284C9DB50065DC5D /* AuthenticationView.swift */; };
 		949E7A3B285B71BD00AABA4E /* ChainAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949E7A3A285B71BD00AABA4E /* ChainAsset.swift */; };
 		949E7AFB285B7D6500AABA4E /* WalletContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949E7AFA285B7D6500AABA4E /* WalletContentView.swift */; };
@@ -75,6 +77,8 @@
 		943BA77A2845F59400575A7D /* Decimal+Comparison.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Decimal+Comparison.swift"; sourceTree = "<group>"; };
 		943BA77C2845F6B900575A7D /* AssetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetView.swift; sourceTree = "<group>"; };
 		9470D3B62843C2C200E44A1C /* Font+DINCondensed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Font+DINCondensed.swift"; sourceTree = "<group>"; };
+		9481A5F12865F8AE00095104 /* TransportError+Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TransportError+Localization.swift"; sourceTree = "<group>"; };
+		9481A5F32865F95B00095104 /* RemoteError+Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RemoteError+Localization.swift"; sourceTree = "<group>"; };
 		9489816A284C9DB50065DC5D /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		949E7A3A285B71BD00AABA4E /* ChainAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChainAsset.swift; sourceTree = "<group>"; };
 		949E7AFA285B7D6500AABA4E /* WalletContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletContentView.swift; sourceTree = "<group>"; };
@@ -297,6 +301,8 @@
 				9470D3B62843C2C200E44A1C /* Font+DINCondensed.swift */,
 				943BA77A2845F59400575A7D /* Decimal+Comparison.swift */,
 				94EB88BF28476EF200DD0C37 /* DateFormatter+General.swift */,
+				9481A5F12865F8AE00095104 /* TransportError+Localization.swift */,
+				9481A5F32865F95B00095104 /* RemoteError+Localization.swift */,
 			);
 			path = Foundation;
 			sourceTree = "<group>";
@@ -425,6 +431,7 @@
 				94A093E82859D7B7006D52E9 /* SettlementAsset.swift in Sources */,
 				949E7AFF285B7F0500AABA4E /* AssetSearchResultView.swift in Sources */,
 				9489816B284C9DB50065DC5D /* AuthenticationView.swift in Sources */,
+				9481A5F42865F95B00095104 /* RemoteError+Localization.swift in Sources */,
 				94EB8A4428485EBB00DD0C37 /* NewAddressView.swift in Sources */,
 				94A06D1F28431D72004F1117 /* WalletViewModel.swift in Sources */,
 				94A390F5285C77D800B7A948 /* Authentication.swift in Sources */,
@@ -439,6 +446,7 @@
 				94A06AEE284083E7004F1117 /* WalletView.swift in Sources */,
 				94A39103285CFC7200B7A948 /* AuthenticationConfirmationView.swift in Sources */,
 				94EB88C028476EF200DD0C37 /* DateFormatter+General.swift in Sources */,
+				9481A5F22865F8AE00095104 /* TransportError+Localization.swift in Sources */,
 				949E7BBD285B834C00AABA4E /* AssetCell.swift in Sources */,
 				949E7AFD285B7E5700AABA4E /* MyAssetsView.swift in Sources */,
 				94A094A8285AF763006D52E9 /* SwapAssetPickerView.swift in Sources */,
