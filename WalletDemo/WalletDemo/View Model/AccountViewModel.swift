@@ -31,7 +31,16 @@ class AccountViewModel: ObservableObject {
     private let pinToken = ""
     private let privateKey = ""
     
-    func loadAccount() {
+    init() {
+        NotificationCenter.default.addObserver(self, selector: #selector(clockSkewDetected(_:)), name: API.clockSkewDetectedNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(sessionUnauthorized(_:)), name: API.unauthorizedNotification, object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    func reloadAccount() {
         self.result = nil
         guard UUID(uuidString: clientID) != nil else {
             fatalError("Invalid Client ID")
@@ -66,6 +75,14 @@ class AccountViewModel: ObservableObject {
                 self.result = .failure(error)
             }
         }
+    }
+    
+    @objc private func clockSkewDetected(_ notification: Notification) {
+        result = .failure(TransportError.clockSkewDetected)
+    }
+    
+    @objc private func sessionUnauthorized(_ notification: Notification) {
+        result = .failure(RemoteError.unauthorized)
     }
     
 }

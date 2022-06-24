@@ -12,11 +12,10 @@ struct HomeView: View {
     
     private let api: API
     
-    @State private var account: Account
-    
     @StateObject private var walletViewModel: WalletViewModel
     @StateObject private var swapViewModel: SwapViewModel
     
+    @State private var account: Account
     @State private var isPINAbsent: Bool
     
     var body: some View {

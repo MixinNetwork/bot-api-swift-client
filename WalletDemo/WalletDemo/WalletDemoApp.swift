@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SDWebImage
+import MixinAPI
 
 @main
 struct WalletDemoApp: App {
@@ -19,7 +20,32 @@ struct WalletDemoApp: App {
             case let .success((api, account)):
                 HomeView(api: api, account: account)
             case let .failure(error):
-                ErrorView(error: error, action: viewModel.loadAccount)
+                switch error {
+                case RemoteError.unauthorized:
+                    VStack {
+                        Image(systemName: "person.fill.questionmark")
+                            .font(.system(size: 48))
+                            .padding()
+                        Text("Unauthorized session\nCheck if credential is valid")
+                            .multilineTextAlignment(.center)
+                    }
+                case TransportError.clockSkewDetected:
+                    VStack {
+                        Image(systemName: "clock.badge.exclamationmark")
+                            .font(.system(size: 48))
+                            .padding()
+                        Text("Clock skew detected\nCheck your time settings before reload")
+                            .multilineTextAlignment(.center)
+                        Button("Reload", action: viewModel.reloadAccount)
+                            .tint(.accentColor)
+                            .buttonStyle(.borderedProminent)
+                            .controlSize(.large)
+                            .buttonBorderShape(.roundedRectangle)
+                            .padding()
+                    }
+                default:
+                    ErrorView(error: error, action: viewModel.reloadAccount)
+                }
             case .none:
                 ProgressView()
                     .scaleEffect(2)
@@ -31,7 +57,7 @@ struct WalletDemoApp: App {
         SDImageCache.shared.config.maxDiskAge = -1
         let viewModel = AccountViewModel()
         self._viewModel = StateObject(wrappedValue: viewModel)
-        viewModel.loadAccount()
+        viewModel.reloadAccount()
         UIScrollView.appearance().keyboardDismissMode = .onDrag
     }
     
