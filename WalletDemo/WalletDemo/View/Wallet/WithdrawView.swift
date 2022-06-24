@@ -95,6 +95,16 @@ struct WithdrawView: View {
             }
         }
         .navigationTitle("Withdraw to \(address.label)")
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                HStack {
+                    Spacer()
+                    Button("Done") {
+                        isAmountFocused = false
+                    }
+                }
+            }
+        }
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) {
                 self.isAmountFocused = true

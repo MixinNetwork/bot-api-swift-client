@@ -12,6 +12,8 @@ struct SwapView: View {
     @EnvironmentObject private var swapViewModel: SwapViewModel
     @EnvironmentObject private var walletViewModel: WalletViewModel
     
+    @FocusState private var isAmountFocused: Bool
+    
     @State private var amount = ""
     @State private var decimalAmount: Decimal?
     @State private var isAmountLegal = false
@@ -59,6 +61,7 @@ struct SwapView: View {
                                 TextField("Amount", text: $amount)
                                     .multilineTextAlignment(.trailing)
                                     .keyboardType(.decimalPad)
+                                    .focused($isAmountFocused)
                                     .onChange(of: amount) { amount in
                                         if let amount = decimalAmount {
                                             isAmountLegal = amount <= paymentAsset.maxQuoteAmount && amount >= paymentAsset.minQuoteAmount
@@ -160,6 +163,16 @@ struct SwapView: View {
         }
         .disabled(swapViewModel.isCreatingPayment)
         .navigationTitle("Swap")
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                HStack {
+                    Spacer()
+                    Button("Done") {
+                        isAmountFocused = false
+                    }
+                }
+            }
+        }
         .sheet(isPresented: $isPickerPresented) {
             SwapAssetPickerView(target: pickerTarget)
         }

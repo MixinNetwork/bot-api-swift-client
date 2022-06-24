@@ -104,6 +104,16 @@ struct NewAddressView: View {
                                       onSuccess: dismiss.callAsFunction)
             }
         }
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                HStack {
+                    Spacer()
+                    Button("Done") {
+                        focusedField = nil
+                    }
+                }
+            }
+        }
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) {
                 self.focusedField = .label

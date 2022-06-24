@@ -58,7 +58,6 @@ struct WalletDemoApp: App {
         let viewModel = AccountViewModel()
         self._viewModel = StateObject(wrappedValue: viewModel)
         viewModel.reloadAccount()
-        UIScrollView.appearance().keyboardDismissMode = .onDrag
     }
     
 }
