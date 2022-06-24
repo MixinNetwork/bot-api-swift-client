@@ -42,40 +42,10 @@ struct DepositView: View {
                 .scaleEffect(2)
                 .onAppear(perform: reloadAsset)
         } else {
-            contentView
-        }
-    }
-    
-    @ViewBuilder
-    private var contentView: some View {
-        List {
-            Section {
-                Text(item.asset.destination)
-                    .font(.callout.monospaced())
-                    .padding(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
-                    .swipeActions {
-                        Button("Copy") {
-                            UIPasteboard.general.string = item.asset.destination
-                        }
-                        .tint(.accentColor)
-                    }
-            } header: {
-                Text("Address")
-            }
-            
-            if !item.asset.tag.isEmpty {
-                Section {
-                    Text(item.asset.tag)
-                        .font(.callout.monospaced())
-                        .padding(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
-                        .swipeActions {
-                            Button("Copy") {
-                                UIPasteboard.general.string = item.asset.tag
-                            }
-                            .tint(.accentColor)
-                        }
-                } header: {
-                    Text(item.asset.id == AssetID.ripple ? "Tag" : "Memo")
+            List {
+                DepositSectionView(value: item.asset.destination, header: "Address")
+                if !item.asset.tag.isEmpty {
+                    DepositSectionView(value: item.asset.tag, header: item.asset.id == AssetID.ripple ? "Tag" : "Memo")
                 }
             }
         }
@@ -90,6 +60,47 @@ struct DepositView: View {
             if let item = item {
                 self.item = item
             }
+        }
+    }
+    
+}
+
+extension DepositView {
+    
+    fileprivate struct DepositSectionView: View {
+        
+        let value: String
+        let header: String
+        
+        var body: some View {
+            Section {
+                Text(value)
+                    .font(.callout.monospaced())
+                    .padding(.vertical, 8)
+                Button {
+                    UIPasteboard.general.string = value
+                } label: {
+                    HStack {
+                        Spacer()
+                        Text("Copy")
+                        Spacer()
+                    }
+                }
+            } header: {
+                Text(header)
+            }
+        }
+        
+    }
+    
+}
+
+struct DepositSectionView_Previews: PreviewProvider {
+    
+    static var previews: some View {
+        List {
+            DepositView.DepositSectionView(value: "0xABCDEFGHIJKLMNOPQRSTUVWXYZ", header: "Address")
+            DepositView.DepositSectionView(value: "Memo31415926", header: "Memo")
         }
     }
     
