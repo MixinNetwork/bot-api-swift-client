@@ -121,8 +121,18 @@ class SwapViewModel: ObservableObject {
                 if swappableAssets.isEmpty {
                     self.swappableAssets = .failed(Error.noAvailableAsset)
                 } else {
-                    self.swappableAssets = .success(swappableAssets)
+                    if let usdtIndex = swappableAssets.firstIndex(where: { $0.id == AssetID.usdtEthereum }) {
+                        self.selectedPaymentAssetIndex = usdtIndex
+                    } else {
+                        self.selectedPaymentAssetIndex = 0
+                    }
+                    if let btcIndex = swappableAssets.firstIndex(where: { $0.id == AssetID.bitcoin }) {
+                        self.selectedSettlementAssetIndex = btcIndex
+                    } else {
+                        self.selectedSettlementAssetIndex = 0
+                    }
                 }
+                self.swappableAssets = .success(swappableAssets)
             } catch {
                 self.swappableAssets = .failed(error)
             }
