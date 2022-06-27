@@ -48,7 +48,7 @@ extension Ed25519PrivateKey {
         x25519[0] &= 248;
         x25519[31] &= 127;
         x25519[31] |= 64;
-        return x25519
+        return x25519.prefix(32)
     }
     
 }

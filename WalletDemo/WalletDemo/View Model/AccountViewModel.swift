@@ -51,21 +51,20 @@ class AccountViewModel: ObservableObject {
         guard let pinToken = Data(base64URLEncoded: pinToken) else {
             fatalError("Invalid PIN Token")
         }
-        guard let rawKey = Data(base64URLEncoded: privateKey)?.prefix(32) else {
+        guard let privateKey = Data(base64URLEncoded: privateKey)?.prefix(32) else {
             fatalError("Invalid Private Key")
         }
-        let privateKey = try! Ed25519PrivateKey(rawRepresentation: rawKey)
         let client = Client(userAgent: "WalletDemo 0.1.0")
         let iterator = CurrentTimePINIterator()
         let consoleOutput = ConsoleOutput()
-        let session = API.AuthenticatedSession(userID: clientID,
-                                               sessionID: sessionID,
-                                               pinToken: pinToken,
-                                               privateKey: privateKey,
-                                               client: client,
-                                               hostStorage: WalletHost(),
-                                               pinIterator: iterator,
-                                               analytic: consoleOutput)
+        let session = try! API.AuthenticatedSession(userID: clientID,
+                                                    sessionID: sessionID,
+                                                    pinToken: pinToken,
+                                                    privateKey: privateKey,
+                                                    client: client,
+                                                    hostStorage: WalletHost(),
+                                                    pinIterator: iterator,
+                                                    analytic: consoleOutput)
         let api = API(session: session)
         api.account.me { result in
             switch result {

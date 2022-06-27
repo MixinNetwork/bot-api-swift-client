@@ -26,15 +26,23 @@ extension API {
             userID: String,
             sessionID: String,
             pinToken: Data,
-            privateKey: Ed25519PrivateKey,
+            privateKey: Data,
             client: Client,
             hostStorage: HostStorage,
             pinIterator: PINIterator,
             analytic: Analytic?
-        ) {
+        ) throws {
+            let privateKey = try Ed25519PrivateKey(rawRepresentation: privateKey)
+            let pinEncryptionKey: Data = try {
+                let privateKey = try Curve25519.KeyAgreement.PrivateKey(rawRepresentation: privateKey.x25519Representation)
+                let publicKey = try Curve25519.KeyAgreement.PublicKey(rawRepresentation: pinToken)
+                let agreement = try privateKey.sharedSecretFromKeyAgreement(with: publicKey)
+                return agreement.withUnsafeBytes { Data($0) }
+            }()
+            
             self.userID = userID
             self.sessionID = sessionID
-            self.pinEncryptor = PINEncryptor(pinToken: pinToken,
+            self.pinEncryptor = PINEncryptor(key: pinEncryptionKey,
                                              iterator: pinIterator,
                                              analytic: analytic)
             self.privateKey = privateKey

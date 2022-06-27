@@ -18,12 +18,12 @@ final class PINEncryptor {
     }
     
     private let queue = DispatchQueue(label: "one.mixin.api.PINEncryptor")
-    private let pinToken: Data
+    private let key: Data
     private let iterator: PINIterator
     private let analytic: Analytic?
     
-    init(pinToken: Data, iterator: PINIterator, analytic: Analytic?) {
-        self.pinToken = pinToken
+    init(key: Data, iterator: PINIterator, analytic: Analytic?) {
+        self.key = key
         self.iterator = iterator
         self.analytic = analytic
     }
@@ -45,7 +45,7 @@ final class PINEncryptor {
         guard let pinData = pin.data(using: .utf8) else {
             return .failure(.invalidPIN)
         }
-        guard let iv = Data(withNumberOfSecuredRandomBytes: kCCBlockSizeAES128) else {
+        guard let iv = Data(withNumberOfSecuredRandomBytes: AESCryptor.blockSize) else {
             return .failure(.ivGeneration)
         }
         
@@ -57,7 +57,7 @@ final class PINEncryptor {
         
         let plain = pinData + timeData + iteratorData
         do {
-            let encrypted = try AESCryptor.encrypt(plain, with: pinToken, iv: iv, padding: .pkcs7)
+            let encrypted = try AESCryptor.encrypt(plain, with: key, iv: iv, padding: .pkcs7)
             let base64Encoded = (iv + encrypted).base64URLEncodedString()
             return .success(base64Encoded)
         } catch {

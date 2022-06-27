@@ -22,11 +22,13 @@ enum AESCryptor {
         case finalize(CCStatus)
     }
     
+    static let blockSize = kCCBlockSizeAES128
+    
     static func encrypt(_ plainData: Data, with key: Data, iv: Data, padding: Padding) throws -> Data {
         let options: CCOptions
         switch padding {
         case .none:
-            if plainData.count % kCCBlockSizeAES128 != 0 {
+            if plainData.count % blockSize != 0 {
                 throw Error.badInput
             } else {
                 options = 0

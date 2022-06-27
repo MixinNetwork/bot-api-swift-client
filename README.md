@@ -14,17 +14,16 @@ pod 'MixinAPI', :git => 'https://github.com/MixinNetwork/bot-api-swift-client.gi
 
 # Usage
 ```swift 
-let privateKey = try Ed25519PrivateKey(rawRepresentation: rawKey)
 let client = Client(userAgent: "YourApp 0.1.0")
 let iterator = CurrentTimePINIterator()
-let session = API.AuthenticatedSession(userID: uid,
-                                       sessionID: sid,
-                                       pinToken: pinToken,
-                                       privateKey: privateKey,
-                                       client: client,
-                                       hostStorage: WalletHost(),
-                                       pinIterator: iterator,
-                                       analytic: nil)
+let session = try API.AuthenticatedSession(userID: userID,
+                                           sessionID: sessionID,
+                                           pinToken: pinToken,
+                                           privateKey: privateKey,
+                                           client: client,
+                                           hostStorage: WalletHost(),
+                                           pinIterator: iterator,
+                                           analytic: consoleOutput)
 let api = API(session: session)
 ```
 
