@@ -10,7 +10,10 @@ import Foundation
 struct SwapPaymentResult: Decodable {
     
     enum Status: String, Decodable {
-        case unpaid, success, failed
+        case unpaid
+        case pending
+        case success
+        case failed
     }
     
     let status: Status

@@ -16,7 +16,6 @@ struct HomeView: View {
     @StateObject private var swapViewModel: SwapViewModel
     
     @State private var account: Account
-    @State private var isPINAbsent: Bool
     
     var body: some View {
         ZStack {
@@ -45,13 +44,6 @@ struct HomeView: View {
                     .ignoresSafeArea()
                     .zIndex(2)
             }
-            
-            if let id = swapViewModel.traceID, !walletViewModel.isAuthenticationPresented {
-                SwapTraceView(traceID: id) {
-                    swapViewModel.traceID = nil
-                }
-                .environmentObject(swapViewModel)
-            }
         }
         .environmentObject(walletViewModel)
         .task {
@@ -71,7 +63,6 @@ struct HomeView: View {
         self.account = account
         self._walletViewModel = StateObject(wrappedValue: walletViewModel)
         self._swapViewModel = StateObject(wrappedValue: swapViewModel)
-        self.isPINAbsent = !account.hasPIN
     }
     
 }

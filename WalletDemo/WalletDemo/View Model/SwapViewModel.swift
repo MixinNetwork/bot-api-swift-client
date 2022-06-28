@@ -36,8 +36,7 @@ class SwapViewModel: ObservableObject {
     
     @Published private(set) var swappableAssets: State<[SwappableAsset]> = .waiting
     @Published private(set) var isCreatingPayment = false
-    @Published private(set) var paymentError: Swift.Error?
-    @Published var traceID: String?
+    @Published private(set) var traces: [SwapPaymentTrace] = []
     
     private let clientID: String
     private let walletViewModel: WalletViewModel
@@ -141,8 +140,7 @@ class SwapViewModel: ObservableObject {
     }
     
     @MainActor
-    func createPayment(quoteAssetID: String, quoteAmount: String, settlementAssetID: String) async {
-        paymentError = nil
+    func createPayment(quoteAssetID: String, quoteAmount: String, settlementAssetID: String, estimatedSettlementAmount: String) async {
         isCreatingPayment = true
         let traceID = UUID().uuidString.lowercased()
         let request: URLRequest = {
@@ -162,16 +160,26 @@ class SwapViewModel: ObservableObject {
         do {
             let (data, _) = try await session.data(for: request)
             let response = try jsonDecoder.decode(SwapResponse<SwapPayment>.self, from: data)
-            walletViewModel.swap(payment: response.data) {
-                self.traceID = response.data.traceID
+            let payment = response.data
+            walletViewModel.swap(payment: payment) {
+                let caption = "\(payment.paymentAmount) \(payment.paymentAssetSymbol)  ➡️  \(payment.estimatedSettlementAmount) \(payment.settlementAssetSymbol)"
+                let trace = SwapPaymentTrace(id: payment.traceID, caption: caption, status: .unpaid)
+                let index = self.traces.count
+                self.traces.append(trace)
+                Task {
+                    await self.traces[index].startRefreshing {
+                        await self.paymentStatus(traceID: traceID)
+                    }
+                }
             }
         } catch {
-            paymentError = error
+            let caption = "\(quoteAmount) \(walletViewModel.allAssetItems[quoteAssetID]!.asset.symbol)  ➡️  \(estimatedSettlementAmount) \(walletViewModel.allAssetItems[settlementAssetID]!.asset.symbol)"
+            let trace = SwapPaymentTrace(id: traceID, caption: caption, status: .failed)
+            self.traces.append(trace)
         }
         isCreatingPayment = false
     }
     
-    @MainActor
     func paymentStatus(traceID: String) async -> SwapPaymentResult.Status {
         let url = URL(string: "https://api.mixpay.me/v1/payments_result?traceId=\(traceID)")!
         do {

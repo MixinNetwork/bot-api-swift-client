@@ -120,48 +120,64 @@ struct SwapView: View {
                         } header: {
                             Text("Receive")
                                 .font(.headline)
-                        } footer: {
-                            
                         }
                         .textCase(nil)
                         
-                        if let error = swapViewModel.paymentError {
-                            Section {
-                                Text(error.localizedDescription)
-                                    .foregroundColor(.red)
-                            }
-                            .listRowBackground(Color(.systemGroupedBackground))
-                        }
-                    }
-                    .listStyle(InsetGroupedListStyle())
-                    
-                    Spacer()
-                    
-                    if !walletViewModel.isAuthenticationPresented {
                         Button {
                             Task {
+                                let estimatedSettlementAmount = receivedAmount(paymentItem: paymentAssetItem,
+                                                                               settlementItem: settlementAssetItem)
                                 await swapViewModel.createPayment(quoteAssetID: paymentAsset.id,
                                                                   quoteAmount: amount,
-                                                                  settlementAssetID: settlementAsset.id)
+                                                                  settlementAssetID: settlementAsset.id,
+                                                                  estimatedSettlementAmount: estimatedSettlementAmount)
                             }
                         } label: {
-                            if swapViewModel.isCreatingPayment {
-                                ProgressView()
-                            } else {
-                                Text("Swap")
+                            HStack {
+                                Spacer()
+                                if swapViewModel.isCreatingPayment || walletViewModel.isAuthenticationPresented {
+                                    ProgressView()
+                                } else {
+                                    Text("Swap")
+                                }
+                                Spacer()
                             }
                         }
                         .tint(.accentColor)
                         .buttonStyle(.borderedProminent)
                         .controlSize(.large)
-                        .buttonBorderShape(.capsule)
-                        .padding()
+                        .buttonBorderShape(.roundedRectangle)
                         .disabled(!isAmountLegal)
+                        .listRowInsets(EdgeInsets(.zero))
+                        .listRowBackground(Color.clear)
+                        
+                        if !swapViewModel.traces.isEmpty {
+                            Section {
+                                ForEach(swapViewModel.traces) { trace in
+                                    HStack {
+                                        Text(trace.caption)
+                                        Spacer()
+                                        switch trace.status {
+                                        case .unpaid, .pending:
+                                            ProgressView()
+                                        case .success:
+                                            Image(systemName: "checkmark.circle")
+                                                .foregroundColor(.green)
+                                        case .failed:
+                                            Image(systemName: "xmark.circle")
+                                                .foregroundColor(.red)
+                                        }
+                                    }
+                                }
+                            } header: {
+                                Text("Payments")
+                            }
+                        }
                     }
                 }
             }
         }
-        .disabled(swapViewModel.isCreatingPayment)
+        .disabled(swapViewModel.isCreatingPayment || walletViewModel.isAuthenticationPresented)
         .navigationTitle("Swap")
         .toolbar {
             ToolbarItemGroup(placement: .keyboard) {
