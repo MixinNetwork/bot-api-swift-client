@@ -9,22 +9,16 @@ import Foundation
 
 public class Asset: Codable {
     
-    public enum CodingKeys: String, CodingKey {
-        case id = "asset_id"
-        case type
-        case symbol
-        case name
-        case iconURL = "icon_url"
-        case balance
-        case destination
-        case tag
-        case btcPrice = "price_btc"
-        case usdPrice = "price_usd"
-        case usdChange = "change_usd"
-        case chainID = "chain_id"
-        case confirmations
-        case assetKey = "asset_key"
-        case reserve
+    public struct DepositEntry: Codable {
+        
+        public let destination: String
+        public let tag: String
+        public let properties: [String]?
+        
+        public var payToWitness: Bool {
+            properties?.contains("P2WPKH_V0") ?? false
+        }
+        
     }
     
     public let id: String
@@ -33,8 +27,7 @@ public class Asset: Codable {
     public let name: String
     public let iconURL: String
     public let balance: String
-    public let destination: String
-    public let tag: String
+    public let depositEntries: [DepositEntry]
     public let btcPrice: String
     public let usdPrice: String
     public let usdChange: String
@@ -43,15 +36,18 @@ public class Asset: Codable {
     public let assetKey: String
     public let reserve: String
     
-    public init(assetID: String, type: String, symbol: String, name: String, iconURL: String, balance: String, destination: String, tag: String, btcPrice: String, usdPrice: String, usdChange: String, chainID: String, confirmations: Int, assetKey: String, reserve: String) {
+    public var preferredDepositEntry: DepositEntry? {
+        depositEntries.first(where: \.payToWitness) ?? depositEntries.first
+    }
+    
+    public init(assetID: String, type: String, symbol: String, name: String, iconURL: String, balance: String, depositEntries: [DepositEntry], btcPrice: String, usdPrice: String, usdChange: String, chainID: String, confirmations: Int, assetKey: String, reserve: String) {
         self.id = assetID
         self.type = type
         self.symbol = symbol
         self.name = name
         self.iconURL = iconURL
         self.balance = balance
-        self.destination = destination
-        self.tag = tag
+        self.depositEntries = depositEntries
         self.btcPrice = btcPrice
         self.usdPrice = usdPrice
         self.usdChange = usdChange
@@ -59,6 +55,23 @@ public class Asset: Codable {
         self.confirmations = confirmations
         self.assetKey = assetKey
         self.reserve = reserve
+    }
+    
+    public enum CodingKeys: String, CodingKey {
+        case id = "asset_id"
+        case type
+        case symbol
+        case name
+        case iconURL = "icon_url"
+        case balance
+        case depositEntries = "deposit_entries"
+        case btcPrice = "price_btc"
+        case usdPrice = "price_usd"
+        case usdChange = "change_usd"
+        case chainID = "chain_id"
+        case confirmations
+        case assetKey = "asset_key"
+        case reserve
     }
     
     public required init(from decoder: Decoder) throws {
@@ -69,8 +82,7 @@ public class Asset: Codable {
         name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
         iconURL = try container.decodeIfPresent(String.self, forKey: .iconURL) ?? ""
         balance = try container.decodeIfPresent(String.self, forKey: .balance) ?? ""
-        destination = try container.decodeIfPresent(String.self, forKey: .destination) ?? ""
-        tag = try container.decodeIfPresent(String.self, forKey: .tag) ?? ""
+        depositEntries = try container.decodeIfPresent([DepositEntry].self, forKey: .depositEntries) ?? []
         btcPrice = try container.decodeIfPresent(String.self, forKey: .btcPrice) ?? ""
         usdPrice = try container.decodeIfPresent(String.self, forKey: .usdPrice) ?? ""
         usdChange = try container.decodeIfPresent(String.self, forKey: .usdChange) ?? ""

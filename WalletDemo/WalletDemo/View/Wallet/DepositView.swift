@@ -37,17 +37,17 @@ struct DepositView: View {
     
     @ViewBuilder
     private var destinationLoadingContentView: some View {
-        if item.asset.destination.isEmpty {
+        if let entry = item.asset.preferredDepositEntry {
+            List {
+                DepositSectionView(value: entry.destination, header: "Address")
+                if !entry.tag.isEmpty {
+                    DepositSectionView(value: entry.tag, header: item.asset.id == AssetID.ripple ? "Tag" : "Memo")
+                }
+            }
+        } else {
             ProgressView()
                 .scaleEffect(2)
                 .onAppear(perform: reloadAsset)
-        } else {
-            List {
-                DepositSectionView(value: item.asset.destination, header: "Address")
-                if !item.asset.tag.isEmpty {
-                    DepositSectionView(value: item.asset.tag, header: item.asset.id == AssetID.ripple ? "Tag" : "Memo")
-                }
-            }
         }
     }
     
