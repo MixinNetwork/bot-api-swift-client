@@ -1,5 +1,5 @@
 //
-//  MixinNetworkError.swift
+//  MixinError.swift
 //  MixinAPI
 //
 //  Created by wuyuehyang on 2022/4/29.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum MixinNetworkError: ServerError {
+public enum MixinError: ServerError {
     
     case unknown(status: Int, code: Int, description: String)
     
@@ -97,7 +97,7 @@ public enum MixinNetworkError: ServerError {
     
 }
 
-extension MixinNetworkError: Decodable {
+extension MixinError: Decodable {
     
     enum CodingKeys: CodingKey {
         case code

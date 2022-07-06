@@ -1,5 +1,5 @@
 //
-//  MixinNetworkError+Localization.swift
+//  MixinError+Localization.swift
 //  WalletDemo
 //
 //  Created by wuyuehyang on 2022/6/24.
@@ -8,7 +8,7 @@
 import Foundation
 import MixinAPI
 
-extension MixinNetworkError: LocalizedError {
+extension MixinError: LocalizedError {
     
     public var errorDescription: String? {
         switch self {

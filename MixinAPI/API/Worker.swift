@@ -110,7 +110,7 @@ extension Worker {
     
     private struct RawResponse<Response: Decodable>: Decodable {
         let data: Response?
-        let error: MixinNetworkError?
+        let error: MixinError?
     }
     
     private enum HTTPMethod: String {

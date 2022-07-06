@@ -81,7 +81,7 @@ class AccountViewModel: ObservableObject {
     }
     
     @objc private func sessionUnauthorized(_ notification: Notification) {
-        result = .failure(MixinNetworkError.unauthorized)
+        result = .failure(MixinError.unauthorized)
     }
     
 }
