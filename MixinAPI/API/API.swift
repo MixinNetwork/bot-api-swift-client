@@ -14,22 +14,22 @@ public final class API {
     
     public typealias Result<Response: Decodable> = Swift.Result<Response, Error>
     
-    public let account: AccountWorker<User>
-    public let asset: AssetWorker
-    public let collectible: CollectibleWorker
-    public let multisig: MultisigWorker
-    public let payment: PaymentWorker
-    public let snapshot: SnapshotWorker
-    public let withdrawal: WithdrawalWorker
+    public let account: AccountWorker<User, MixinNetworkError>
+    public let asset: AssetWorker<MixinNetworkError>
+    public let collectible: CollectibleWorker<MixinNetworkError>
+    public let multisig: MultisigWorker<MixinNetworkError>
+    public let payment: PaymentWorker<MixinNetworkError>
+    public let snapshot: SnapshotWorker<MixinNetworkError>
+    public let withdrawal: WithdrawalWorker<MixinNetworkError>
     
     public init(session: Session) {
-        self.account = AccountWorker<User>(session: session)
-        self.asset = AssetWorker(session: session)
-        self.collectible = CollectibleWorker(session: session)
-        self.multisig = MultisigWorker(session: session)
-        self.payment = PaymentWorker(session: session)
-        self.snapshot = SnapshotWorker(session: session)
-        self.withdrawal = WithdrawalWorker(session: session)
+        self.account = AccountWorker<User, MixinNetworkError>(session: session)
+        self.asset = AssetWorker<MixinNetworkError>(session: session)
+        self.collectible = CollectibleWorker<MixinNetworkError>(session: session)
+        self.multisig = MultisigWorker<MixinNetworkError>(session: session)
+        self.payment = PaymentWorker<MixinNetworkError>(session: session)
+        self.snapshot = SnapshotWorker<MixinNetworkError>(session: session)
+        self.withdrawal = WithdrawalWorker<MixinNetworkError>(session: session)
     }
     
 }

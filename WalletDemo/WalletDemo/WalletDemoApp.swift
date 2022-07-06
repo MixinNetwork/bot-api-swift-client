@@ -21,7 +21,7 @@ struct WalletDemoApp: App {
                 HomeView(api: api, account: account)
             case let .failure(error):
                 switch error {
-                case RemoteError.unauthorized:
+                case MixinNetworkError.unauthorized:
                     VStack {
                         Image(systemName: "person.fill.questionmark")
                             .font(.system(size: 48))

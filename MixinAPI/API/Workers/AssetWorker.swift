@@ -7,41 +7,41 @@
 
 import UIKit
 
-public final class AssetWorker: Worker {
+fileprivate enum Path {
     
-    private enum Path {
-        
-        static let assets = "/assets"
-        
-        static func assets(assetID: String) -> String {
-            "/assets/" + assetID
-        }
-        
-        static func snapshots(limit: Int, offset: String? = nil, assetID: String? = nil, opponentID: String? = nil, destination: String? = nil, tag: String? = nil) -> String {
-            var path = "/snapshots?limit=\(limit)"
-            if let offset = offset {
-                path += "&offset=\(offset)"
-            }
-            if let assetID = assetID {
-                path += "&asset=\(assetID)"
-            }
-            if let opponentID = opponentID {
-                path += "&opponent=\(opponentID)"
-            }
-            if let destination = destination {
-                path += "&destination=\(destination)"
-                if let tag = tag, !tag.isEmpty {
-                    path += "&tag=\(tag)"
-                }
-            }
-            return path
-        }
-        
-        static func search(keyword: String) -> String {
-            "/network/assets/search/\(keyword)"
-        }
-        
+    static let assets = "/assets"
+    
+    static func assets(assetID: String) -> String {
+        "/assets/" + assetID
     }
+    
+    static func snapshots(limit: Int, offset: String? = nil, assetID: String? = nil, opponentID: String? = nil, destination: String? = nil, tag: String? = nil) -> String {
+        var path = "/snapshots?limit=\(limit)"
+        if let offset = offset {
+            path += "&offset=\(offset)"
+        }
+        if let assetID = assetID {
+            path += "&asset=\(assetID)"
+        }
+        if let opponentID = opponentID {
+            path += "&opponent=\(opponentID)"
+        }
+        if let destination = destination {
+            path += "&destination=\(destination)"
+            if let tag = tag, !tag.isEmpty {
+                path += "&tag=\(tag)"
+            }
+        }
+        return path
+    }
+    
+    static func search(keyword: String) -> String {
+        "/network/assets/search/\(keyword)"
+    }
+    
+}
+
+public final class AssetWorker<Error: ServerError & Decodable>: Worker<Error> {
     
     public func assets(queue: DispatchQueue = .main, completion: @escaping (API.Result<[Asset]>) -> Void) {
         get(path: Path.assets, queue: queue, completion: completion)

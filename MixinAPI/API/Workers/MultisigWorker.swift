@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class MultisigWorker: Worker {
+public final class MultisigWorker<Error: ServerError & Decodable>: Worker<Error> {
     
     public func cancel(requestID: String, completion: @escaping (API.Result<Empty>) -> Void) {
         post(path: "/multisigs/\(requestID)/cancel", completion: completion)

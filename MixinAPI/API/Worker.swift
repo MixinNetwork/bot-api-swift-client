@@ -7,20 +7,7 @@
 
 import Foundation
 
-public class Worker {
-    
-    struct Options: OptionSet {
-        
-        static let authIndependent = Options(rawValue: 1 << 0)
-        static let disableRetryOnRequestSigningTimeout = Options(rawValue: 1 << 1)
-        
-        let rawValue: UInt
-        
-        init(rawValue: UInt) {
-            self.rawValue = rawValue
-        }
-        
-    }
+public class Worker<Error: ServerError & Decodable> {
     
     let session: API.Session
     
@@ -33,7 +20,7 @@ public class Worker {
     @discardableResult
     func get<Response>(
         path: String,
-        options: Options = [],
+        options: RequestOptions = [],
         queue: DispatchQueue = .main,
         completion: @escaping (API.Result<Response>) -> Void
     ) -> Request {
@@ -49,7 +36,7 @@ public class Worker {
     func post<Response>(
         path: String,
         parameters: [String: Any]? = nil,
-        options: Options = [],
+        options: RequestOptions = [],
         queue: DispatchQueue = .main,
         completion: @escaping (API.Result<Response>) -> Void
     ) -> Request {
@@ -66,7 +53,7 @@ public class Worker {
     func post<Parameters: Encodable, Response>(
         path: String,
         parameters: Parameters? = nil,
-        options: Options = [],
+        options: RequestOptions = [],
         queue: DispatchQueue = .main,
         completion: @escaping (API.Result<Response>) -> Void
     ) -> Request {
@@ -81,7 +68,7 @@ public class Worker {
     
     func get<Response>(
         path: String,
-        options: Options = []
+        options: RequestOptions = []
     ) -> API.Result<Response> {
         request(method: .get,
                 path: path,
@@ -92,7 +79,7 @@ public class Worker {
     func post<Response>(
         path: String,
         parameters: [String: Any]? = nil,
-        options: Options = []
+        options: RequestOptions = []
     ) -> API.Result<Response> {
         request(method: .post, path: path, body: {
             if let parameters = parameters {
@@ -106,7 +93,7 @@ public class Worker {
     func post<Parameters: Encodable, Response>(
         path: String,
         parameters: Parameters? = nil,
-        options: Options = []
+        options: RequestOptions = []
     ) -> API.Result<Response> {
         request(method: .post, path: path, body: {
             if let parameters = parameters {
@@ -123,7 +110,7 @@ extension Worker {
     
     private struct RawResponse<Response: Decodable>: Decodable {
         let data: Response?
-        let error: RemoteError?
+        let error: MixinNetworkError?
     }
     
     private enum HTTPMethod: String {
@@ -177,7 +164,7 @@ extension Worker {
         method: HTTPMethod,
         path: String,
         body makeBody: @escaping () throws -> Data?,
-        options: Options = []
+        options: RequestOptions = []
     ) -> API.Result<Response> {
         let semaphore = DispatchSemaphore(value: 0)
         var result: API.Result<Response> = .failure(TransportError.syncRequestFailed)
@@ -207,7 +194,7 @@ extension Worker {
         method: HTTPMethod,
         path: String,
         body makeBody: @escaping () throws -> Data?,
-        options: Options = [],
+        options: RequestOptions = [],
         queue: DispatchQueue = .main,
         completion: @escaping (API.Result<Response>) -> Void
     ) -> Request {
@@ -271,7 +258,7 @@ extension Worker {
         method: HTTPMethod,
         path: String,
         body: Data?,
-        options: Options = [],
+        options: RequestOptions = [],
         queue: DispatchQueue,
         completion: @escaping (API.Result<Response>) -> Void,
         hostIndex: Int,
@@ -330,7 +317,7 @@ extension Worker {
                 queue.async {
                     completion(.success(data))
                 }
-            } else if case .unauthorized = rawResponse.error {
+            } else if let error = rawResponse.error, error.isUnauthorized {
                 let reason = UnauthorizedReason(requestSigningDate: requestSigningDate, response: response)
                 switch reason {
                 case .clockSkew:
@@ -360,12 +347,12 @@ extension Worker {
                         }
                     }
                 case .none:
-                    session.analytic?.report(error: RemoteError.unauthorized)
+                    session.analytic?.report(error: error)
                     DispatchQueue.main.sync {
                         NotificationCenter.default.post(name: API.unauthorizedNotification, object: self)
                     }
                     queue.async {
-                        completion(.failure(RemoteError.unauthorized))
+                        completion(.failure(error))
                     }
                 }
             } else if let error = rawResponse.error {

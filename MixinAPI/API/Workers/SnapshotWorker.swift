@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class SnapshotWorker: Worker {
+public final class SnapshotWorker<Error: ServerError & Decodable>: Worker<Error> {
     
     public func snapshot(snapshotID: String) -> API.Result<Snapshot> {
         get(path: "/snapshots/\(snapshotID)")

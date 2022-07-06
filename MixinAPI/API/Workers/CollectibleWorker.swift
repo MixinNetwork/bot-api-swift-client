@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class CollectibleWorker: Worker {
+public final class CollectibleWorker<Error: ServerError & Decodable>: Worker<Error> {
     
     public func cancel(requestID: String, completion: @escaping (API.Result<Empty>) -> Void) {
         post(path: "/collectibles/requests/\(requestID)/cancel", completion: completion)

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class AccountWorker<Account: Decodable>: Worker {
+public class AccountWorker<Account: Decodable, Error: ServerError & Decodable>: Worker<Error> {
     
     public enum LogCategory {
         case incorrectPIN

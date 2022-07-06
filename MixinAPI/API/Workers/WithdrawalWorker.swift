@@ -7,23 +7,22 @@
 
 import Foundation
 
-public final class WithdrawalWorker: Worker {
+fileprivate enum Path {
     
-    private enum Path {
-        static func addresses(assetID: String) -> String {
-            "/assets/\(assetID)/addresses"
-        }
-        
-        static let addresses = "/addresses"
-        static func address(addressID: String) -> String {
-            "/addresses/\(addressID)"
-        }
-        
-        static let withdrawals = "/withdrawals"
-        static func delete(addressID: String) -> String {
-            "/addresses/\(addressID)/delete"
-        }
+    static let addresses = "/addresses"
+    static let withdrawals = "/withdrawals"
+    
+    static func addresses(assetID: String) -> String {
+        "/assets/\(assetID)/addresses"
     }
+    
+    static func address(addressID: String) -> String {
+        "/addresses/\(addressID)"
+    }
+    
+}
+
+public final class WithdrawalWorker<Error: ServerError & Decodable>: Worker<Error> {
     
     public func address(addressID: String) -> API.Result<Address> {
         return get(path: Path.address(addressID: addressID))
@@ -61,7 +60,7 @@ public final class WithdrawalWorker: Worker {
     
     public func delete(addressID: String, pin: String, completion: @escaping (API.Result<Empty>) -> Void) {
         session.encryptPIN(pin, onFailure: completion) { encryptedPIN in
-            self.post(path: Path.delete(addressID: addressID),
+            self.post(path: "/addresses/\(addressID)/delete",
                       parameters: ["pin_base64": encryptedPIN],
                       options: .disableRetryOnRequestSigningTimeout,
                       completion: completion)
