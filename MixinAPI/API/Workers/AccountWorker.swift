@@ -14,27 +14,6 @@ public class AccountWorker: Worker {
         case all
     }
     
-    public enum CaptchaToken {
-        case reCaptcha(String)
-        case hCaptcha(String)
-    }
-    
-    public enum VoIPToken {
-        
-        case token(String)
-        case remove
-        
-        var value: String {
-            switch self {
-            case .token(let value):
-                return value
-            case .remove:
-                return "REMOVE"
-            }
-        }
-        
-    }
-    
     private enum Path {
         static let me = "/me"
     }
