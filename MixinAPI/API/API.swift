@@ -14,7 +14,7 @@ public final class API {
     
     public typealias Result<Response: Decodable> = Swift.Result<Response, Error>
     
-    public let account: AccountWorker
+    public let account: AccountWorker<User>
     public let asset: AssetWorker
     public let collectible: CollectibleWorker
     public let multisig: MultisigWorker
@@ -23,7 +23,7 @@ public final class API {
     public let withdrawal: WithdrawalWorker
     
     public init(session: Session) {
-        self.account = AccountWorker(session: session)
+        self.account = AccountWorker<User>(session: session)
         self.asset = AssetWorker(session: session)
         self.collectible = CollectibleWorker(session: session)
         self.multisig = MultisigWorker(session: session)

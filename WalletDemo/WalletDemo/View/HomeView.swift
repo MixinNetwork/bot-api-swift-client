@@ -15,7 +15,7 @@ struct HomeView: View {
     @StateObject private var walletViewModel: WalletViewModel
     @StateObject private var swapViewModel: SwapViewModel
     
-    @State private var account: Account
+    @State private var account: User
     
     var body: some View {
         ZStack {
@@ -55,7 +55,7 @@ struct HomeView: View {
         }
     }
     
-    init(api: API, account: Account) {
+    init(api: API, account: User) {
         let walletViewModel = WalletViewModel(api: api)
         let swapViewModel = SwapViewModel(clientID: account.userID, walletViewModel: walletViewModel)
         

@@ -7,19 +7,15 @@
 
 import Foundation
 
-public class AccountWorker: Worker {
+public class AccountWorker<Account: Decodable>: Worker {
     
     public enum LogCategory {
         case incorrectPIN
         case all
     }
     
-    private enum Path {
-        static let me = "/me"
-    }
-    
     public func me(completion: @escaping (API.Result<Account>) -> Void) {
-        get(path: Path.me, completion: completion)
+        get(path: "/me", completion: completion)
     }
     
     public func update(fullName: String? = nil, biography: String? = nil, avatarBase64: String? = nil, completion: @escaping (API.Result<Account>) -> Void) {
@@ -37,7 +33,7 @@ public class AccountWorker: Worker {
         if let avatarBase64 = avatarBase64 {
             param["avatar_base64"] = avatarBase64
         }
-        post(path: Path.me, parameters: param, completion: completion)
+        post(path: "/me", parameters: param, completion: completion)
     }
     
     public func verify(pin: String, completion: @escaping (API.Result<Empty>) -> Void) {

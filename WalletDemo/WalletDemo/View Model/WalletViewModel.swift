@@ -110,7 +110,7 @@ class WalletViewModel: ObservableObject {
 // MARK: - PIN
 extension WalletViewModel {
     
-    func initializePIN(onSuccess: @escaping (Account) -> Void) {
+    func initializePIN(onSuccess: @escaping (User) -> Void) {
         authentication = Authentication(title: "Initialize PIN", operation: .initialize) { pin, report in
             report(.loading)
             self.api.account.updatePIN(old: nil, new: pin) { result in

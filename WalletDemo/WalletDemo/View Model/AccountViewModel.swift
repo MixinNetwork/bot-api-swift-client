@@ -24,7 +24,7 @@ extension Data {
 
 class AccountViewModel: ObservableObject {
     
-    @Published private(set) var result: Result<(API, Account), Error>?
+    @Published private(set) var result: Result<(API, User), Error>?
     
     private let clientID = ""
     private let sessionID = ""
