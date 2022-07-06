@@ -25,7 +25,6 @@ public enum MixinError: ServerError {
     case malformedPIN
     case incorrectPIN
     case transferAmountTooSmall
-    case expiredAuthorizationCode
     case insufficientFee
     case transferIsAlreadyPaid
     case withdrawAmountTooSmall
@@ -72,8 +71,6 @@ public enum MixinError: ServerError {
             self = .incorrectPIN
         case (202, 20120):
             self = .transferAmountTooSmall
-        case (202, 20121):
-            self = .expiredAuthorizationCode
         case (202, 20124):
             self = .insufficientFee
         case (202, 20125):
