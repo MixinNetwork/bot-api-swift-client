@@ -39,9 +39,6 @@ struct SnapshotView: View {
             InfoSection(header: "Transaction ID", content: item.id)
             InfoSection(header: "Asset Name", content: item.assetName)
             InfoSection(header: "Opponent ID", content: item.snapshot.opponentID)
-            InfoSection(header: "Transaction Hash", content: item.snapshot.transactionHash)
-            InfoSection(header: "Sender", content: item.snapshot.sender)
-            InfoSection(header: "Receiver", content: item.snapshot.receiver)
             InfoSection(header: "Memo", content: item.snapshot.memo)
             InfoSection(header: "Date", content: item.date)
         }
