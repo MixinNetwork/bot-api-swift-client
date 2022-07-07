@@ -10,7 +10,7 @@ import Foundation
 public final class PaymentWorker<Error: ServerError & Decodable>: Worker<Error> {
     
     public func payments(assetID: String, opponentID: String, amount: String, traceID: String) -> API.Result<PaymentResponse> {
-        let parameters: [String: Any] = [
+        let parameters = [
             "asset_id": assetID,
             "opponent_id": opponentID,
             "amount": amount,
@@ -20,7 +20,7 @@ public final class PaymentWorker<Error: ServerError & Decodable>: Worker<Error> 
     }
     
     public func payments(assetID: String, addressID: String, amount: String, traceID: String) -> API.Result<PaymentResponse> {
-        let parameters: [String: Any] = [
+        let parameters = [
             "asset_id": assetID,
             "address_id": addressID,
             "amount": amount,
@@ -39,8 +39,15 @@ public final class PaymentWorker<Error: ServerError & Decodable>: Worker<Error> 
     
     public func transfer(assetID: String, opponentID: String, amount: String, memo: String, pin: String, traceID: String, completion: @escaping (API.Result<Snapshot>) -> Void) {
         session.encryptPIN(pin, onFailure: completion) { encryptedPIN in
-            let param = ["asset_id": assetID, "opponent_id": opponentID, "amount": amount, "memo": memo, "pin_base64": encryptedPIN, "trace_id": traceID]
-            self.post(path: "/transfers", parameters: param, options: .disableRetryOnRequestSigningTimeout, completion: completion)
+            let parameters = [
+                "asset_id": assetID,
+                "opponent_id": opponentID,
+                "amount": amount,
+                "memo": memo,
+                "pin_base64": encryptedPIN,
+                "trace_id": traceID
+            ]
+            self.post(path: "/transfers", parameters: parameters, options: .disableRetryOnRequestSigningTimeout, completion: completion)
         }
     }
     
