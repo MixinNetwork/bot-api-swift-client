@@ -46,6 +46,10 @@ A 6-digit PIN is required when a user is trying to transfer assets, the code fun
 - Once a PIN is lost, it can never be retrieved. It is recommended that the developer let each user enter it regularly to help memorize it. During the initial setting, make sure to let the user enter it more than 3 times and remind the user that it cannot be retrieved if lost
 - For asset security, it is recommended to remind users not to set PINs that are too simple or common combinations, such as 123456, 111222.
 
+# Support
+- Report bugs in a [Github issue](https://github.com/MixinNetwork/bot-api-swift-client/issues/new).
+- Access our developers group of Mixin ID 7000104112.
+
 # API Essentials
 
 ## Overview
