@@ -76,7 +76,8 @@ public final class AssetWorker<Error: ServerError & Decodable>: Worker<Error> {
         get(path: "/assets/\(assetID)/fee", completion: completion)
     }
     
-    public func pendingDeposits(assetID: String, destination: String, tag: String, completion: @escaping (API.Result<[PendingDeposit]>) -> Void) {
+    @discardableResult
+    public func pendingDeposits(assetID: String, destination: String, tag: String, completion: @escaping (API.Result<[PendingDeposit]>) -> Void) -> Request {
         get(path: "/external/transactions?asset=\(assetID)&destination=\(destination)&tag=\(tag)", completion: completion)
     }
     

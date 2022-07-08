@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MixinAPI
 
 struct AssetView: View {
     
@@ -72,6 +73,65 @@ struct AssetView: View {
             .listRowInsets(EdgeInsets(.zero))
             .listRowBackground(Color(.systemGroupedBackground))
             
+            switch viewModel.pendingDeposits[item.asset.id] {
+            case .success(let items):
+                if items.isEmpty {
+                    EmptyView()
+                } else {
+                    Section {
+                        ForEach(items) { item in
+                            GeometryReader { geometry in
+                                ZStack {
+                                    HStack {
+                                        Color(.quaternaryLabel)
+                                            .frame(width: geometry.size.width * item.progress)
+                                        Spacer()
+                                    }
+                                    
+                                    NavigationLink {
+                                        PendingDepositView(asset: self.item, deposit: item)
+                                    } label: {
+                                        HStack {
+                                            Text("Confirming (\(item.deposit.confirmations)/\(item.deposit.threshold))")
+                                                .font(.subheadline)
+                                            Spacer()
+                                            Text(item.deposit.amount)
+                                                .font(.dinCondensed(ofSize: 19))
+                                                .foregroundColor(Color(.secondaryLabel))
+                                            Text(self.item.asset.symbol)
+                                                .font(.caption)
+                                                .fontWeight(.medium)
+                                        }
+                                    }
+                                    .padding(.horizontal)
+                                }
+                            }
+                            .listRowInsets(EdgeInsets(.zero))
+                        }
+                    } header: {
+                        Text("Pending Deposits")
+                    }
+                }
+            case .failure:
+                Section {
+                    Button("Reload") {
+                        viewModel.reloadPendingDeposits(assetID: item.asset.id)
+                    }
+                } header: {
+                    Text("Pending Deposits")
+                }
+            case .loading, .none:
+                Section {
+                    HStack {
+                        Spacer()
+                        ProgressView()
+                        Spacer()
+                    }
+                } header: {
+                    Text("Pending Deposits")
+                }
+            }
+            
             if showTransactionSection {
                 Section {
                     ForEach(snapshots) { item in
@@ -115,6 +175,7 @@ struct AssetView: View {
         .navigationTitle(item.asset.name)
         .onAppear {
             viewModel.reloadSnapshotsIfEmpty(assetID: item.asset.id)
+            viewModel.reloadPendingDeposits(assetID: item.asset.id)
         }
         .refreshable {
             await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
@@ -127,6 +188,11 @@ struct AssetView: View {
             }
             await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
                 viewModel.reloadSnapshots(assetID: item.asset.id) {
+                    continuation.resume()
+                }
+            }
+            await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+                viewModel.reloadPendingDeposits(assetID: item.asset.id) {
                     continuation.resume()
                 }
             }

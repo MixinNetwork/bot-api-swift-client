@@ -31,6 +31,12 @@ class WalletViewModel: ObservableObject {
         case failure(Error)
     }
     
+    enum PendingDepositState {
+        case loading(Request)
+        case success([PendingDepositItem])
+        case failure(Error)
+    }
+    
     private let api: API
     private let assetComparator = AssetValueSortComparator()
     private let snapshotLimit = 30
@@ -51,6 +57,9 @@ class WalletViewModel: ObservableObject {
     
     // Key is Asset ID
     @Published private(set) var assetItemsState: [String: State] = [:]
+    
+    // Key is Asset ID
+    @Published private(set) var pendingDeposits: [String: PendingDepositState] = [:]
     
     // Key is Asset ID
     @Published private(set) var snapshots: [String: [SnapshotItem]] = [:]
@@ -215,6 +224,31 @@ extension WalletViewModel {
             }
         }
         assetSearchState = .loading(request)
+    }
+    
+}
+
+// MARK: - Pending Deposit
+extension WalletViewModel {
+    
+    func reloadPendingDeposits(assetID: String, completion: (() -> Void)? = nil) {
+        guard let entry = allAssetItems[assetID]?.asset.preferredDepositEntry else {
+            return
+        }
+        if case let .loading(request) = pendingDeposits[assetID] {
+            request.cancel()
+        }
+        let request = api.asset.pendingDeposits(assetID: assetID, destination: entry.destination, tag: entry.tag) { result in
+            switch result {
+            case .success(let deposits):
+                let items = deposits.map(PendingDepositItem.init(pendingDeposit:))
+                self.pendingDeposits[assetID] = .success(items)
+            case .failure(let error):
+                self.pendingDeposits[assetID] = .failure(error)
+            }
+            completion?()
+        }
+        pendingDeposits[assetID] = .loading(request)
     }
     
 }
