@@ -58,7 +58,7 @@ APIs are grouped and provided through an `API` object. Initialize it with a vali
 ## Authenticated Session
 You need to provide several credentials to intialize an `API.AuthenticatedSession`.
 - `userID` 
-> `client_id` provided by developer's dashboard for bots, or `user_id` for messenger users.
+> `client_id` provided by developer's dashboard for bots, or `user_id` of messenger users.
 - `sessionID`
 - `pinToken`
 - `privateKey`
@@ -86,7 +86,7 @@ You need to provide several credentials to intialize an `API.AuthenticatedSessio
 - `AccountWorker.updatePIN(old:new:completion:)`
 > Update PIN. 
 
-> ℹ️`old` should be nil if `User.hasPIN` is false.
+> ℹ️ `old` should be nil if `User.hasPIN` is false.
 - `AccountWorker.logs(offset:category:limit:completion:)`
 > Get user's log.
 
@@ -95,7 +95,7 @@ You need to provide several credentials to intialize an `API.AuthenticatedSessio
 - `AssetWorker.assets(queue:completion:)`
 > Request user's asset list.
 
-> ℹ️Assets responded with this API may have an empty `depositEntries`. If you want a deposit address, call `AssetWorker.asset(assetID:completion:)` with a specific asset ID to get one.
+> ℹ️ Assets responded with this API may have an empty `depositEntries`. If you want a deposit address, call `AssetWorker.asset(assetID:completion:)` with a specific asset ID to get one.
 - `AssetWorker.snapshots(limit:offset:assetID:opponentID:destination:tag:queue:completion:)`
 > Get the snapshots by several filters. `opponent` and `destination`, `tag` can't use together, both of them don't support order.
 - `AssetWorker.fee(assetID:completion:)`
@@ -147,7 +147,7 @@ You need to provide several credentials to intialize an `API.AuthenticatedSessio
 - `SnapshotWorker.snapshot(snapshotID:completion:)`
 > Get the snapshot of a user by id.
 
-> ℹ️If the snapshot is not of the current user, `MixinError.forbidden` will be returned.
+> ℹ️ If the snapshot is not of the current user, `MixinError.forbidden` will be returned.
 - `SnapshotWorker.trace(traceID:)`
 > Get the snapshot corresponding to specific trace ID.
 
@@ -162,6 +162,6 @@ You need to provide several credentials to intialize an `API.AuthenticatedSessio
 - `WithdrawalWorker.withdrawal(withdrawal:completion:)`
 > Submit a withdrawal request.
 
-> ℹ️It costs fee to withdrawal. To get the fee, use `AssetWorker.fee(assetID:completion:)`.
+> ℹ️ It costs fee to withdrawal. To get the fee, use `AssetWorker.fee(assetID:completion:)`.
 - `WithdrawalWorker.delete(addressID:pin:completion:)`
 > Delete a specified address by it's id.
