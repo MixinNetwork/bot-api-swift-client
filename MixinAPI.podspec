@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'MixinAPI'
-  s.version          = '0.1.0'
+  s.version          = '1.0.0'
   s.summary          = 'Access and manage your wallet on Mixin Network'
 
   s.description      = <<-DESC
