@@ -10,7 +10,7 @@ The Mixin Network based wallet allows for the rapid construction of decentralize
   s.homepage         = 'https://github.com/MixinNetwork/bot-api-swift-client'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'wuyueyang' => 'wuyueyang@mixin.one' }
-  s.source           = { :git => 'https://github.com/MixinNetwork/bot-api-swift-client', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/MixinNetwork/bot-api-swift-client.git', :tag => s.version.to_s }
   s.social_media_url = 'https://twitter.com/Mixin_Network'
 
   s.ios.deployment_target = '13.0'
