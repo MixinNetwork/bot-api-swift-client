@@ -1,4 +1,7 @@
 # bot-api-swift-client
+
+[![CocoaPods Compatible](https://img.shields.io/cocoapods/v/MixinAPI.svg)](https://cocoapods.org/pods/MixinAPI)
+
 The [Mixin Network](https://mixin.one/) based wallet allows for the rapid construction of decentralized wallets, decentralized on-chain exchanges, and other products.
 
 # Requirements
