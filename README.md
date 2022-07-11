@@ -12,7 +12,7 @@ The [Mixin Network](https://mixin.one/) based wallet allows for the rapid constr
 ## Cocoapods
 Add it in Podfile
 ```
-pod 'MixinAPI', :git => 'https://github.com/MixinNetwork/bot-api-swift-client.git'
+pod 'MixinAPI'
 ```
 
 # Usage
