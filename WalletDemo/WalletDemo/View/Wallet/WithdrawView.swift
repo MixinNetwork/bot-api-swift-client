@@ -58,6 +58,7 @@ struct WithdrawView: View {
                                 Text("Network fee: ")
                                 Text(address.fee)
                                     .foregroundColor(Color(.label))
+                                Text(" " + addressItem.feeSymbol)
                             }
                             if addressItem.dust > 0 {
                                 HStack(alignment: .center, spacing: 0) {

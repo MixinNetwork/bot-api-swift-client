@@ -15,18 +15,20 @@ public struct Address {
     public let destination: String
     public let label: String
     public let tag: String
+    public let feeAssetID: String
     public let fee: String
     public let reserve: String
     public let dust: String
     public let updatedAt: String
     
-    public init(id: String, type: String, assetID: String, destination: String, label: String, tag: String, fee: String, reserve: String, dust: String, updatedAt: String) {
+    public init(id: String, type: String, assetID: String, destination: String, label: String, tag: String, feeAssetID: String, fee: String, reserve: String, dust: String, updatedAt: String) {
         self.id = id
         self.type = type
         self.assetID = assetID
         self.destination = destination
         self.label = label
         self.tag = tag
+        self.feeAssetID = feeAssetID
         self.fee = fee
         self.reserve = reserve
         self.dust = dust
@@ -44,6 +46,7 @@ extension Address: Codable {
         case destination
         case label
         case tag
+        case feeAssetID = "fee_asset_id"
         case fee
         case reserve
         case dust
@@ -58,6 +61,7 @@ extension Address: Codable {
         destination = try container.decodeIfPresent(String.self, forKey: .destination) ?? ""
         label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
         tag = try container.decodeIfPresent(String.self, forKey: .tag) ?? ""
+        feeAssetID = try container.decodeIfPresent(String.self, forKey: .feeAssetID) ?? ""
         fee = try container.decodeIfPresent(String.self, forKey: .fee) ?? ""
         reserve = try container.decodeIfPresent(String.self, forKey: .reserve) ?? ""
         dust = try container.decodeIfPresent(String.self, forKey: .dust) ?? ""

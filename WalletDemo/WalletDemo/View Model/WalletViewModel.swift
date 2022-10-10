@@ -327,7 +327,10 @@ extension WalletViewModel {
         api.withdrawal.addresses(assetID: assetID) { result in
             switch result {
             case let .success(addresses):
-                self.addresses[assetID] = addresses.map(AddressItem.init(address:))
+                self.addresses[assetID] = addresses.map { address in
+                    let feeSymbol = self.allAssetItems[address.feeAssetID]?.asset.symbol ?? ""
+                    return AddressItem(address: address, feeSymbol: feeSymbol)
+                }
                 self.addressesState[assetID] = .success
             case let .failure(error):
                 self.addressesState[assetID] = .failure(error)
@@ -346,7 +349,8 @@ extension WalletViewModel {
             self.api.withdrawal.save(address: request) { result in
                 switch result {
                 case let .success(address):
-                    let item = AddressItem(address: address)
+                    let feeSymbol = self.allAssetItems[address.feeAssetID]?.asset.symbol ?? ""
+                    let item = AddressItem(address: address, feeSymbol: feeSymbol)
                     var addresses = self.addresses[assetID] ?? []
                     addresses.append(item)
                     self.addresses[assetID] = addresses
